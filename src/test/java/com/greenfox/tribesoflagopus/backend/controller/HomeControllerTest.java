@@ -63,7 +63,7 @@ public class HomeControllerTest {
     mockMvc.perform(get("/"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(contentTypePlainText))
-            .andExpect(content().string("hello"));
+            .andExpect(content().string("hello, CircleCI!"));
   }
 
 }
