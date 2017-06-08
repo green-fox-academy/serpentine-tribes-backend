@@ -1,5 +1,0 @@
-deployment:
-  staging:
-    branch: development
-    heroku:
-      appname: tribes-of-lagopus
