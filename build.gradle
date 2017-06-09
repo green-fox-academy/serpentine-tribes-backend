@@ -31,3 +31,9 @@ dependencies {
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
+
+test{
+	systemProperty 'SPRING_DATASOURCE_URL', System.getProperty("dataSourceUrl")
+	systemProperty 'SPRING_DATASOURCE_USERNAME', System.getProperty("dataSourceUsername")
+	systemProperty 'SPRING_DATASOURCE_PASSWORD', System.getProperty("dataSourcePassword")
+}
