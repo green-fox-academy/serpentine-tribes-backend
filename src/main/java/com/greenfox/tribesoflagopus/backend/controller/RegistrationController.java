@@ -3,7 +3,7 @@ package com.greenfox.tribesoflagopus.backend.controller;
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
-import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterResponse;
+import com.greenfox.tribesoflagopus.backend.model.entity.Player;
 import javax.validation.Valid;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +32,7 @@ public class RegistrationController {
               .build();
     }
 
-    return UserRegisterResponse.builder()
+    return Player.builder()
             .id(1L)
             .username("Bond")
             .kingdomId(1L)

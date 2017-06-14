@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
-public class UserRegisterInput {
+public class UserRegisterInput implements JsonDto {
 
   @NotBlank
   private String username;
