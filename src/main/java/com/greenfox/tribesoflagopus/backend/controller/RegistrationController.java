@@ -18,17 +18,19 @@ public class RegistrationController {
       @Valid UserRegisterInput registerInput,
       BindingResult bindingResult) {
 
+    /*
     if (registerInput.getKingdom() == null
         || registerInput.getKingdom().equals("")) {
       registerInput.setKingdom(
           String.format("%s's kingdom",
               registerInput.getUsername()));
-    }
+    } */
 
+    //TODO: set error message based on missing input field
     if (bindingResult.hasErrors()) {
       StatusResponse missingParameterStatus = StatusResponse.builder()
           .status("error")
-          .message("Missing parameter(s):")
+          .message("Missing parameter(s): username!")
           .build();
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
