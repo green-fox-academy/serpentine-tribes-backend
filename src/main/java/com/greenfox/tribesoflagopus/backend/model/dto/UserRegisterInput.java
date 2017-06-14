@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
-public class UserRegisterInput implements PostBodyDto {
+public class UserRegisterInput {
 
   @NotBlank
   private String username;
