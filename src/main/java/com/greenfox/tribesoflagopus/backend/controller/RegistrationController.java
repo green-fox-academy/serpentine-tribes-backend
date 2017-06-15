@@ -32,7 +32,7 @@ public class RegistrationController {
       List<FieldError> missingFields = bindingResult.getFieldErrors();
       String statusMessage = "";
       for (int i = 0; i < missingFields.size(); i++) {
-        if(i != 0) {
+        if(i > 0) {
           statusMessage += ", ";
         }
         statusMessage += missingFields.get(i).getField();
