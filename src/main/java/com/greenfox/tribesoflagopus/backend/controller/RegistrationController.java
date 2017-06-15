@@ -4,6 +4,8 @@ import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
 import com.greenfox.tribesoflagopus.backend.model.entity.Player;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,13 @@ public class RegistrationController {
     if (bindingResult.hasErrors()) {
 
       List<FieldError> missingFields = bindingResult.getFieldErrors();
+      ArrayList<String> missingFieldNames = new ArrayList<>();
+
+      for (FieldError fieldError : missingFields) {
+        missingFieldNames.add(fieldError.getField());
+      }
+      Collections.sort(missingFieldNames);
+
       String statusMessage = "";
       for (int i = 0; i < missingFields.size(); i++) {
         if(i > 0) {
