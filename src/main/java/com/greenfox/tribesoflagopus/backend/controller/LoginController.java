@@ -18,7 +18,7 @@ import java.util.List;
 public class LoginController {
 
   @PostMapping("/login")
-  public JsonDto loginUser(@Valid @RequestBody UserLoginInput loginInput, BindingResult bindingResult){
+  public JsonDto loginUser(@Valid UserLoginInput loginInput, BindingResult bindingResult){
 
     List<String> listOfMissingFields = new ArrayList<>();
     String errors = "";
@@ -34,7 +34,7 @@ public class LoginController {
     if (bindingResult.hasErrors()) {
       return StatusResponse.builder()
               .status("error")
-              .message("Missing parameters: " + errors)
+              .message("Missing parameter(s): " + errors)
               .build();
     }
 
