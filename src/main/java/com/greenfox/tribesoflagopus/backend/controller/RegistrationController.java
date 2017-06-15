@@ -27,7 +27,6 @@ public class RegistrationController {
               registerInput.getUsername()));
     }
 
-    //TODO: set error message based on missing input field
     if (bindingResult.hasErrors()) {
 
       List<FieldError> missingFields = bindingResult.getFieldErrors();

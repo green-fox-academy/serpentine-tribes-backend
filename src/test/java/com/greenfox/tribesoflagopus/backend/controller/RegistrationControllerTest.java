@@ -68,7 +68,7 @@ public class RegistrationControllerTest {
   }
 
   @Test
-  public void registerUserWithoutUserName() throws Exception {
+  public void registerErrorUserWithoutUserName() throws Exception {
     mockMvc.perform(post("/register")
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .param("password", "password123"))
@@ -79,7 +79,7 @@ public class RegistrationControllerTest {
   }
 
   @Test
-  public void registerUserWithoutPassword() throws Exception {
+  public void registerErrorUserWithoutPassword() throws Exception {
     mockMvc.perform(post("/register")
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .param("username", "Bond"))
@@ -90,7 +90,7 @@ public class RegistrationControllerTest {
   }
 
   @Test
-  public void registerUserAllParametersMissing() throws Exception {
+  public void registerErrorUserAllParametersMissing() throws Exception {
     mockMvc.perform(post("/register")
         .contentType(MediaType.APPLICATION_JSON_UTF8))
         .andExpect(status().isBadRequest())
@@ -99,7 +99,17 @@ public class RegistrationControllerTest {
         .andDo(print());
   }
 
-  //TODO: add test to filter already existing username
+  @Test
+  public void registerErrorAlreadyExistingUser() throws Exception {
+    mockMvc.perform(post("/register")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .param("username", "occupiedUserName")
+        .param("password", "password123"))
+        .andExpect(status().is(409))
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Username already taken, please choose an other one.")))
+        .andDo(print());
+  }
 }
 
 
