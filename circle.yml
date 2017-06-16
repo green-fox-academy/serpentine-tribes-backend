@@ -1,5 +1,8 @@
 machine:
 
+  services:
+    - postgresql
+
   # Configure test database for Spring Boot and Flyway
   environment:
     CIRCLE_ENV: test
