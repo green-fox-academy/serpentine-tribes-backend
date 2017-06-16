@@ -1,4 +1,4 @@
-package com.greenfox.tribesoflagopus.backend.model;
+package com.greenfox.tribesoflagopus.backend.model.entity;
 
 import javax.persistence.Entity;
 import lombok.AllArgsConstructor;
