@@ -76,7 +76,7 @@ public class LoginControllerTest {
             .contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status", is("error")))
-            .andExpect(jsonPath("$.message", is("Missing parameter(s): username, password, ")))
+            .andExpect(jsonPath("$.message", is("Missing parameter(s): password, username, ")))
             .andDo(print());
   }
 }

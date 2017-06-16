@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -26,6 +27,7 @@ public class LoginController {
     for (FieldError fielderror : bindingResult.getFieldErrors()) {
       listOfMissingFields.add(fielderror.getField());
     }
+    Collections.sort(listOfMissingFields);
 
     for (int i = 0; i < listOfMissingFields.size(); i++) {
         errors += listOfMissingFields.get(i) + ", ";
