@@ -44,7 +44,7 @@ public class RegistrationController {
         if(i > 0) {
           statusMessage += ", ";
         }
-        statusMessage += missingFields.get(i).getField();
+        statusMessage += missingFieldNames.get(i);
       }
 
       StatusResponse missingParameterStatus = StatusResponse.builder()
