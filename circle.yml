@@ -1,3 +1,12 @@
+machine:
+
+  # Configure test database for Spring Boot and Flyway
+  environment:
+    CIRCLE_ENV: test
+    SPRING_DATASOURCE_URL: jdbc:postgresql://127.0.0.1/circle_test
+    SPRING_DATASOURCE_USERNAME=ubuntu
+    SPRING_DATASOURCE_PASSWORD=
+
 test:
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
