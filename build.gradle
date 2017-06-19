@@ -37,8 +37,4 @@ test{
 	systemProperty 'SPRING_DATASOURCE_URL', System.getProperty("dataSourceUrl")
 	systemProperty 'SPRING_DATASOURCE_USERNAME', System.getProperty("dataSourceUsername")
 	systemProperty 'SPRING_DATASOURCE_PASSWORD', System.getProperty("dataSourcePassword")
-
-	project.ext['flyway.url'] = System.getenv("SPRING_DATASOURCE_URL")
-	project.ext['flyway.user'] = System.getenv("SPRING_DATASOURCE_USERNAME")
-	project.ext['flyway.password'] = System.getenv("SPRING_DATASOURCE_PASSWORD")
 }
