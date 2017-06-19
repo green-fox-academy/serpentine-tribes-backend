@@ -21,6 +21,7 @@ public class Building {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
+
   private String buildingType;
   private int level;
   private int hp;

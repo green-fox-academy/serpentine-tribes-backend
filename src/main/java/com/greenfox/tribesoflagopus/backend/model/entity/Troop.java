@@ -20,6 +20,7 @@ public class Troop {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
+
   private int level;
   private int hp;
   private int attack;
