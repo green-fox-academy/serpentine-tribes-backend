@@ -9,30 +9,30 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
-public class Building {
+public class Troop {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
 
-  private String buildingType;
   private int level;
   private int hp;
+  private int attack;
+  private int defence;
 
-  public Building() {
+  public Troop(){
   }
 
-  public Building(String buildingType, int level, int hp) {
-    this.buildingType = buildingType;
-    this.level = 1;
-    this.hp = hp;
+  public Troop(int level, int hp, int attack, int defence){
+    this.level=1;
+    this.hp=hp;
+    this.attack=attack;
+    this.defence=defence;
   }
-
 }
