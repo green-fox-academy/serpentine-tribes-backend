@@ -1,5 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -10,22 +11,15 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
+@Builder
 public class Troop {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
-
-  @NotNull(message = "What is the level of the troop?")
   private int level;
-
-  @NotNull(message = "What is the hp of the troop?")
   private int hp;
-
-  @NotNull(message = "What is the attack value of the troop?")
   private int attack;
-
-  @NotNull(message = "What is the defence value of the troop?")
   private int defence;
 
   public Troop(){

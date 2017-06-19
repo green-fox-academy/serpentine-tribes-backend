@@ -1,5 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -11,20 +12,14 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
+@Builder
 public class Building {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
-
-  @NotNull(message = "What is the type of the building?")
   private String buildingType;
-
-  @NotNull(message = "What is the level of the building?")
-  @Min(value = 1)
   private int level;
-
-  @NotNull(message = "What is the hp of the building?")
   private int hp;
 
   public Building() {
