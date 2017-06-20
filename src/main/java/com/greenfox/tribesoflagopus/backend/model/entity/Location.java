@@ -1,9 +1,12 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,5 +26,9 @@ public class Location {
   private long id;
   private int x;
   private int y;
+
+  @JsonIgnore
+  @OneToOne(fetch = FetchType.EAGER)
+  private Kingdom kingdom;
 
 }
