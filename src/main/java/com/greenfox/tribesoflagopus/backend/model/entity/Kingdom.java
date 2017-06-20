@@ -3,16 +3,16 @@ package com.greenfox.tribesoflagopus.backend.model.entity;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Builder
@@ -28,7 +28,8 @@ public class Kingdom {
   private String name;
   private Long userId;
 
-  @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL)
+  @Setter(AccessLevel.NONE)
+  @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   List<Resource> resources;
 
   public void addResources(Resource resource) {

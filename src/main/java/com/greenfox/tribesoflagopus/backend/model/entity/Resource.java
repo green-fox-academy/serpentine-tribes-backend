@@ -34,7 +34,6 @@ public class Resource {
   @ManyToOne(fetch = FetchType.EAGER)
   private Kingdom kingdom;
 
-
   public Resource(String type) {
     this.type = type;
     this.amount = 0;
