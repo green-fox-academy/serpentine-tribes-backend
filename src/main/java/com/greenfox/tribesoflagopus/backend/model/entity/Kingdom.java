@@ -1,9 +1,11 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +24,8 @@ public class Kingdom {
 
   private String name;
   private Long userId;
+
+  @OneToOne(mappedBy = "kingdom", cascade = CascadeType.ALL)
+  private Location location;
 
 }
