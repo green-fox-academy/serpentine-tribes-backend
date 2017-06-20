@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +29,19 @@ public class Kingdom {
   private String name;
   private Long userId;
 
+  @Setter(AccessLevel.NONE)
+  @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Troop> troops;
+
+  public void addTroop(Troop troop) {
+    this.troops.add(troop);
+    troop.setKingdom(this);
+  }
+
+  public void removeTroop(Troop troop) {
+    troop.setKingdom(null);
+    this.troops.remove(troop);
+  }
 
   @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL)
   private List<Building> buildings;
