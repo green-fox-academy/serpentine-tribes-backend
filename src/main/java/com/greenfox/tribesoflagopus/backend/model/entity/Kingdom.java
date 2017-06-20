@@ -25,7 +25,7 @@ public class Kingdom {
   private String name;
   private Long userId;
 
-  @OneToOne(mappedBy = "kingdom", cascade = CascadeType.ALL)
+  @OneToOne(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private Location location;
 
 }

@@ -1,5 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class Location {
   private int x;
   private int y;
 
+  @JsonIgnore
   @OneToOne(fetch = FetchType.EAGER)
   private Kingdom kingdom;
 
