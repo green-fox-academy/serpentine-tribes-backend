@@ -1,13 +1,13 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Builder
@@ -23,4 +23,16 @@ public class Kingdom {
   private String name;
   private Long userId;
 
+  @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL)
+  private List<Building> buildings;
+
+  public void addBuilding(Building building){
+    this.buildings.add(building);
+    building.setKingdom(this);
+  }
+
+  public void removeBuilding(Building building){
+    building.setKingdom(null);
+    this.buildings.remove(building);
+  }
 }
