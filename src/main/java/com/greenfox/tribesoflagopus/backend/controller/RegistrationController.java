@@ -19,14 +19,14 @@ public class RegistrationController {
 
   @PostMapping(value = "/register")
   public ResponseEntity<JsonDto> registerUser(
-      @Valid UserRegisterInput registerInput,
-      BindingResult bindingResult) {
+          @Valid UserRegisterInput registerInput,
+          BindingResult bindingResult) {
 
     if (registerInput.getKingdom() == null
-        || registerInput.getKingdom().equals("")) {
+            || registerInput.getKingdom().equals("")) {
       registerInput.setKingdom(
-          String.format("%s's kingdom",
-              registerInput.getUsername()));
+              String.format("%s's kingdom",
+                      registerInput.getUsername()));
     }
 
     if (bindingResult.hasErrors()) {
@@ -48,25 +48,25 @@ public class RegistrationController {
       }
 
       StatusResponse missingParameterStatus = StatusResponse.builder()
-          .status("error")
-          .message("Missing parameter(s): " + statusMessage + "!")
-          .build();
+              .status("error")
+              .message("Missing parameter(s): " + statusMessage + "!")
+              .build();
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
     if (registerInput.getUsername().equals("occupiedUserName")) {
       StatusResponse occupiedUserNameStatus = StatusResponse.builder()
-          .status("error")
-          .message("Username already taken, please choose an other one.")
-          .build();
+              .status("error")
+              .message("Username already taken, please choose an other one.")
+              .build();
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
     Player mockPlayer = Player.builder()
-        .id(1L)
-        .username("Bond")
-        .kingdomId(1L)
-        .build();
+            .id(1L)
+            .username("Bond")
+            .kingdomId(1L)
+            .build();
     return ResponseEntity.ok().body(mockPlayer);
   }
 
