@@ -1,5 +1,8 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +23,10 @@ public class Troop {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
+
+  @JsonIgnore
+  @ManyToOne(fetch = FetchType.EAGER)
+  private Kingdom kingdom;
 
   private int level;
   private int hp;
