@@ -1,5 +1,7 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import javax.persistence.*;
+
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -9,11 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Builder
@@ -29,6 +34,19 @@ public class Kingdom {
   private String name;
   private Long userId;
 
+
+  @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL)
+  private List<Building> buildings;
+
+  public void addBuilding(Building building){
+    this.buildings.add(building);
+    building.setKingdom(this);
+  }
+
+  public void removeBuilding(Building building){
+    building.setKingdom(null);
+    this.buildings.remove(building);
+    
   @OneToOne(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private Location location;
 
