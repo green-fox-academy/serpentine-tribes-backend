@@ -1,10 +1,13 @@
 package com.greenfox.tribesoflagopus.backend.model.dto;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class UserLoginInput implements JsonDto {
 
