@@ -1,15 +1,19 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
-import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
 public class Building {
 
   @Id
@@ -28,7 +32,6 @@ public class Building {
   public Building() {
   }
 
-  @Builder
   public Building(String buildingType, int level, int hp) {
     this.buildingType = buildingType;
     this.level = 1;
