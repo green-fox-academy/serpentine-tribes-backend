@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Data
 @Builder
-@AllArgsConstructor
 public class Building {
 
   @Id
