@@ -1,9 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,9 +10,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 public class Building {
 
   @Id
@@ -29,6 +25,7 @@ public class Building {
   public Building() {
   }
 
+  @Builder
   public Building(String buildingType, int level, int hp) {
     this.buildingType = buildingType;
     this.level = 1;
