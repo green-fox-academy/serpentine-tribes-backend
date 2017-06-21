@@ -1,12 +1,9 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,9 +12,8 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 public class Troop {
 
   @Id
@@ -36,6 +32,7 @@ public class Troop {
   public Troop(){
   }
 
+  @Builder
   public Troop(int level, int hp, int attack, int defence){
     this.level=1;
     this.hp=hp;
