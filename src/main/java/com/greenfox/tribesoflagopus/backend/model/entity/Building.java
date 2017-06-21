@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @Setter
-@Builder
 public class Building {
 
   @Id
@@ -26,6 +25,7 @@ public class Building {
   public Building() {
   }
 
+  @Builder
   public Building(String buildingType, int level, int hp) {
     this.buildingType = buildingType;
     this.level = 1;

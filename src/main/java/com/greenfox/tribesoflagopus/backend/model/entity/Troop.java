@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @Setter
-@Builder
 public class Troop {
 
   @Id
@@ -26,6 +25,7 @@ public class Troop {
   public Troop(){
   }
 
+  @Builder
   public Troop(int level, int hp, int attack, int defence){
     this.level=1;
     this.hp=hp;
