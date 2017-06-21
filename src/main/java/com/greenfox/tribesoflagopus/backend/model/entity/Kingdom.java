@@ -1,5 +1,8 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -27,7 +30,11 @@ public class Kingdom {
   private long id;
 
   private String name;
-  private Long userId;
+
+  @OneToOne
+  @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+  @JsonIdentityReference(alwaysAsId=true)
+  private Player player;
 
   @Setter(AccessLevel.NONE)
   @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)

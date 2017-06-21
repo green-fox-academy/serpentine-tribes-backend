@@ -4,10 +4,12 @@ import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
 import com.greenfox.tribesoflagopus.backend.model.entity.Player;
+import com.greenfox.tribesoflagopus.backend.repository.PlayerRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -16,6 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class RegistrationController {
+
+  private final PlayerRepository playerRepository;
+
+  @Autowired
+  public RegistrationController(
+          PlayerRepository playerRepository) {
+    this.playerRepository = playerRepository;
+  }
 
   @PostMapping(value = "/register")
   public ResponseEntity<JsonDto> registerUser(
@@ -62,11 +72,7 @@ public class RegistrationController {
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
-    Player mockPlayer = Player.builder()
-            .id(1L)
-            .username("Bond")
-            .kingdomId(1L)
-            .build();
+    Player mockPlayer = playerRepository.findOne(1L);
     return ResponseEntity.ok().body(mockPlayer);
   }
 
