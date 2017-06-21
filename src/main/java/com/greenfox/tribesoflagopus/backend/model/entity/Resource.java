@@ -1,12 +1,9 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,10 +26,6 @@ public class Resource {
   private String type;
   private int amount;
   private int generation;
-
-  @JsonIgnore
-  @ManyToOne(fetch = FetchType.EAGER)
-  private Kingdom kingdom;
 
   public Resource(String type) {
     this.type = type;
