@@ -1,8 +1,9 @@
 package com.greenfox.tribesoflagopus.backend;
 
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
+import com.greenfox.tribesoflagopus.backend.model.entity.Player;
 import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
-import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
+import com.greenfox.tribesoflagopus.backend.repository.PlayerRepository;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -13,7 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BackendApplication implements CommandLineRunner {
 
 	@Autowired
-	KingdomRepository kingdomRepository;
+	PlayerRepository playerRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
@@ -23,11 +24,18 @@ public class BackendApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		System.out.println("Hello, World!");
 
+		Player player = Player.builder()
+						.username("Bond")
+						.password("password123")
+						.build();
+
 		Kingdom kingdom = Kingdom.builder()
 						.name("My new Kingdom")
-						.userId(1L)
 						.troops(new ArrayList<>())
 						.build();
+
+		player.setKingdom(kingdom);
+		kingdom.setPlayer(player);
 
 		Troop troop = Troop.builder()
 						.attack(5)
@@ -38,6 +46,6 @@ public class BackendApplication implements CommandLineRunner {
 						.build();
 
 		kingdom.addTroop(troop);
-		kingdomRepository.save(kingdom);
+		playerRepository.save(player);
 	}
 }
