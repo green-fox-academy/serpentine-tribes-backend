@@ -39,8 +39,11 @@ public class LoginControllerTest {
   public void loginWithAllCorrectParam() throws Exception {
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .param("username", "Bond")
-            .param("password", "password123"))
+            .content("{"
+                    + "\"username\" : \"Bond\","
+                    + "\"password\" : \"password123\","
+                    + "\"kingdom\" : \"MI6\""
+                    + "}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.username").exists())
@@ -51,7 +54,9 @@ public class LoginControllerTest {
   public void loginWithMissingUsername() throws Exception {
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .param("password", "password123"))
+            .content("{"
+                    + "\"password\" : \"password123\""
+                    + "}"))
             .andExpect(status().is(400))
             .andExpect(jsonPath("$.status", is("error")))
             .andExpect(jsonPath("$.message", is("Missing parameter(s): username!")))
@@ -62,7 +67,9 @@ public class LoginControllerTest {
   public void loginWithMissingPassword() throws Exception {
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .param("username", "Bond"))
+            .content("{"
+                    + "\"username\" : \"Bond\""
+                    + "}"))
             .andExpect(status().is(400))
             .andExpect(jsonPath("$.status", is("error")))
             .andExpect(jsonPath("$.message", is("Missing parameter(s): password!")))

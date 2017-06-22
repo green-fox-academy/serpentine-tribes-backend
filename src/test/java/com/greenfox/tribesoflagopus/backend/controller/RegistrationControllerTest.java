@@ -37,9 +37,11 @@ public class RegistrationControllerTest {
   public void registerUserWithAllParameter() throws Exception {
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .param("username", "Bond")
-            .param("password", "password123")
-            .param("kingdom", "MI6"))
+            .content("{"
+                    + "\"username\" : \"Bond\","
+                    + "\"password\" : \"password123\","
+                    + "\"kingdom\" : \"MI6\""
+                    + "}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.username").exists())
@@ -51,8 +53,10 @@ public class RegistrationControllerTest {
   public void registerUserWithoutKingdom() throws Exception {
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .param("username", "Bond")
-            .param("password", "password123"))
+            .content("{"
+                    + "\"username\" : \"Bond\","
+                    + "\"password\" : \"password123\""
+                    + "}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.username").exists())
@@ -64,7 +68,9 @@ public class RegistrationControllerTest {
   public void registerErrorUserWithoutUserName() throws Exception {
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .param("password", "password123"))
+            .content("{"
+                    + "\"password\" : \"password123\""
+                    + "}"))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.status", is("error")))
             .andExpect(jsonPath("$.message", is("Missing parameter(s): username!")))
@@ -75,7 +81,9 @@ public class RegistrationControllerTest {
   public void registerErrorUserWithoutPassword() throws Exception {
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .param("username", "Bond"))
+            .content("{"
+                    + "\"username\" : \"Bond\""
+                    + "}"))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.status", is("error")))
             .andExpect(jsonPath("$.message", is("Missing parameter(s): password!")))
@@ -96,8 +104,10 @@ public class RegistrationControllerTest {
   public void registerErrorAlreadyExistingUser() throws Exception {
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .param("username", "occupiedUserName")
-            .param("password", "password123"))
+            .content("{"
+                    + "\"username\" : \"occupiedUserName\","
+                    + "\"password\" : \"password123\""
+                    + "}"))
             .andExpect(status().is(409))
             .andExpect(jsonPath("$.status", is("error")))
             .andExpect(jsonPath("$.message",

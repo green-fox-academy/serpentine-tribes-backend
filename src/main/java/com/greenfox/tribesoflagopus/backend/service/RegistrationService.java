@@ -22,8 +22,6 @@ public class RegistrationService {
   public ResponseEntity<JsonDto> register(@Valid UserRegisterInput registerInput,
       BindingResult bindingResult) {
 
-    registerInput = setKingdomName(registerInput);
-
     if (bindingResult.hasErrors()) {
       List<FieldError> missingFields = bindingResult.getFieldErrors();
       ArrayList<String> missingFieldNames = new ArrayList<>();
@@ -41,13 +39,23 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
-    if (registerInput.getUsername().equals("occupiedUserName")) {
+    if (registerInput == null) {
+      StatusResponse missingAllFields = StatusResponse.builder()
+          .status("error")
+          .message("Missing parameter(s): password, username!")
+          .build();
+      return ResponseEntity.badRequest().body(missingAllFields);
+    }
+
+    if ("occupiedUserName".equals(registerInput.getUsername())) {
       StatusResponse occupiedUserNameStatus = StatusResponse.builder()
           .status("error")
           .message("Username already taken, please choose an other one.")
           .build();
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
+
+    registerInput = setKingdomName(registerInput);
 
     UserDto mockUser = UserDto.builder()
         .id(1)
