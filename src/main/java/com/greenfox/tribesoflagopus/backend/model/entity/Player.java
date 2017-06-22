@@ -1,21 +1,19 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Builder
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Player implements JsonDto {
+@Getter
+@Setter
+public class Player {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)

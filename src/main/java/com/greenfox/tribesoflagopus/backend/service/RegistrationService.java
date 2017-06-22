@@ -1,13 +1,12 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.PlayerDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
-import com.greenfox.tribesoflagopus.backend.model.entity.Player;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -50,10 +49,10 @@ public class RegistrationService {
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
-    Player mockPlayer = Player.builder()
-        .id(1L)
+    PlayerDto mockPlayer = PlayerDto.builder()
+        .id(1)
         .username("Bond")
-        .kingdomId(1L)
+        .kingdomId(1)
         .build();
     return ResponseEntity.ok().body(mockPlayer);
   }
