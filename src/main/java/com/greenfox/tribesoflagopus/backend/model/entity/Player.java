@@ -32,7 +32,8 @@ public class Player {
   @JsonProperty(value = "kingdomId")
   private Kingdom kingdom;
 
-  @JsonIgnore
   private String password;
+  private String avatar;
+  private long points;
 
 }
