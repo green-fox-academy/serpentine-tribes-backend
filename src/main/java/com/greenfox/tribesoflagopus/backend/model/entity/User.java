@@ -30,7 +30,7 @@ public class User {
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
   @JsonIdentityReference(alwaysAsId = true)
-  @JsonProperty(value = "kingdomId")
+  @JsonProperty(value = "kingdom_id")
   private Kingdom kingdom;
 
   private String password;

@@ -43,7 +43,7 @@ public class RegistrationControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.username").exists())
-            .andExpect(jsonPath("$.kingdomId").exists())
+            .andExpect(jsonPath("$.kingdom_id").exists())
             .andDo(print());
   }
 
@@ -56,7 +56,7 @@ public class RegistrationControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.username").exists())
-            .andExpect(jsonPath("$.kingdomId").exists())
+            .andExpect(jsonPath("$.kingdom_id").exists())
             .andDo(print());
   }
 
