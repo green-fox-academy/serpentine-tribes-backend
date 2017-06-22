@@ -26,7 +26,7 @@ public class Troop {
   @ManyToOne(fetch = FetchType.EAGER)
   private Kingdom kingdom;
 
-  @Builder.Default private int level = 1;
+  private int level = 1;
   private int hp;
   private int attack;
   private int defence;
