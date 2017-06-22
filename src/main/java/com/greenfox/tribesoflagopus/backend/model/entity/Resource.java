@@ -1,22 +1,18 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import lombok.AllArgsConstructor;
+import javax.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Created by K on 2017.06.16..
- */
-
 @Entity
-@Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Resource {
 
@@ -27,11 +23,22 @@ public class Resource {
   private int amount;
   private int generation;
 
+  @JsonIgnore
+  @ManyToOne(fetch = FetchType.EAGER)
+  private Kingdom kingdom;
+
+  @Builder
+  public Resource(String type, int amount, int generation,
+          Kingdom kingdom) {
+    this.type = type;
+    this.amount = amount;
+    this.generation = generation;
+    this.kingdom = kingdom;
+  }
+
   public Resource(String type) {
     this.type = type;
     this.amount = 0;
     this.generation = 0;
   }
-
-
 }
