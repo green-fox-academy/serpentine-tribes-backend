@@ -1,7 +1,7 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
-import com.greenfox.tribesoflagopus.backend.model.dto.PlayerDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
 import java.util.ArrayList;
@@ -49,12 +49,12 @@ public class RegistrationService {
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
-    PlayerDto mockPlayer = PlayerDto.builder()
+    UserDto mockUser = UserDto.builder()
         .id(1)
         .username("Bond")
         .kingdomId(1)
         .build();
-    return ResponseEntity.ok().body(mockPlayer);
+    return ResponseEntity.ok().body(mockUser);
   }
 
   private UserRegisterInput setKingdomName(UserRegisterInput registerInput) {

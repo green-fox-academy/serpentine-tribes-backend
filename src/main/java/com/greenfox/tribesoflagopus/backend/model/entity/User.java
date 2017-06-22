@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Player {
+public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,7 +27,7 @@ public class Player {
 
   private String username;
 
-  @OneToOne(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
   @JsonIdentityReference(alwaysAsId = true)
   @JsonProperty(value = "kingdomId")
@@ -39,7 +39,7 @@ public class Player {
   private long points;
 
   @Builder
-  public Player(String username, String password, String avatar, long points) {
+  public User(String username, String password, String avatar, long points) {
     this.username = username;
     this.password = password;
     this.avatar = avatar;
