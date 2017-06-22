@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,4 +28,9 @@ public class Location {
   @OneToOne(fetch = FetchType.EAGER)
   private Kingdom kingdom;
 
+  @Builder
+  public Location(Integer x, Integer y) {
+    this.x = x;
+    this.y = y;
+  }
 }

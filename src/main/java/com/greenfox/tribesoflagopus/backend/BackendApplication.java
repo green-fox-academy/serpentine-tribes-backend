@@ -4,7 +4,6 @@ import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Player;
 import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
 import com.greenfox.tribesoflagopus.backend.repository.PlayerRepository;
-import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -32,7 +31,6 @@ public class BackendApplication implements CommandLineRunner {
 
 			Kingdom kingdom = Kingdom.builder()
               .name("My new Kingdom")
-              .troops(new ArrayList<>())
               .build();
 
 			player.setKingdom(kingdom);
@@ -43,7 +41,6 @@ public class BackendApplication implements CommandLineRunner {
               .defence(1)
               .hp(10)
               .level(1)
-              .kingdom(kingdom)
               .build();
 
 			kingdom.addTroop(troop);

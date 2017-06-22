@@ -6,15 +6,16 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Building {
 
   @Id
@@ -22,22 +23,17 @@ public class Building {
   private long id;
 
   private String buildingType;
-  private int level;
+  @Builder.Default private int level = 1;
   private int hp;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JsonIgnore
-  @JoinColumn
   private Kingdom kingdom;
-
-  public Building() {
-  }
 
   @Builder
   public Building(String buildingType, int level, int hp) {
     this.buildingType = buildingType;
-    this.level = 1;
+    this.level = level;
     this.hp = hp;
   }
-
 }
