@@ -1,18 +1,15 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import javax.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-/**
- * Created by K on 2017.06.16..
- */
 
 @Entity
 @Getter
@@ -25,5 +22,9 @@ public class Location {
   private long id;
   private Integer x;
   private Integer y;
+
+  @JsonIgnore
+  @OneToOne(fetch = FetchType.EAGER)
+  private Kingdom kingdom;
 
 }
