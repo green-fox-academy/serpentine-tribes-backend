@@ -1,6 +1,5 @@
 package com.greenfox.tribesoflagopus.backend.model.dto;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

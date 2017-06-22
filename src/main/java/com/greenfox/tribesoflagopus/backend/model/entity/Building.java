@@ -1,13 +1,16 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
-import lombok.*;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -21,6 +24,11 @@ public class Building {
   private String buildingType;
   private int level;
   private int hp;
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JsonIgnore
+  @JoinColumn
+  private Kingdom kingdom;
 
   public Building() {
   }

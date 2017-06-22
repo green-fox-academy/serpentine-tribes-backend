@@ -13,8 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RegistrationController {
 
+  private final RegistrationService registrationService;
+
   @Autowired
-  RegistrationService registrationService;
+  public RegistrationController(
+          RegistrationService registrationService) {
+    this.registrationService = registrationService;
+  }
 
   @PostMapping(value = "/register")
   public ResponseEntity<JsonDto> registerUser(
