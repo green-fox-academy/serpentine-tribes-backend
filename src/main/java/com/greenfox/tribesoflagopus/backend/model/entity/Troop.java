@@ -32,7 +32,8 @@ public class Troop {
   private int defence;
 
   @Builder
-  public Troop(int level, int hp, int attack, int defence) {
+  public Troop(Kingdom kingdom, int level, int hp, int attack, int defence) {
+    this.kingdom = kingdom;
     this.level = 1;
     this.hp = hp;
     this.attack = attack;
