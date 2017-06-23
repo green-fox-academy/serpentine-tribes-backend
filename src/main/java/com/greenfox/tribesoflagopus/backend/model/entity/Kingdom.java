@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -22,7 +23,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Kingdom {
+public class Kingdom implements JsonDto {
 
   @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private final List<Troop> troops = new ArrayList<>();
