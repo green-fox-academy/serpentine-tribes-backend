@@ -36,4 +36,8 @@ public class Building {
     this.level = level;
     this.hp = hp;
   }
+
+  public static class BuildingBuilder {
+    private int level = 1;
+  }
 }

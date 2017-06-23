@@ -1,6 +1,7 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
@@ -42,7 +43,14 @@ public class KingdomService {
     }
 
     Kingdom foundKingdom = kingdomRepository.findOneByUserId(userId);
-    return ResponseEntity.ok().body(foundKingdom);
+    KingdomDto kingdomResponse = KingdomDto.builder()
+        .id(foundKingdom.getId())
+        .name(foundKingdom.getName())
+        .userId(foundKingdom.getUser().getId())
+        .buildings(foundKingdom.getBuildings())
+
+        .build();
+    return ResponseEntity.ok().body(kingdomResponse);
   }
 
 }
