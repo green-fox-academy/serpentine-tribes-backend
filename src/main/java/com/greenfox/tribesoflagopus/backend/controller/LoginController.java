@@ -23,8 +23,8 @@ public class LoginController {
 
   @PostMapping("/login")
   public ResponseEntity<JsonDto> loginUser(
-          @Valid @RequestBody(required = false) UserLoginInput userLoginInput,
+          @Valid @RequestBody(required = false) UserLoginInput loginInput,
           BindingResult bindingResult) {
-    return loginService.login(userLoginInput, bindingResult);
+    return loginService.login(loginInput, bindingResult);
   }
 }
