@@ -27,7 +27,6 @@ dependencies {
 	compile('org.flywaydb:flyway-core:4.2.0')
 	runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('org.postgresql:postgresql')
-	runtime('com.h2database:h2')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
