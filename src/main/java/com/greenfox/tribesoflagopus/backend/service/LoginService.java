@@ -71,7 +71,8 @@ public class LoginService {
     UserDto dtoUserToReturn = UserDto.builder()
             .id(userToReturn.getId())
             .username(userToReturn.getUsername())
-            .kingdomId(userToReturn.getKingdom();
+            .kingdomId(userToReturn.getKingdom().getId())
+            .build();
     return ResponseEntity.ok().body(dtoUserToReturn);
   }
 }
