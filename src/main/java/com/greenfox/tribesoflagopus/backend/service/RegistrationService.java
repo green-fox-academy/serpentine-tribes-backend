@@ -4,20 +4,24 @@ import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
+import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
+import com.greenfox.tribesoflagopus.backend.model.entity.User;
+import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-/**
- * Created by K on 2017.06.21..
- */
 @Service
 public class RegistrationService {
+
+  @Autowired
+  UserRepository userRepository;
 
   public ResponseEntity<JsonDto> register(@Valid UserRegisterInput registerInput,
       BindingResult bindingResult) {
@@ -47,6 +51,7 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingAllFields);
     }
 
+    /*
     if ("occupiedUserName".equals(registerInput.getUsername())) {
       StatusResponse occupiedUserNameStatus = StatusResponse.builder()
           .status("error")
@@ -54,15 +59,46 @@ public class RegistrationService {
           .build();
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
+    */
+
+    if(userRepository.existsByUsername(registerInput.getUsername())) {
+      StatusResponse occupiedUserNameStatus = StatusResponse.builder()
+          .status("error")
+          .message("Username already taken, please choose an other one.")
+          .build();
+      return ResponseEntity.status(409).body(occupiedUserNameStatus);
+    }
+
 
     registerInput = setKingdomName(registerInput);
 
-    UserDto mockUser = UserDto.builder()
-        .id(1)
-        .username("Bond")
-        .kingdomId(1)
+    //TODO: create user and kingdom
+    //TODO: set proper default values
+
+    User user = User.builder()
+        .username(registerInput.getUsername())
+        .password(registerInput.getPassword())
+        .points(0)
         .build();
-    return ResponseEntity.ok().body(mockUser);
+
+    Kingdom kingdom = Kingdom.builder()
+        .name(registerInput.getKingdom())
+        .build();
+
+    user.setKingdom(kingdom);
+    kingdom.setUser(user);
+
+    //TODO: save this in db -see autowired above
+    userRepository.save(user);
+
+
+    //TODO: to use userdto is OK?
+    UserDto userDto = UserDto.builder()
+        .id(user.getId())
+        .username(user.getUsername())
+        .kingdomId(user.getKingdom().getId())
+        .build();
+    return ResponseEntity.ok().body(userDto);
   }
 
   private UserRegisterInput setKingdomName(UserRegisterInput registerInput) {
