@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
+import com.greenfox.tribesoflagopus.backend.model.entity.User;
+import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +29,9 @@ public class RegistrationControllerTest {
 
   @Autowired
   private WebApplicationContext webApplicationContext;
+
+  @Autowired
+  UserRepository testUserRepository;
 
   @Before
   public void setup() throws Exception {
@@ -102,6 +107,13 @@ public class RegistrationControllerTest {
 
   @Test
   public void registerErrorAlreadyExistingUser() throws Exception {
+    User testUser = User.builder()
+        .username("TestUser")
+        .password("testPasswordOfTestUser")
+        .points(0)
+        .build();
+    testRegistrationService.
+
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
