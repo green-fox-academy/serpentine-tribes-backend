@@ -51,10 +51,12 @@ public class Kingdom {
   @Builder
   public Kingdom(String name) {
     this.name = name;
+    createTownHall();
+  }
+
+  private void createTownHall() {
     Building townhall = Building.builder()
         .buildingType("townhall")
-        .level(1)
-        .hp(0)
         .build();
     buildings.add(townhall);
     townhall.setKingdom(this);

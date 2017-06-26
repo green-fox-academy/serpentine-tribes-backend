@@ -31,9 +31,9 @@ public class Building {
   private Kingdom kingdom;
 
   @Builder
-  public Building(String buildingType, int level, int hp) {
+  public Building(String buildingType) {
     this.buildingType = buildingType;
-    this.level = level;
-    this.hp = hp;
+    this.level = 1;
+    this.hp = 0;
   }
 }

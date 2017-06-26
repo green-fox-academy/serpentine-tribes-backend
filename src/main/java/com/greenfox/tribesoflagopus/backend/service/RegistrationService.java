@@ -28,6 +28,10 @@ public class RegistrationService {
   @Autowired
   LocationRepository locationRepository;
 
+  private String username;
+  private String password;
+  private String kingdomName;
+
   public ResponseEntity<JsonDto> register(@Valid UserRegisterInput registerInput,
       BindingResult bindingResult) {
 
@@ -48,7 +52,7 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
-    //Todo: delete this part when we have solution in the controller
+    //Todo: delete this part when we have solution for "null requestbody" in the controller
     if (registerInput == null) {
       StatusResponse missingAllFields = StatusResponse.builder()
           .status("error")
@@ -57,7 +61,11 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingAllFields);
     }
 
-    if (userRepository.existsByUsername(registerInput.getUsername())) {
+    username = registerInput.getUsername();
+    password = registerInput.getPassword();
+    setKingdomName(registerInput);
+
+    if (occupiedUserName()) {
       StatusResponse occupiedUserNameStatus = StatusResponse.builder()
           .status("error")
           .message("Username already taken, please choose an other one.")
@@ -65,27 +73,31 @@ public class RegistrationService {
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
-    registerInput = setKingdomName(registerInput);
-    User user = createUserWithKingdom(registerInput);
+    User user = createUserWithKingdom();
     return createUserDto(user);
   }
 
-  private UserRegisterInput setKingdomName(UserRegisterInput registerInput) {
+  private void setKingdomName(UserRegisterInput registerInput) {
     if (registerInput.getKingdom() == null || registerInput.getKingdom().equals("")) {
-      registerInput.setKingdom(String.format("%s's kingdom", registerInput.getUsername()));
+      kingdomName = String.format("%s's kingdom", username);
+    } else {
+      kingdomName = registerInput.getKingdom();
     }
-    return registerInput;
   }
 
-  private User createUserWithKingdom(UserRegisterInput registerInput) {
-    User user =  User.builder()
-        .username(registerInput.getUsername())
-        .password(registerInput.getPassword())
+  private boolean occupiedUserName() {
+    return userRepository.existsByUsername(username);
+  }
+
+  private User createUserWithKingdom() {
+    User user = User.builder()
+        .username(username)
+        .password(password)
         .points(0)
         .build();
 
     Kingdom kingdom = Kingdom.builder()
-        .name(registerInput.getKingdom())
+        .name(kingdomName)
         .build();
 
     Location location = generateRandomLocation();
