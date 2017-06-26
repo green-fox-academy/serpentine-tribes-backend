@@ -1,7 +1,7 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
-import com.greenfox.tribesoflagopus.backend.model.dto.PlayerDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
 import java.util.ArrayList;
@@ -22,8 +22,6 @@ public class RegistrationService {
   public ResponseEntity<JsonDto> register(@Valid UserRegisterInput registerInput,
       BindingResult bindingResult) {
 
-    registerInput = setKingdomName(registerInput);
-
     if (bindingResult.hasErrors()) {
       List<FieldError> missingFields = bindingResult.getFieldErrors();
       ArrayList<String> missingFieldNames = new ArrayList<>();
@@ -41,7 +39,15 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
-    if (registerInput.getUsername().equals("occupiedUserName")) {
+    if (registerInput == null) {
+      StatusResponse missingAllFields = StatusResponse.builder()
+          .status("error")
+          .message("Missing parameter(s): password, username!")
+          .build();
+      return ResponseEntity.badRequest().body(missingAllFields);
+    }
+
+    if ("occupiedUserName".equals(registerInput.getUsername())) {
       StatusResponse occupiedUserNameStatus = StatusResponse.builder()
           .status("error")
           .message("Username already taken, please choose an other one.")
@@ -49,12 +55,14 @@ public class RegistrationService {
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
-    PlayerDto mockPlayer = PlayerDto.builder()
+    registerInput = setKingdomName(registerInput);
+
+    UserDto mockUser = UserDto.builder()
         .id(1)
         .username("Bond")
         .kingdomId(1)
         .build();
-    return ResponseEntity.ok().body(mockPlayer);
+    return ResponseEntity.ok().body(mockUser);
   }
 
   private UserRegisterInput setKingdomName(UserRegisterInput registerInput) {

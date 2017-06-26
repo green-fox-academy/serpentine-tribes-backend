@@ -1,8 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,38 +16,38 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class Kingdom {
 
+  @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
+  private final List<Troop> troops = new ArrayList<>();
+
+  @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
+  private final List<Building> buildings = new ArrayList<>();
+
+  @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
+  private final List<Resource> resources = new ArrayList<>();
+
+  @Setter
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
 
-  @Builder
-  public Kingdom(String name, Player player,
-          List<Troop> troops,
-          List<Building> buildings,
-          Location location,
-          List<Resource> resources) {
-    this.name = name;
-    this.player = player;
-    this.troops = troops;
-    this.buildings = buildings;
-    this.location = location;
-    this.resources = resources;
-  }
-
+  @Setter
   private String name;
 
+  @Setter
   @OneToOne
-  @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-  @JsonIdentityReference(alwaysAsId = true)
-  private Player player;
+  private User user;
 
-  @Setter(AccessLevel.NONE)
-  @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Troop> troops;
+  @Setter
+  @OneToOne(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Location location;
+
+  @Builder
+  public Kingdom(String name) {
+    this.name = name;
+  }
 
   public void addTroop(Troop troop) {
     this.troops.add(troop);
@@ -62,9 +59,6 @@ public class Kingdom {
     this.troops.remove(troop);
   }
 
-  @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL)
-  private List<Building> buildings;
-
   public void addBuilding(Building building) {
     this.buildings.add(building);
     building.setKingdom(this);
@@ -75,19 +69,12 @@ public class Kingdom {
     this.buildings.remove(building);
   }
 
-  @OneToOne(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Location location;
-
-  @Setter(AccessLevel.NONE)
-  @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Resource> resources;
-
-  public void addResources(Resource resource) {
+  public void addResource(Resource resource) {
     resources.add(resource);
     resource.setKingdom(this);
   }
 
-  public void removeResources(Resource resource) {
+  public void removeResource(Resource resource) {
     resource.setKingdom(null);
     this.resources.remove(resource);
   }

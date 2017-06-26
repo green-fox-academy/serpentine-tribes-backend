@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class PlayerDto implements JsonDto {
+public class UserDto implements JsonDto {
 
   private long id;
   private String username;

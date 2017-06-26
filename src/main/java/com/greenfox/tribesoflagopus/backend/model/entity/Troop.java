@@ -1,6 +1,5 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -22,19 +21,17 @@ public class Troop {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
 
-  @JsonIgnore
   @ManyToOne(fetch = FetchType.EAGER)
   private Kingdom kingdom;
 
-  private int level;
+  private int level = 1;
   private int hp;
   private int attack;
   private int defence;
 
   @Builder
-  public Troop(Kingdom kingdom, int level, int hp, int attack, int defence) {
-    this.kingdom = kingdom;
-    this.level = 1;
+  public Troop(int level, int hp, int attack, int defence) {
+    this.level = level;
     this.hp = hp;
     this.attack = attack;
     this.defence = defence;
