@@ -16,7 +16,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class Kingdom {
 
@@ -29,15 +28,19 @@ public class Kingdom {
   @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private final List<Resource> resources = new ArrayList<>();
 
+  @Setter
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
 
+  @Setter
   private String name;
 
+  @Setter
   @OneToOne
   private User user;
 
+  @Setter
   @OneToOne(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private Location location;
 
