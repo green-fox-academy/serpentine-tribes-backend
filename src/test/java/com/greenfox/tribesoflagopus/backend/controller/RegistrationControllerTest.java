@@ -43,15 +43,16 @@ public class RegistrationControllerTest {
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"Bond\","
-                    + "\"password\" : \"password123\","
-                    + "\"kingdom\" : \"MI6\""
+                    + "\"username\" : \"TestUser\","
+                    + "\"password\" : \"testUserPassword\","
+                    + "\"kingdom\" : \"TestUserKingdom\""
                     + "}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.username").exists())
             .andExpect(jsonPath("$.kingdom_id").exists())
             .andDo(print());
+    testUserRepository.deleteByUsername("TestUser");
   }
 
   @Test
@@ -59,14 +60,15 @@ public class RegistrationControllerTest {
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"Bond\","
-                    + "\"password\" : \"password123\""
+                    + "\"username\" : \"TestUserWithoutKingdom\","
+                    + "\"password\" : \"TestUserWithoutKingdomPassword\""
                     + "}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.username").exists())
             .andExpect(jsonPath("$.kingdom_id").exists())
             .andDo(print());
+    testUserRepository.deleteByUsername("TestUserWithoutKingdom");
   }
 
   @Test
@@ -108,23 +110,26 @@ public class RegistrationControllerTest {
   @Test
   public void registerErrorAlreadyExistingUser() throws Exception {
     User testUser = User.builder()
-        .username("TestUser")
+        .username("OccupiedTestUser")
         .password("testPasswordOfTestUser")
         .points(0)
         .build();
-    testRegistrationService.
+
+    testUserRepository.save(testUser);
 
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"occupiedUserName\","
-                    + "\"password\" : \"password123\""
+                    + "\"username\" : \"OccupiedTestUser\","
+                    + "\"password\" : \"testPasswordOfTestUser\""
                     + "}"))
             .andExpect(status().is(409))
             .andExpect(jsonPath("$.status", is("error")))
             .andExpect(jsonPath("$.message",
                     is("Username already taken, please choose an other one.")))
             .andDo(print());
+
+    testUserRepository.delete(testUser);
   }
 }
 

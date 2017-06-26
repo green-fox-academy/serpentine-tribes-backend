@@ -12,7 +12,6 @@ import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +48,7 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
+
     if (registerInput == null) {
       StatusResponse missingAllFields = StatusResponse.builder()
           .status("error")
@@ -57,29 +57,20 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingAllFields);
     }
 
-    /*
-    if ("occupiedUserName".equals(registerInput.getUsername())) {
+
+
+    if (userRepository.existsByUsername(registerInput.getUsername())) {
       StatusResponse occupiedUserNameStatus = StatusResponse.builder()
           .status("error")
           .message("Username already taken, please choose an other one.")
           .build();
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
-    */
 
-
-    if(userRepository.existsByUsername(registerInput.getUsername())) {
-      StatusResponse occupiedUserNameStatus = StatusResponse.builder()
-          .status("error")
-          .message("Username already taken, please choose an other one.")
-          .build();
-      return ResponseEntity.status(409).body(occupiedUserNameStatus);
-    }
 
     registerInput = setKingdomName(registerInput);
 
-    //TODO: create user and kingdom
-    //TODO: set proper default values
+
 
     User user = User.builder()
         .username(registerInput.getUsername())
@@ -92,17 +83,15 @@ public class RegistrationService {
         .build();
 
     Location location = generateRandomLocation();
+
     kingdom.setLocation(location);
     location.setKingdom(kingdom);
 
     user.setKingdom(kingdom);
     kingdom.setUser(user);
 
-    //TODO: save this in db -see autowired above
     userRepository.save(user);
 
-
-    //TODO: to use userdto is OK?
     UserDto userDto = UserDto.builder()
         .id(user.getId())
         .username(user.getUsername())
@@ -126,7 +115,7 @@ public class RegistrationService {
     do {
       locationX = generateRandomNumber(1, 100);
       locationY = generateRandomNumber(1, 100);
-    } while(locationRepository.existsByXAndY(locationX, locationY));
+    } while (locationRepository.existsByXAndY(locationX, locationY));
     location.setX(locationX);
     location.setY(locationY);
     return location;
