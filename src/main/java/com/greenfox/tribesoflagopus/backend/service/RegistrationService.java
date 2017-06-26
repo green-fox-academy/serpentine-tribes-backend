@@ -48,7 +48,7 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
-
+    //Todo: delete this part when we have solution in the controller
     if (registerInput == null) {
       StatusResponse missingAllFields = StatusResponse.builder()
           .status("error")
@@ -56,8 +56,6 @@ public class RegistrationService {
           .build();
       return ResponseEntity.badRequest().body(missingAllFields);
     }
-
-
 
     if (userRepository.existsByUsername(registerInput.getUsername())) {
       StatusResponse occupiedUserNameStatus = StatusResponse.builder()
@@ -67,12 +65,20 @@ public class RegistrationService {
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
-
     registerInput = setKingdomName(registerInput);
+    User user = createUserWithKingdom(registerInput);
+    return createUserDto(user);
+  }
 
+  private UserRegisterInput setKingdomName(UserRegisterInput registerInput) {
+    if (registerInput.getKingdom() == null || registerInput.getKingdom().equals("")) {
+      registerInput.setKingdom(String.format("%s's kingdom", registerInput.getUsername()));
+    }
+    return registerInput;
+  }
 
-
-    User user = User.builder()
+  private User createUserWithKingdom(UserRegisterInput registerInput) {
+    User user =  User.builder()
         .username(registerInput.getUsername())
         .password(registerInput.getPassword())
         .points(0)
@@ -92,39 +98,31 @@ public class RegistrationService {
 
     userRepository.save(user);
 
+    return user;
+  }
+
+  private Location generateRandomLocation() {
+    Location location = new Location();
+    do {
+      location.setX(generateRandomNumber(1, 100));
+      location.setY(generateRandomNumber(1, 100));
+    } while (locationRepository.existsByXAndY(location.getX(), location.getY()));
+    return location;
+  }
+
+  private Integer generateRandomNumber(int min, int max) {
+    int random = min + (int) (Math.random() * (max + 1));
+    Integer randomNumber = Integer.valueOf(random);
+    return randomNumber;
+  }
+
+  private ResponseEntity<JsonDto> createUserDto(User user) {
     UserDto userDto = UserDto.builder()
         .id(user.getId())
         .username(user.getUsername())
         .kingdomId(user.getKingdom().getId())
         .build();
     return ResponseEntity.ok().body(userDto);
-  }
-
-  private UserRegisterInput setKingdomName(UserRegisterInput registerInput) {
-    if (registerInput.getKingdom() == null || registerInput.getKingdom().equals("")) {
-      registerInput.setKingdom(String.format("%s's kingdom", registerInput.getUsername()));
-    }
-    return registerInput;
-  }
-
-  //Todo: is there a simpler way?
-  private Location generateRandomLocation() {
-    Location location = new Location();
-    Integer locationX;
-    Integer locationY;
-    do {
-      locationX = generateRandomNumber(1, 100);
-      locationY = generateRandomNumber(1, 100);
-    } while (locationRepository.existsByXAndY(locationX, locationY));
-    location.setX(locationX);
-    location.setY(locationY);
-    return location;
-  }
-
-  private Integer generateRandomNumber(Integer min, Integer max) {
-    int random = min + (int) (Math.random() * (max + 1));
-    Integer randomNumber = Integer.valueOf(random);
-    return randomNumber;
   }
 
 
