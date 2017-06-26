@@ -1,5 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.controller;
 
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 import static org.hamcrest.Matchers.*;
@@ -8,6 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
 import com.greenfox.tribesoflagopus.backend.model.entity.User;
+import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
+import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
+import com.greenfox.tribesoflagopus.backend.repository.LocationRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +37,15 @@ public class RegistrationControllerTest {
   @Autowired
   UserRepository testUserRepository;
 
+  @Autowired
+  KingdomRepository testKingdomRepository;
+
+  @Autowired
+  BuildingRepository testBuildingRepository;
+
+  @Autowired
+  LocationRepository testLocationRepository;
+
   @Before
   public void setup() throws Exception {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -52,6 +65,13 @@ public class RegistrationControllerTest {
             .andExpect(jsonPath("$.username").exists())
             .andExpect(jsonPath("$.kingdom_id").exists())
             .andDo(print());
+
+    long kingdomId = testUserRepository.findByUsername("TestUser").getKingdom().getId();
+    assertTrue(testUserRepository.existsByUsername("TestUser"));
+    assertTrue(testKingdomRepository.existsById(kingdomId));
+    assertTrue(testBuildingRepository.existsByBuildingTypeAndKingdomId("townhall", kingdomId));
+    assertTrue(testLocationRepository.existsByKingdomId(kingdomId));
+
     testUserRepository.deleteByUsername("TestUser");
   }
 
@@ -68,6 +88,13 @@ public class RegistrationControllerTest {
             .andExpect(jsonPath("$.username").exists())
             .andExpect(jsonPath("$.kingdom_id").exists())
             .andDo(print());
+
+    long kingdomId = testUserRepository.findByUsername("TestUserWithoutKingdom").getKingdom().getId();
+    assertTrue(testUserRepository.existsByUsername("TestUserWithoutKingdom"));
+    assertTrue(testKingdomRepository.existsById(kingdomId));
+    assertTrue(testBuildingRepository.existsByBuildingTypeAndKingdomId("townhall", kingdomId));
+    assertTrue(testLocationRepository.existsByKingdomId(kingdomId));
+
     testUserRepository.deleteByUsername("TestUserWithoutKingdom");
   }
 
