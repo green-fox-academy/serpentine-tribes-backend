@@ -40,7 +40,6 @@ public class Kingdom {
   @OneToOne
   private User user;
 
-  @Setter
   @OneToOne(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private Location location;
 

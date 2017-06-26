@@ -19,7 +19,7 @@ public class KingdomController {
   }
 
   @GetMapping("{userId}/kingdom")
-  public ResponseEntity<JsonDto> showKingdom(@PathVariable(required = false) Long userId) {
+  public ResponseEntity<JsonDto> showKingdom(@PathVariable Long userId) {
     return kingdomService.showKingdom(userId);
   }
 }

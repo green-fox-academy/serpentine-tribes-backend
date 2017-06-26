@@ -27,14 +27,6 @@ public class KingdomService {
 
   public ResponseEntity<JsonDto> showKingdom(Long userId) {
 
-    if (userId == null) {
-      StatusResponse userNotFoundStatus = StatusResponse.builder()
-          .status("error")
-          .message("user_id not found")
-          .build();
-      return ResponseEntity.status(404).body(userNotFoundStatus);
-    }
-
     if (!userRepository.exists(userId)) {
       StatusResponse userNotFoundStatus = StatusResponse.builder()
           .status("error")
