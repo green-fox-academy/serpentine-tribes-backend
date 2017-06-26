@@ -2,6 +2,7 @@ package com.greenfox.tribesoflagopus.backend.service;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
@@ -29,7 +30,7 @@ public class KingdomService {
     if (userId == null) {
       StatusResponse userNotFoundStatus = StatusResponse.builder()
           .status("error")
-          .message("UserId not found")
+          .message("user_id not found")
           .build();
       return ResponseEntity.status(404).body(userNotFoundStatus);
     }
@@ -37,20 +38,28 @@ public class KingdomService {
     if (!userRepository.exists(userId)) {
       StatusResponse userNotFoundStatus = StatusResponse.builder()
           .status("error")
-          .message("UserId not found")
+          .message("user_id not found")
           .build();
       return ResponseEntity.status(404).body(userNotFoundStatus);
     }
 
     Kingdom foundKingdom = kingdomRepository.findOneByUserId(userId);
+
+    LocationDto locationOfKingdom = LocationDto.builder()
+        .x(foundKingdom.getLocation().getX())
+        .y(foundKingdom.getLocation().getY())
+        .build();
+
     KingdomDto kingdomResponse = KingdomDto.builder()
         .id(foundKingdom.getId())
         .name(foundKingdom.getName())
         .userId(foundKingdom.getUser().getId())
         .buildings(foundKingdom.getBuildings())
-
+        .resources(foundKingdom.getResources())
+        .troops(foundKingdom.getTroops())
+        .location(locationOfKingdom)
         .build();
+
     return ResponseEntity.ok().body(kingdomResponse);
   }
-
 }

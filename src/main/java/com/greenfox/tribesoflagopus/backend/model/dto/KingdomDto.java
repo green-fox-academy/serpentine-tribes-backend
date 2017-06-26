@@ -32,7 +32,7 @@ public class KingdomDto implements JsonDto {
 
   private Long userId;
 
-  private Location location;
+  private LocationDto location;
 
   public void addBuilding(Building building) {
     this.buildings.add(building);
