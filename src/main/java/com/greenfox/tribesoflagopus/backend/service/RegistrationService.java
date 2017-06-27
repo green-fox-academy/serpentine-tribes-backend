@@ -4,20 +4,33 @@ import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
+import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
+import com.greenfox.tribesoflagopus.backend.model.entity.Location;
+import com.greenfox.tribesoflagopus.backend.model.entity.User;
+import com.greenfox.tribesoflagopus.backend.repository.LocationRepository;
+import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-/**
- * Created by K on 2017.06.21..
- */
 @Service
 public class RegistrationService {
+
+  @Autowired
+  UserRepository userRepository;
+
+  @Autowired
+  LocationRepository locationRepository;
+
+  private String username;
+  private String password;
+  private String kingdomName;
 
   public ResponseEntity<JsonDto> register(@Valid UserRegisterInput registerInput,
       BindingResult bindingResult) {
@@ -39,6 +52,7 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
+    //Todo: delete this part when we have solution for "null requestbody" in the controller
     if (registerInput == null) {
       StatusResponse missingAllFields = StatusResponse.builder()
           .status("error")
@@ -47,7 +61,11 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingAllFields);
     }
 
-    if ("occupiedUserName".equals(registerInput.getUsername())) {
+    username = registerInput.getUsername();
+    password = registerInput.getPassword();
+    setKingdomName(registerInput);
+
+    if (occupiedUserName()) {
       StatusResponse occupiedUserNameStatus = StatusResponse.builder()
           .status("error")
           .message("Username already taken, please choose an other one.")
@@ -55,21 +73,68 @@ public class RegistrationService {
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
-    registerInput = setKingdomName(registerInput);
-
-    UserDto mockUser = UserDto.builder()
-        .id(1)
-        .username("Bond")
-        .kingdomId(1)
-        .build();
-    return ResponseEntity.ok().body(mockUser);
+    User user = createUserWithKingdom();
+    return createUserDto(user);
   }
 
-  private UserRegisterInput setKingdomName(UserRegisterInput registerInput) {
+  private void setKingdomName(UserRegisterInput registerInput) {
     if (registerInput.getKingdom() == null || registerInput.getKingdom().equals("")) {
-      registerInput.setKingdom(String.format("%s's kingdom", registerInput.getUsername()));
+      kingdomName = String.format("%s's kingdom", username);
+    } else {
+      kingdomName = registerInput.getKingdom();
     }
-    return registerInput;
+  }
+
+  private boolean occupiedUserName() {
+    return userRepository.existsByUsername(username);
+  }
+
+  private User createUserWithKingdom() {
+    User user = User.builder()
+        .username(username)
+        .password(password)
+        .points(0)
+        .build();
+
+    Kingdom kingdom = Kingdom.builder()
+        .name(kingdomName)
+        .build();
+
+    Location location = generateRandomLocation();
+
+    kingdom.setLocation(location);
+    location.setKingdom(kingdom);
+
+    user.setKingdom(kingdom);
+    kingdom.setUser(user);
+
+    userRepository.save(user);
+
+    return user;
+  }
+
+  private Location generateRandomLocation() {
+    Location location = new Location();
+    do {
+      location.setX(generateRandomNumber(1, 100));
+      location.setY(generateRandomNumber(1, 100));
+    } while (locationRepository.existsByXAndY(location.getX(), location.getY()));
+    return location;
+  }
+
+  private Integer generateRandomNumber(int min, int max) {
+    int random = min + (int) (Math.random() * (max + 1));
+    Integer randomNumber = Integer.valueOf(random);
+    return randomNumber;
+  }
+
+  private ResponseEntity<JsonDto> createUserDto(User user) {
+    UserDto userDto = UserDto.builder()
+        .id(user.getId())
+        .username(user.getUsername())
+        .kingdomId(user.getKingdom().getId())
+        .build();
+    return ResponseEntity.ok().body(userDto);
   }
 
 

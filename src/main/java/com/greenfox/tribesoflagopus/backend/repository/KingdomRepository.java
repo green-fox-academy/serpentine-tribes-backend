@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface KingdomRepository extends CrudRepository<Kingdom, Long> {
 
+  boolean existsById(long id);
 }
