@@ -1,10 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.greenfox.tribesoflagopus.backend.model.entity.Building;
-import com.greenfox.tribesoflagopus.backend.model.entity.Location;
-import com.greenfox.tribesoflagopus.backend.model.entity.Resource;
-import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,13 +14,13 @@ import lombok.Singular;
 public class KingdomDto implements JsonDto {
 
   @Singular
-  private final List<Troop> troops;
+  private final List<TroopDto> troops;
 
   @Singular
-  private final List<Building> buildings;
+  private final List<BuildingDto> buildings;
 
   @Singular
-  private final List<Resource> resources;
+  private final List<ResourceDto> resources;
 
   private long id;
 
@@ -34,15 +30,28 @@ public class KingdomDto implements JsonDto {
 
   private LocationDto location;
 
-  public void addBuilding(Building building) {
-    this.buildings.add(building);
+  public void addBuildingDto(BuildingDto buildingDto) {
+    this.buildings.add(buildingDto);
   }
 
-  public void addResource(Resource resource) {
-    this.resources.add(resource);
+  public void addBuildingDtoList(List<BuildingDto> listOfBuildingDtos) {
+    this.buildings.addAll(listOfBuildingDtos);
   }
 
-  public void addTroop(Troop troop) {
-    this.troops.add(troop);
+  public void addResourceDto(ResourceDto resourceDto) {
+    this.resources.add(resourceDto);
+  }
+
+  public void addResourceDtoList(List<ResourceDto> listOfResourceDtos) {
+    this.resources.addAll(listOfResourceDtos);
+  }
+
+  public void addTroopDto(TroopDto troopDto) {
+    this.troops.add(troopDto);
+  }
+
+  public void addTroopDtoList(List<TroopDto> listOfTroopDtos) {
+    this.troops.addAll(listOfTroopDtos);
   }
 }
+

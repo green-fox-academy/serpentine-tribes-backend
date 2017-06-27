@@ -2,7 +2,6 @@ package com.greenfox.tribesoflagopus.backend.service;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
-import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
@@ -14,13 +13,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class KingdomService {
 
+  private final DtoService dtoService;
   private final KingdomRepository kingdomRepository;
   private final UserRepository userRepository;
 
   @Autowired
   public KingdomService(
+      DtoService dtoService,
       KingdomRepository kingdomRepository,
       UserRepository userRepository) {
+    this.dtoService = dtoService;
     this.kingdomRepository = kingdomRepository;
     this.userRepository = userRepository;
   }
@@ -36,22 +38,9 @@ public class KingdomService {
     }
 
     Kingdom foundKingdom = kingdomRepository.findOneByUserId(userId);
-
-    LocationDto locationOfKingdom = LocationDto.builder()
-        .x(foundKingdom.getLocation().getX())
-        .y(foundKingdom.getLocation().getY())
-        .build();
-
-    KingdomDto kingdomResponse = KingdomDto.builder()
-        .id(foundKingdom.getId())
-        .name(foundKingdom.getName())
-        .userId(foundKingdom.getUser().getId())
-        .buildings(foundKingdom.getBuildings())
-        .resources(foundKingdom.getResources())
-        .troops(foundKingdom.getTroops())
-        .location(locationOfKingdom)
-        .build();
+    KingdomDto kingdomResponse = dtoService.convertFromKingdom(foundKingdom);
 
     return ResponseEntity.ok().body(kingdomResponse);
   }
+
 }
