@@ -54,13 +54,6 @@ public class BackendApplication implements CommandLineRunner {
 
       kingdom.setLocation(location);
 
-      Building building = Building.builder()
-          .buildingType("townhall")
-          .hp(5)
-          .build();
-
-      kingdom.addBuilding(building);
-
       userRepository.save(user);
     }
   }

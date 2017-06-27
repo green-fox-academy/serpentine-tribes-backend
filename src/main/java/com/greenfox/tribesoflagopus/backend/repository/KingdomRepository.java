@@ -11,4 +11,6 @@ public interface KingdomRepository extends CrudRepository<Kingdom, Long> {
 
   Kingdom findOneByUserId(Long userId);
 
+  boolean existsById(long id);
+
 }

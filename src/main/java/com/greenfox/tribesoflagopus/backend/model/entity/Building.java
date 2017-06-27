@@ -22,17 +22,17 @@ public class Building {
   private long id;
 
   private String buildingType;
-  private int level = 1;
+  private int level;
   private int hp;
 
   @ManyToOne(fetch = FetchType.EAGER)
   private Kingdom kingdom;
 
   @Builder
-  public Building(String buildingType, int level, int hp) {
+  public Building(String buildingType) {
     this.buildingType = buildingType;
-    this.level = level;
-    this.hp = hp;
+    this.level = 1;
+    this.hp = 0;
   }
 
   public static class BuildingBuilder {

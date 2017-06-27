@@ -55,6 +55,15 @@ public class Kingdom {
   @Builder
   public Kingdom(String name) {
     this.name = name;
+    createTownHall();
+  }
+
+  private void createTownHall() {
+    Building townhall = Building.builder()
+        .buildingType("townhall")
+        .build();
+    buildings.add(townhall);
+    townhall.setKingdom(this);
   }
 
   public void addTroop(Troop troop) {
