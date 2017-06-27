@@ -10,12 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 public class LoginService {
@@ -26,6 +22,9 @@ public class LoginService {
   @Autowired
   ErrorService errorService;
 
+  private String inputUserName;
+  private String inputPassword;
+
   public ResponseEntity<JsonDto> login(@Valid UserLoginInput loginInput,
                                        BindingResult bindingResult){
 
@@ -34,22 +33,16 @@ public class LoginService {
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
-    if (!userRepository.existsByUsername(loginInput.getUsername())) {
-      StatusResponse incorrectUser = StatusResponse.builder()
-              .status("error")
-              .message("No such user: " + loginInput.getUsername())
-              .build();
+    inputUserName = loginInput.getUsername();
+    inputPassword = loginInput.getPassword();
+
+    if (!inputUserNameExists()) {
+      StatusResponse incorrectUser = errorService.getIncorrectUserStatus(loginInput.getUsername());
       return ResponseEntity.status(401).body(incorrectUser);
     }
 
-    if (!loginInput.getPassword()
-            .equals(userRepository
-                    .findByUsername(loginInput.getUsername())
-                    .getPassword())) {
-      StatusResponse incorrectPassword = StatusResponse.builder()
-              .status("error")
-              .message("Wrong password")
-              .build();
+    if (!inputPasswordIsCorrect()) {
+      StatusResponse incorrectPassword = errorService.getIncorrectPasswordStatus();
       return ResponseEntity.status(401).body(incorrectPassword);
     }
 
@@ -60,5 +53,13 @@ public class LoginService {
             .kingdomId(userToReturn.getKingdom().getId())
             .build();
     return ResponseEntity.ok().body(dtoUserToReturn);
+  }
+
+  public boolean inputUserNameExists() {
+    return userRepository.existsByUsername(inputUserName);
+  }
+
+  public boolean inputPasswordIsCorrect() {
+    return inputPassword.equals(userRepository.findByUsername(inputUserName).getPassword());
   }
 }

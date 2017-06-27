@@ -12,20 +12,23 @@ import org.springframework.validation.FieldError;
 public class ErrorService {
 
   public StatusResponse getMissingParameterStatus(BindingResult bindingResult) {
+    String statusMessage = createStatusMessageWithMissingFieldNames(bindingResult);
+    StatusResponse missingParameterStatus = StatusResponse.builder()
+        .status("error")
+        .message("Missing parameter(s): " + statusMessage + "!")
+        .build();
+    return missingParameterStatus;
+  }
+
+  public String createStatusMessageWithMissingFieldNames(BindingResult bindingResult) {
     List<FieldError> missingFields = bindingResult.getFieldErrors();
     ArrayList<String> missingFieldNames = new ArrayList<>();
     for (FieldError fieldError : missingFields) {
       missingFieldNames.add(fieldError.getField());
     }
     Collections.sort(missingFieldNames);
-
     String statusMessage = String.join(", ", missingFieldNames);
-
-    StatusResponse missingParameterStatus = StatusResponse.builder()
-        .status("error")
-        .message("Missing parameter(s): " + statusMessage + "!")
-        .build();
-    return missingParameterStatus;
+    return statusMessage;
   }
 
   public StatusResponse getOccupiedUserNameStatus() {
@@ -34,6 +37,22 @@ public class ErrorService {
         .message("Username already taken, please choose an other one.")
         .build();
     return occupiedUserNameStatus;
+  }
+
+  public StatusResponse getIncorrectUserStatus(String incorrectUserName) {
+    StatusResponse incorrectUser = StatusResponse.builder()
+        .status("error")
+        .message("No such user: " + incorrectUserName)
+        .build();
+    return incorrectUser;
+  }
+
+  public StatusResponse getIncorrectPasswordStatus() {
+    StatusResponse incorrectPassword = StatusResponse.builder()
+        .status("error")
+        .message("Wrong password")
+        .build();
+    return incorrectPassword;
   }
 
 }

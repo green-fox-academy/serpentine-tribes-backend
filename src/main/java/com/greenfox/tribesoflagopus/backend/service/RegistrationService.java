@@ -27,9 +27,11 @@ public class RegistrationService {
   @Autowired
   ErrorService errorService;
 
-  private String username;
-  private String password;
+  private String inputUsername;
+  private String inputPassword;
   private String kingdomName;
+  private final Integer locationMinValue = 1;
+  private final Integer locationMaxValue = 100;
 
   public ResponseEntity<JsonDto> register(@Valid UserRegisterInput registerInput,
       BindingResult bindingResult) {
@@ -39,8 +41,8 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
-    username = registerInput.getUsername();
-    password = registerInput.getPassword();
+    inputUsername = registerInput.getUsername();
+    inputPassword = registerInput.getPassword();
     setKingdomName(registerInput);
 
     if (occupiedUserName()) {
@@ -54,20 +56,20 @@ public class RegistrationService {
 
   private void setKingdomName(UserRegisterInput registerInput) {
     if (registerInput.getKingdom() == null || registerInput.getKingdom().equals("")) {
-      kingdomName = String.format("%s's kingdom", username);
+      kingdomName = String.format("%s's kingdom", inputUsername);
     } else {
       kingdomName = registerInput.getKingdom();
     }
   }
 
   private boolean occupiedUserName() {
-    return userRepository.existsByUsername(username);
+    return userRepository.existsByUsername(inputUsername);
   }
 
   private User createUserWithKingdom() {
     User user = User.builder()
-        .username(username)
-        .password(password)
+        .username(inputUsername)
+        .password(inputPassword)
         .points(0)
         .build();
 
@@ -91,8 +93,8 @@ public class RegistrationService {
   private Location generateRandomLocation() {
     Location location = new Location();
     do {
-      location.setX(generateRandomNumber(1, 100));
-      location.setY(generateRandomNumber(1, 100));
+      location.setX(generateRandomNumber(locationMinValue, locationMaxValue));
+      location.setY(generateRandomNumber(locationMinValue, locationMaxValue));
     } while (locationRepository.existsByXAndY(location.getX(), location.getY()));
     return location;
   }
