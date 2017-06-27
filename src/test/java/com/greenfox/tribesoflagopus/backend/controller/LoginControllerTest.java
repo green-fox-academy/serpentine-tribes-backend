@@ -41,20 +41,6 @@ public class LoginControllerTest {
   public void setup() throws Exception {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
   }
-  @Test
-  public void loginWithAllCorrectParam() throws Exception {
-
-    mockMvc.perform(post("/login")
-            .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .content("{"
-                    + "\"username\" : \"Noemi\","
-                    + "\"password\" : \"passnoemi\""
-                    + "}"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.username").exists())
-            .andDo(print());
-  }
 
   @Test
   public void loginWithAllCorrectParam() throws Exception {
