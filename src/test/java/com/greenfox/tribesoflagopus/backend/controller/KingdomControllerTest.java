@@ -74,4 +74,27 @@ public class KingdomControllerTest {
         .andExpect(jsonPath("$.message", is("user_id not found")))
         .andDo(print());
   }
+
+  @Test
+  public void modifyKingdom_withValidRequestFields() throws Exception {
+    mockMvc.perform(put("/1/kingdom")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{"
+            + "\"name\" : \"MI5\","
+            + "\"location\" : "
+            + "{"
+            + "\"x\" : 1,"
+            + "\"y\" : 1"
+            + "}"
+            + "}"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").exists())
+        .andExpect(jsonPath("$.name").exists())
+        .andExpect(jsonPath("$.user_id").exists())
+        .andExpect(jsonPath("$.buildings").exists())
+        .andExpect(jsonPath("$.resources").exists())
+        .andExpect(jsonPath("$.troops").exists())
+        .andExpect(jsonPath("$").value(hasKey("location")))
+        .andDo(print());
+  }
 }
