@@ -9,15 +9,11 @@ import com.greenfox.tribesoflagopus.backend.model.entity.Location;
 import com.greenfox.tribesoflagopus.backend.model.entity.User;
 import com.greenfox.tribesoflagopus.backend.repository.LocationRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 
 @Service
 public class RegistrationService {
@@ -28,71 +24,54 @@ public class RegistrationService {
   @Autowired
   LocationRepository locationRepository;
 
-  private String username;
-  private String password;
+  @Autowired
+  ErrorService errorService;
+
+  private String inputUsername;
+  private String inputPassword;
   private String kingdomName;
+  private final Integer locationMinValue = 1;
+  private final Integer locationMaxValue = 100;
 
   public ResponseEntity<JsonDto> register(@Valid UserRegisterInput registerInput,
       BindingResult bindingResult) {
 
     if (bindingResult.hasErrors()) {
-      List<FieldError> missingFields = bindingResult.getFieldErrors();
-      ArrayList<String> missingFieldNames = new ArrayList<>();
-      for (FieldError fieldError : missingFields) {
-        missingFieldNames.add(fieldError.getField());
-      }
-      Collections.sort(missingFieldNames);
-
-      String statusMessage = String.join(", ", missingFieldNames);
-
-      StatusResponse missingParameterStatus = StatusResponse.builder()
-          .status("error")
-          .message("Missing parameter(s): " + statusMessage + "!")
-          .build();
+      StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
-    //Todo: delete this part when we have solution for "null requestbody" in the controller
-    if (registerInput == null) {
-      StatusResponse missingAllFields = StatusResponse.builder()
-          .status("error")
-          .message("Missing parameter(s): password, username!")
-          .build();
-      return ResponseEntity.badRequest().body(missingAllFields);
-    }
-
-    username = registerInput.getUsername();
-    password = registerInput.getPassword();
-    setKingdomName(registerInput);
+    inputUsername = registerInput.getUsername();
+    inputPassword = registerInput.getPassword();
+    updateKingdomName(registerInput);
 
     if (occupiedUserName()) {
-      StatusResponse occupiedUserNameStatus = StatusResponse.builder()
-          .status("error")
-          .message("Username already taken, please choose an other one.")
-          .build();
+      StatusResponse occupiedUserNameStatus = errorService.getOccupiedUserNameStatus();
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
     User user = createUserWithKingdom();
-    return createUserDto(user);
+    UserDto userDto = createUserDto();
+    return ResponseEntity.ok().body(userDto);
   }
 
-  private void setKingdomName(UserRegisterInput registerInput) {
-    if (registerInput.getKingdom() == null || registerInput.getKingdom().equals("")) {
-      kingdomName = String.format("%s's kingdom", username);
+  private void updateKingdomName(UserRegisterInput registerInput) {
+    String inputKingdomName = registerInput.getKingdom();
+    if (inputKingdomName == null || inputKingdomName.equals("")) {
+      kingdomName = String.format("%s's kingdom", inputUsername);
     } else {
-      kingdomName = registerInput.getKingdom();
+      kingdomName = inputKingdomName;
     }
   }
 
   private boolean occupiedUserName() {
-    return userRepository.existsByUsername(username);
+    return userRepository.existsByUsername(inputUsername);
   }
 
   private User createUserWithKingdom() {
     User user = User.builder()
-        .username(username)
-        .password(password)
+        .username(inputUsername)
+        .password(inputPassword)
         .points(0)
         .build();
 
@@ -109,15 +88,14 @@ public class RegistrationService {
     kingdom.setUser(user);
 
     userRepository.save(user);
-
     return user;
   }
 
   private Location generateRandomLocation() {
     Location location = new Location();
     do {
-      location.setX(generateRandomNumber(1, 100));
-      location.setY(generateRandomNumber(1, 100));
+      location.setX(generateRandomNumber(locationMinValue, locationMaxValue));
+      location.setY(generateRandomNumber(locationMinValue, locationMaxValue));
     } while (locationRepository.existsByXAndY(location.getX(), location.getY()));
     return location;
   }
@@ -128,14 +106,13 @@ public class RegistrationService {
     return randomNumber;
   }
 
-  private ResponseEntity<JsonDto> createUserDto(User user) {
+  private UserDto createUserDto() {
+    User user = userRepository.findByUsername(inputUsername);
     UserDto userDto = UserDto.builder()
         .id(user.getId())
         .username(user.getUsername())
         .kingdomId(user.getKingdom().getId())
         .build();
-    return ResponseEntity.ok().body(userDto);
+    return userDto;
   }
-
-
 }
