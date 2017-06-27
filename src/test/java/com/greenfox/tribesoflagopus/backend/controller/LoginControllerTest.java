@@ -41,6 +41,20 @@ public class LoginControllerTest {
   public void setup() throws Exception {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
   }
+  @Test
+  public void loginWithAllCorrectParam() throws Exception {
+
+    mockMvc.perform(post("/login")
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .content("{"
+                    + "\"username\" : \"Noemi\","
+                    + "\"password\" : \"passnoemi\""
+                    + "}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.username").exists())
+            .andDo(print());
+  }
 
   @Test
   public void loginWithMissingUsername() throws Exception {
@@ -78,6 +92,36 @@ public class LoginControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.status", is("error")))
             .andExpect(jsonPath("$.message", is("Missing input")))
+            .andDo(print());
+  }
+
+  @Test
+  public void loginWithInCorrectPassword() throws Exception {
+
+    mockMvc.perform(post("/login")
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .content("{"
+                    + "\"username\" : \"Noemi\","
+                    + "\"password\" : \"passno\""
+                    + "}"))
+            .andExpect(status().is(401))
+            .andExpect(jsonPath("$.status", is("error")))
+            .andExpect(jsonPath("$.message", is("Wrong password")))
+            .andDo(print());
+  }
+
+  @Test
+  public void loginWithIncorrectUser() throws Exception {
+
+    mockMvc.perform(post("/login")
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .content("{"
+                    + "\"username\" : \"No\","
+                    + "\"password\" : \"passnoemi\""
+                    + "}"))
+            .andExpect(status().is(401))
+            .andExpect(jsonPath("$.status", is("error")))
+            .andExpect(jsonPath("$.message", is("No such user: No")))
             .andDo(print());
   }
 }
