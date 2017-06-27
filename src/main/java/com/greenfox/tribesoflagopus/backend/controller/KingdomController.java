@@ -1,7 +1,7 @@
 package com.greenfox.tribesoflagopus.backend.controller;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
-import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.KingdomInputModifyDto;
 import com.greenfox.tribesoflagopus.backend.service.KingdomService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +34,8 @@ public class KingdomController {
           MediaType.APPLICATION_JSON_UTF8_VALUE})
   public ResponseEntity<JsonDto> modifyKingdom(
       @PathVariable Long userId,
-      @Valid @RequestBody KingdomDto kingdomDto) {
-    return kingdomService.modifyKingdom(userId, kingdomDto);
+      @Valid @RequestBody KingdomInputModifyDto kingdomInputModifyDto) {
+    return kingdomService.modifyKingdom(userId, kingdomInputModifyDto);
   }
 
 }
