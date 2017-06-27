@@ -9,15 +9,11 @@ import com.greenfox.tribesoflagopus.backend.model.entity.Location;
 import com.greenfox.tribesoflagopus.backend.model.entity.User;
 import com.greenfox.tribesoflagopus.backend.repository.LocationRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 
 @Service
 public class RegistrationService {
@@ -28,6 +24,9 @@ public class RegistrationService {
   @Autowired
   LocationRepository locationRepository;
 
+  @Autowired
+  ErrorService errorService;
+
   private String username;
   private String password;
   private String kingdomName;
@@ -36,19 +35,7 @@ public class RegistrationService {
       BindingResult bindingResult) {
 
     if (bindingResult.hasErrors()) {
-      List<FieldError> missingFields = bindingResult.getFieldErrors();
-      ArrayList<String> missingFieldNames = new ArrayList<>();
-      for (FieldError fieldError : missingFields) {
-        missingFieldNames.add(fieldError.getField());
-      }
-      Collections.sort(missingFieldNames);
-
-      String statusMessage = String.join(", ", missingFieldNames);
-
-      StatusResponse missingParameterStatus = StatusResponse.builder()
-          .status("error")
-          .message("Missing parameter(s): " + statusMessage + "!")
-          .build();
+      StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
@@ -66,10 +53,7 @@ public class RegistrationService {
     setKingdomName(registerInput);
 
     if (occupiedUserName()) {
-      StatusResponse occupiedUserNameStatus = StatusResponse.builder()
-          .status("error")
-          .message("Username already taken, please choose an other one.")
-          .build();
+      StatusResponse occupiedUserNameStatus = errorService.getOccupiedUserNameStatus();
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
