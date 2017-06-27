@@ -43,21 +43,6 @@ public class LoginControllerTest {
   }
 
   @Test
-  public void loginWithAllCorrectParam() throws Exception {
-
-    mockMvc.perform(post("/login")
-            .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .content("{"
-                    + "\"username\" : \"TestUser\","
-                    + "\"password\" : \"TestPassword\","
-                    + "}"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.username").exists())
-            .andDo(print());
-  }
-
-  @Test
   public void loginWithMissingUsername() throws Exception {
 
     mockMvc.perform(post("/login")
@@ -92,37 +77,7 @@ public class LoginControllerTest {
             .contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.status", is("error")))
-            .andExpect(jsonPath("$.message", is("Missing parameter(s): password, username!")))
+            .andExpect(jsonPath("$.message", is("Missing input")))
             .andDo(print());
   }
-
-  @Test
-  public void loginWithIncorrectUsername() throws Exception {
-
-    mockMvc.perform(post("/login")
-            .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .content("{"
-                    + "\"username\" : \"WrongTestUser\","
-                    + "\"password\" : \"TestPassword\","
-                    + "}"))
-            .andExpect(status().is(401))
-            .andExpect(jsonPath("$.status", is("error")))
-            .andExpect(jsonPath("$.message", is("No such user: WrongTestUser")))
-            .andDo(print());
-  }
-
-    @Test
-    public void loginWithIncorrectPassword() throws Exception {
-
-      mockMvc.perform(post("/login")
-              .contentType(MediaType.APPLICATION_JSON_UTF8)
-              .content("{"
-                      + "\"username\" : \"TestUser\","
-                      + "\"password\" : \"WrongTestPassword\","
-                      + "}"))
-              .andExpect(status().is(401))
-              .andExpect(jsonPath("$.status", is("error")))
-              .andExpect(jsonPath("$.message", is("Wrong password")))
-              .andDo(print());
-    }
-  }
+}

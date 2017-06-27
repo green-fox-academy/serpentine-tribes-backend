@@ -1,5 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.controller;
 
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 import static org.hamcrest.Matchers.*;
@@ -7,6 +8,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
+import com.greenfox.tribesoflagopus.backend.model.entity.User;
+import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
+import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
+import com.greenfox.tribesoflagopus.backend.repository.LocationRepository;
+import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +34,18 @@ public class RegistrationControllerTest {
   @Autowired
   private WebApplicationContext webApplicationContext;
 
+  @Autowired
+  UserRepository testUserRepository;
+
+  @Autowired
+  KingdomRepository testKingdomRepository;
+
+  @Autowired
+  BuildingRepository testBuildingRepository;
+
+  @Autowired
+  LocationRepository testLocationRepository;
+
   @Before
   public void setup() throws Exception {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -38,15 +56,23 @@ public class RegistrationControllerTest {
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"Bond\","
-                    + "\"password\" : \"password123\","
-                    + "\"kingdom\" : \"MI6\""
+                    + "\"username\" : \"TestUser\","
+                    + "\"password\" : \"testUserPassword\","
+                    + "\"kingdom\" : \"TestUserKingdom\""
                     + "}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.username").exists())
             .andExpect(jsonPath("$.kingdom_id").exists())
             .andDo(print());
+
+    long kingdomId = testUserRepository.findByUsername("TestUser").getKingdom().getId();
+    assertTrue(testUserRepository.existsByUsername("TestUser"));
+    assertTrue(testKingdomRepository.existsById(kingdomId));
+    assertTrue(testBuildingRepository.existsByBuildingTypeAndKingdomId("townhall", kingdomId));
+    assertTrue(testLocationRepository.existsByKingdomId(kingdomId));
+
+    testUserRepository.deleteByUsername("TestUser");
   }
 
   @Test
@@ -54,14 +80,22 @@ public class RegistrationControllerTest {
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"Bond\","
-                    + "\"password\" : \"password123\""
+                    + "\"username\" : \"TestUserWithoutKingdom\","
+                    + "\"password\" : \"TestUserWithoutKingdomPassword\""
                     + "}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.username").exists())
             .andExpect(jsonPath("$.kingdom_id").exists())
             .andDo(print());
+
+    long kingdomId = testUserRepository.findByUsername("TestUserWithoutKingdom").getKingdom().getId();
+    assertTrue(testUserRepository.existsByUsername("TestUserWithoutKingdom"));
+    assertTrue(testKingdomRepository.existsById(kingdomId));
+    assertTrue(testBuildingRepository.existsByBuildingTypeAndKingdomId("townhall", kingdomId));
+    assertTrue(testLocationRepository.existsByKingdomId(kingdomId));
+
+    testUserRepository.deleteByUsername("TestUserWithoutKingdom");
   }
 
   @Test
@@ -96,23 +130,33 @@ public class RegistrationControllerTest {
             .contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.status", is("error")))
-            .andExpect(jsonPath("$.message", is("Missing parameter(s): password, username!")))
+            .andExpect(jsonPath("$.message", is("Missing input")))
             .andDo(print());
   }
 
   @Test
   public void registerErrorAlreadyExistingUser() throws Exception {
+    User testUser = User.builder()
+        .username("OccupiedTestUser")
+        .password("testPasswordOfTestUser")
+        .points(0)
+        .build();
+
+    testUserRepository.save(testUser);
+
     mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"occupiedUserName\","
-                    + "\"password\" : \"password123\""
+                    + "\"username\" : \"OccupiedTestUser\","
+                    + "\"password\" : \"testPasswordOfTestUser\""
                     + "}"))
             .andExpect(status().is(409))
             .andExpect(jsonPath("$.status", is("error")))
             .andExpect(jsonPath("$.message",
                     is("Username already taken, please choose an other one.")))
             .andDo(print());
+
+    testUserRepository.delete(testUser);
   }
 }
 

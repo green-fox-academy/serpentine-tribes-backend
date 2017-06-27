@@ -1,6 +1,5 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,17 +22,16 @@ public class Building {
   private long id;
 
   private String buildingType;
-  private int level = 1;
+  private int level;
   private int hp;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JsonIgnore
   private Kingdom kingdom;
 
   @Builder
-  public Building(String buildingType, int level, int hp) {
+  public Building(String buildingType) {
     this.buildingType = buildingType;
-    this.level = level;
-    this.hp = hp;
+    this.level = 1;
+    this.hp = 0;
   }
 }

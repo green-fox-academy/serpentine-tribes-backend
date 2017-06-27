@@ -1,9 +1,5 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -20,7 +16,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class Kingdom {
 
@@ -33,24 +28,34 @@ public class Kingdom {
   @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private final List<Resource> resources = new ArrayList<>();
 
+  @Setter
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
 
+  @Setter
   private String name;
 
+  @Setter
   @OneToOne
-  @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-  @JsonIdentityReference(alwaysAsId = true)
-  @JsonProperty(value = "user_id")
   private User user;
 
+  @Setter
   @OneToOne(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private Location location;
 
   @Builder
   public Kingdom(String name) {
     this.name = name;
+    createTownHall();
+  }
+
+  private void createTownHall() {
+    Building townhall = Building.builder()
+        .buildingType("townhall")
+        .build();
+    buildings.add(townhall);
+    townhall.setKingdom(this);
   }
 
   public void addTroop(Troop troop) {
