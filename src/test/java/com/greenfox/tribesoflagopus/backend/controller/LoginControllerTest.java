@@ -57,6 +57,21 @@ public class LoginControllerTest {
   }
 
   @Test
+  public void loginWithAllCorrectParam() throws Exception {
+
+    mockMvc.perform(post("/login")
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .content("{"
+                    + "\"username\" : \"Noemi\","
+                    + "\"password\" : \"passnoemi\""
+                    + "}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.username").exists())
+            .andDo(print());
+  }
+
+  @Test
   public void loginWithMissingUsername() throws Exception {
 
     mockMvc.perform(post("/login")
