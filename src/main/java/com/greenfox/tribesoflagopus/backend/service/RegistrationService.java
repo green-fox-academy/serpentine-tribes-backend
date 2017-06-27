@@ -43,7 +43,7 @@ public class RegistrationService {
 
     inputUsername = registerInput.getUsername();
     inputPassword = registerInput.getPassword();
-    setKingdomName(registerInput);
+    updateKingdomName(registerInput);
 
     if (occupiedUserName()) {
       StatusResponse occupiedUserNameStatus = errorService.getOccupiedUserNameStatus();
@@ -54,11 +54,12 @@ public class RegistrationService {
     return createUserDto(user);
   }
 
-  private void setKingdomName(UserRegisterInput registerInput) {
-    if (registerInput.getKingdom() == null || registerInput.getKingdom().equals("")) {
+  private void updateKingdomName(UserRegisterInput registerInput) {
+    String inputKingdomName = registerInput.getKingdom();
+    if (inputKingdomName == null || inputKingdomName.equals("")) {
       kingdomName = String.format("%s's kingdom", inputUsername);
     } else {
-      kingdomName = registerInput.getKingdom();
+      kingdomName = inputKingdomName;
     }
   }
 
