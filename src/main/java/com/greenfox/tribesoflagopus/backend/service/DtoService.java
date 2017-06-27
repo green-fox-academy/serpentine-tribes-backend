@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DtoService {
 
-  public List<BuildingDto> convertFromBuilding(List<Building> buildings) {
+  public List<BuildingDto> convertFromBuildings(List<Building> buildings) {
     List<BuildingDto> listOfBuildingDtos = new ArrayList<>();
 
     for (Building building : buildings) {
@@ -77,7 +77,7 @@ public class DtoService {
         .id(kingdom.getId())
         .name(kingdom.getName())
         .userId(kingdom.getUser().getId())
-        .buildings(convertFromBuilding(kingdom.getBuildings()))
+        .buildings(convertFromBuildings(kingdom.getBuildings()))
         .resources(convertFromResources(kingdom.getResources()))
         .troops(convertFromTroops(kingdom.getTroops()))
         .location(convertFromLocation(kingdom.getLocation()))

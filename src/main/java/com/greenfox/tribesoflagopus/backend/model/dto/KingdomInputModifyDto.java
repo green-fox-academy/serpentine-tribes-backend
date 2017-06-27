@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonPropertyOrder({"name", "location"})
-public class KingdomModifyDto implements JsonDto {
+public class KingdomInputModifyDto implements JsonDto {
 
   private String name;
   private LocationDto location;
