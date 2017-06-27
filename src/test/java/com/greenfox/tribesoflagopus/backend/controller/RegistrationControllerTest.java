@@ -130,7 +130,7 @@ public class RegistrationControllerTest {
             .contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.status", is("error")))
-            .andExpect(jsonPath("$.message", is("Missing parameter(s): password, username!")))
+            .andExpect(jsonPath("$.message", is("Missing input")))
             .andDo(print());
   }
 

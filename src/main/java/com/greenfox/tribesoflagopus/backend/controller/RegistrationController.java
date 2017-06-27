@@ -24,7 +24,7 @@ public class RegistrationController {
 
   @PostMapping(value = "/register")
   public ResponseEntity<JsonDto> registerUser(
-          @Valid @RequestBody(required = false) UserRegisterInput registerInput,
+      @RequestBody @Valid UserRegisterInput registerInput,
           BindingResult bindingResult) {
     return registrationService.register(registerInput, bindingResult);
   }
