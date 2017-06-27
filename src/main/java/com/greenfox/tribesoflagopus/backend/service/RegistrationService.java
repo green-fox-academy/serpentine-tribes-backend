@@ -39,7 +39,6 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
-    //Todo: delete this part when we have solution for "null requestbody" in the controller
     if (registerInput == null) {
       StatusResponse missingAllFields = StatusResponse.builder()
           .status("error")
