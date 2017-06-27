@@ -46,20 +46,25 @@ public class LoginService {
       return ResponseEntity.status(401).body(incorrectPassword);
     }
 
-    User userToReturn = userRepository.findByUsername(loginInput.getUsername());
-    UserDto dtoUserToReturn = UserDto.builder()
-            .id(userToReturn.getId())
-            .username(userToReturn.getUsername())
-            .kingdomId(userToReturn.getKingdom().getId())
-            .build();
+    UserDto dtoUserToReturn = createUserDto();
     return ResponseEntity.ok().body(dtoUserToReturn);
   }
 
-  public boolean inputUserNameExists() {
+  private boolean inputUserNameExists() {
     return userRepository.existsByUsername(inputUserName);
   }
 
-  public boolean inputPasswordIsCorrect() {
+  private boolean inputPasswordIsCorrect() {
     return inputPassword.equals(userRepository.findByUsername(inputUserName).getPassword());
+  }
+
+  private UserDto createUserDto() {
+    User userToReturn = userRepository.findByUsername(inputUserName);
+    UserDto dtoUserToReturn = UserDto.builder()
+        .id(userToReturn.getId())
+        .username(userToReturn.getUsername())
+        .kingdomId(userToReturn.getKingdom().getId())
+        .build();
+    return dtoUserToReturn;
   }
 }

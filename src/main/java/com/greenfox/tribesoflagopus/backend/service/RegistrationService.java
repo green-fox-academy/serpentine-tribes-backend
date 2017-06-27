@@ -51,7 +51,8 @@ public class RegistrationService {
     }
 
     User user = createUserWithKingdom();
-    return createUserDto(user);
+    UserDto userDto = createUserDto();
+    return ResponseEntity.ok().body(userDto);
   }
 
   private void updateKingdomName(UserRegisterInput registerInput) {
@@ -87,7 +88,6 @@ public class RegistrationService {
     kingdom.setUser(user);
 
     userRepository.save(user);
-
     return user;
   }
 
@@ -106,14 +106,13 @@ public class RegistrationService {
     return randomNumber;
   }
 
-  private ResponseEntity<JsonDto> createUserDto(User user) {
+  private UserDto createUserDto() {
+    User user = userRepository.findByUsername(inputUsername);
     UserDto userDto = UserDto.builder()
         .id(user.getId())
         .username(user.getUsername())
         .kingdomId(user.getKingdom().getId())
         .build();
-    return ResponseEntity.ok().body(userDto);
+    return userDto;
   }
-
-
 }
