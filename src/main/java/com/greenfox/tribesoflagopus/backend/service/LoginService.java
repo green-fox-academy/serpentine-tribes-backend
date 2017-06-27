@@ -59,7 +59,10 @@ public class LoginService {
       return ResponseEntity.status(401).body(incorrectUser);
     }
 
-    if (!loginInput.getPassword().equals(userRepository.findByUsername(loginInput.getUsername()).getPassword())) {
+    if (!loginInput.getPassword()
+            .equals(userRepository
+                    .findByUsername(loginInput.getUsername())
+                    .getPassword())) {
       StatusResponse incorrectPassword = StatusResponse.builder()
               .status("error")
               .message("Wrong password")

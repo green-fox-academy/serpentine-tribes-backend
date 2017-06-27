@@ -29,7 +29,7 @@ public class BackendApplication implements CommandLineRunner {
 							.build();
 
 			Kingdom kingdom = Kingdom.builder()
-							.name("Kristof Kingdom")
+							.name("Noemi's Kingdom")
 							.build();
 
 			user.setKingdom(kingdom);

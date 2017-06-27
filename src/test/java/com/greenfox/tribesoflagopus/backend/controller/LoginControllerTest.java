@@ -9,6 +9,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
+import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
+import com.greenfox.tribesoflagopus.backend.model.entity.User;
+import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +34,9 @@ public class LoginControllerTest {
   @Autowired
   private WebApplicationContext webApplicationContext;
 
+  @Autowired
+  UserRepository testUserRepository;
+
   @Before
   public void setup() throws Exception {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -37,12 +44,12 @@ public class LoginControllerTest {
 
   @Test
   public void loginWithAllCorrectParam() throws Exception {
+
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"Bond\","
-                    + "\"password\" : \"password123\","
-                    + "\"kingdom\" : \"MI6\""
+                    + "\"username\" : \"TestUser\","
+                    + "\"password\" : \"TestPassword\","
                     + "}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").exists())
@@ -52,10 +59,11 @@ public class LoginControllerTest {
 
   @Test
   public void loginWithMissingUsername() throws Exception {
+
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"password\" : \"password123\""
+                    + "\"password\" : \"TestPassword\""
                     + "}"))
             .andExpect(status().is(400))
             .andExpect(jsonPath("$.status", is("error")))
@@ -65,10 +73,11 @@ public class LoginControllerTest {
 
   @Test
   public void loginWithMissingPassword() throws Exception {
+
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"Bond\""
+                    + "\"username\" : \"TestUser\""
                     + "}"))
             .andExpect(status().is(400))
             .andExpect(jsonPath("$.status", is("error")))
@@ -78,6 +87,7 @@ public class LoginControllerTest {
 
   @Test
   public void loginWithAllParamMissing() throws Exception {
+
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(status().isBadRequest())
@@ -85,4 +95,34 @@ public class LoginControllerTest {
             .andExpect(jsonPath("$.message", is("Missing parameter(s): password, username!")))
             .andDo(print());
   }
-}
+
+  @Test
+  public void loginWithIncorrectUsername() throws Exception {
+
+    mockMvc.perform(post("/login")
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .content("{"
+                    + "\"username\" : \"WrongTestUser\","
+                    + "\"password\" : \"TestPassword\","
+                    + "}"))
+            .andExpect(status().is(401))
+            .andExpect(jsonPath("$.status", is("error")))
+            .andExpect(jsonPath("$.message", is("No such user: WrongTestUser")))
+            .andDo(print());
+  }
+
+    @Test
+    public void loginWithIncorrectPassword() throws Exception {
+
+      mockMvc.perform(post("/login")
+              .contentType(MediaType.APPLICATION_JSON_UTF8)
+              .content("{"
+                      + "\"username\" : \"TestUser\","
+                      + "\"password\" : \"WrongTestPassword\","
+                      + "}"))
+              .andExpect(status().is(401))
+              .andExpect(jsonPath("$.status", is("error")))
+              .andExpect(jsonPath("$.message", is("Wrong password")))
+              .andDo(print());
+    }
+  }
