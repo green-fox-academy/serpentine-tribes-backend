@@ -22,7 +22,7 @@ public class Building {
   private long id;
 
   private String buildingType;
-  private int level = 1;
+  private int level;
   private int hp;
 
   @ManyToOne(fetch = FetchType.EAGER)
