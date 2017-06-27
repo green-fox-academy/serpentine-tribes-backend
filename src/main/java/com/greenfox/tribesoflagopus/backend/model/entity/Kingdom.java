@@ -40,9 +40,17 @@ public class Kingdom {
   @OneToOne
   private User user;
 
-  @Setter
   @OneToOne(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private Location location;
+
+  /**
+   * {@code setLocation} is a <em>bidirectional</em> setter.
+   * @param location The {@code Location} object to be set as the this {@code Kingdom}'s child entity
+   */
+  public void setLocation(Location location) {
+    this.location = location;
+    location.setKingdom(this);
+  }
 
   @Builder
   public Kingdom(String name) {

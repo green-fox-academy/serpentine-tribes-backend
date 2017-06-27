@@ -2,6 +2,7 @@ package com.greenfox.tribesoflagopus.backend.model.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 /**
@@ -13,7 +14,10 @@ import lombok.Setter;
 @Setter
 public class UserDto implements JsonDto {
 
-  private long id;
+  @NonNull
+  private Long id;
+
+  @NonNull
   private String username;
   private long kingdomId;
 

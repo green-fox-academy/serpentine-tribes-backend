@@ -34,4 +34,8 @@ public class Building {
     this.level = 1;
     this.hp = 0;
   }
+
+  public static class BuildingBuilder {
+    private int level = 1;
+  }
 }
