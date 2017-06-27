@@ -23,23 +23,14 @@ public class LoginService {
   @Autowired
   UserRepository userRepository;
 
+  @Autowired
+  ErrorService errorService;
+
   public ResponseEntity<JsonDto> login(@Valid UserLoginInput loginInput,
                                        BindingResult bindingResult){
 
     if(bindingResult.hasErrors()){
-      List<FieldError> listOfMissingFields = bindingResult.getFieldErrors();
-      ArrayList<String> missingFields = new ArrayList<>();
-      for (FieldError fieldError : listOfMissingFields) {
-        missingFields.add(fieldError.getField());
-      }
-      Collections.sort(missingFields);
-
-      String error = String.join(", ", missingFields);
-
-      StatusResponse missingParameterStatus = StatusResponse.builder()
-              .status("error")
-              .message("Missing parameter(s): " + error + "!")
-              .build();
+      StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
