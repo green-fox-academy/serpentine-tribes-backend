@@ -97,4 +97,22 @@ public class KingdomControllerTest {
         .andExpect(jsonPath("$").value(hasKey("location")))
         .andDo(print());
   }
+
+  @Test
+  public void modifyKingdom_withNonExistentUserId() throws Exception {
+    mockMvc.perform(put("/666/kingdom")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{"
+            + "\"name\" : \"MI5\","
+            + "\"location\" : "
+            + "{"
+            + "\"x\" : 1,"
+            + "\"y\" : 1"
+            + "}"
+            + "}"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("user_id not found")))
+        .andDo(print());
+  }
 }
