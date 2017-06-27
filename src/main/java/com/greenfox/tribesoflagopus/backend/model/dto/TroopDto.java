@@ -12,9 +12,7 @@ import lombok.Setter;
 @JsonPropertyOrder({"id", "level", "hp", "attack", "defence"})
 public class TroopDto implements JsonDto {
 
-  @NonNull
   private Long id;
-  @NonNull
   private Integer level;
   private Integer hp;
   private Integer attack;

@@ -1,10 +1,8 @@
 package com.greenfox.tribesoflagopus.backend;
 
-import com.greenfox.tribesoflagopus.backend.model.entity.Building;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
-import com.greenfox.tribesoflagopus.backend.model.entity.Location;
-import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
 import com.greenfox.tribesoflagopus.backend.model.entity.User;
+import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,47 +12,29 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class BackendApplication implements CommandLineRunner {
 
-  @Autowired
-  UserRepository userRepository;
+	@Autowired
+	UserRepository userRepository;
 
-  public static void main(String[] args) {
-    SpringApplication.run(BackendApplication.class, args);
-  }
+	public static void main(String[] args) {
+		SpringApplication.run(BackendApplication.class, args);
+	}
 
-  @Override
-  public void run(String... args) throws Exception {
-    System.out.println("Hello, World!");
+	@Override
+	public void run(String... args) throws Exception {
+		System.out.println("Hello, World!");
 
-    if (!userRepository.exists(1L)) {
-      User user = User.builder()
-          .username("Bond")
-          .password("password123")
-          .build();
+			User user = User.builder()
+							.username("Noemi")
+							.password("passnoemi")
+							.build();
 
-      Kingdom kingdom = Kingdom.builder()
-          .name("My new Kingdom")
-          .build();
+			Kingdom kingdom = Kingdom.builder()
+							.name("Noemi's Kingdom")
+							.build();
 
-      user.setKingdom(kingdom);
-      kingdom.setUser(user);
+			user.setKingdom(kingdom);
+			kingdom.setUser(user);
 
-      Troop troop = Troop.builder()
-          .attack(5)
-          .defence(1)
-          .hp(10)
-          .level(1)
-          .build();
-
-      kingdom.addTroop(troop);
-
-      Location location = Location.builder()
-          .x(1)
-          .y(1)
-          .build();
-
-      kingdom.setLocation(location);
-
-      userRepository.save(user);
-    }
-  }
+			userRepository.save(user);
+	}
 }

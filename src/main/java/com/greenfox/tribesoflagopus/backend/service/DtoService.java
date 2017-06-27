@@ -63,6 +63,9 @@ public class DtoService {
   }
 
   public LocationDto convertFromLocation(Location location) {
+    if (location == null) {
+      return null;
+    }
     return LocationDto.builder()
         .x(location.getX())
         .y(location.getY())
