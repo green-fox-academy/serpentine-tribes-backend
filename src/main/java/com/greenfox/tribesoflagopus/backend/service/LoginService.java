@@ -34,14 +34,6 @@ public class LoginService {
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
-    if (loginInput == null) {
-      StatusResponse missingAllFields = StatusResponse.builder()
-              .status("error")
-              .message("Missing parameter(s): password, username!")
-              .build();
-      return ResponseEntity.badRequest().body(missingAllFields);
-    }
-
     if (!userRepository.existsByUsername(loginInput.getUsername())) {
       StatusResponse incorrectUser = StatusResponse.builder()
               .status("error")

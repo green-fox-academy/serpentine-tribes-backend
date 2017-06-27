@@ -39,14 +39,6 @@ public class RegistrationService {
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
-    if (registerInput == null) {
-      StatusResponse missingAllFields = StatusResponse.builder()
-          .status("error")
-          .message("Missing parameter(s): password, username!")
-          .build();
-      return ResponseEntity.badRequest().body(missingAllFields);
-    }
-
     username = registerInput.getUsername();
     password = registerInput.getPassword();
     setKingdomName(registerInput);
