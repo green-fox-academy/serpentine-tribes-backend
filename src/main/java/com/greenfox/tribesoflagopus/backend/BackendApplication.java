@@ -23,6 +23,7 @@ public class BackendApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		System.out.println("Hello, World!");
 
+		if (!userRepository.existsByUsername("Noemi")) {
 			User user = User.builder()
 							.username("Noemi")
 							.password("passnoemi")
@@ -36,5 +37,6 @@ public class BackendApplication implements CommandLineRunner {
 			kingdom.setUser(user);
 
 			userRepository.save(user);
+		}
 	}
 }
