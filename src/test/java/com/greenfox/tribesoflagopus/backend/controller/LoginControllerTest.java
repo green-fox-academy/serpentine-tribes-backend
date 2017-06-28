@@ -52,8 +52,7 @@ public class LoginControllerTest {
                     + "\"password\" : \"passnoemi\""
                     + "}"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.username").exists())
+            .andExpect(jsonPath("$.status").exists())
             .andExpect(jsonPath("$.token").exists())
             .andDo(print());
   }
