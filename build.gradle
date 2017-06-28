@@ -33,8 +33,19 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
-test{
-	systemProperty 'SPRING_DATASOURCE_URL', System.getProperty("dataSourceUrl")
-	systemProperty 'SPRING_DATASOURCE_USERNAME', System.getProperty("dataSourceUsername")
-	systemProperty 'SPRING_DATASOURCE_PASSWORD', System.getProperty("dataSourcePassword")
+test {
+    final String datasourceUrlPropertyName = 'dataSourceUrl'
+    final String datasourceUsernamePropertyName = 'dataSourceUsername'
+    final String datasourcePaswordPropertyName = 'dataSourcePassword'
+
+/*
+	Set JVM system properties for tests,
+	but only if they are set
+	(e.g. through 'gradlew -D' or 'java -D' command line argument)
+*/
+    if (!(System.getProperty(datasourceUrlPropertyName) == null)) {
+        systemProperty 'spring.datasource.url', System.getProperty(datasourceUrlPropertyName)
+        systemProperty 'spring.datasource.username', System.getProperty(datasourceUsernamePropertyName)
+        systemProperty 'spring.datasource.password', System.getProperty(datasourcePaswordPropertyName)
+    }
 }
