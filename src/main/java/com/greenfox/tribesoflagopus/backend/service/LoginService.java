@@ -61,7 +61,7 @@ public class LoginService {
     return inputPassword.equals(userRepository.findByUsername(inputUserName).getPassword());
   }
 
-  private UserDto createUserDto() {
+  private UserDto createUserTokenDto() {
     User userToReturn = userRepository.findByUsername(inputUserName);
     UserDto dtoUserToReturn = UserDto.builder()
         .id(userToReturn.getId())
