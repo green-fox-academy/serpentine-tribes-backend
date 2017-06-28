@@ -22,6 +22,9 @@ public class LoginService {
   @Autowired
   ErrorService errorService;
 
+  @Autowired
+  TokenService tokenService;
+
   private String inputUserName;
   private String inputPassword;
 
@@ -64,6 +67,7 @@ public class LoginService {
         .id(userToReturn.getId())
         .username(userToReturn.getUsername())
         .kingdomId(userToReturn.getKingdom().getId())
+        .token(userToReturn.getToken())
         .build();
     return dtoUserToReturn;
   }
