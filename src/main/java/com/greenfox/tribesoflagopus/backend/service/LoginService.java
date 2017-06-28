@@ -22,6 +22,9 @@ public class LoginService {
   @Autowired
   TokenService tokenService;
 
+  @Autowired
+  UserService userService;
+
   private String inputUserName;
   private String inputPassword;
 
@@ -46,6 +49,7 @@ public class LoginService {
       return ResponseEntity.status(401).body(incorrectPassword);
     }
 
+    tokenService.saveTokenToUser(userRepository.findByUsername(inputUserName));
     UserTokenDto userTokenDto = createUserTokenDto();
     return ResponseEntity.ok().body(userTokenDto);
   }
@@ -62,7 +66,7 @@ public class LoginService {
     User userToReturn = userRepository.findByUsername(inputUserName);
     UserTokenDto userTokenDtoReturn = UserTokenDto.builder()
         .status("ok")
-        .token(tokenService.generateToken(userToReturn))
+        .token(userToReturn.getToken())
         .build();
     return userTokenDtoReturn;
   }
