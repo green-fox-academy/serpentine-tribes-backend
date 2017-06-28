@@ -23,7 +23,7 @@ public class DtoService {
     for (Building building : buildings) {
       BuildingDto buildingDto = BuildingDto.builder()
           .id(building.getId())
-          .type(building.getBuildingType())
+          .type(building.getType())
           .level(building.getLevel())
           .hp(building.getHp())
           .build();
