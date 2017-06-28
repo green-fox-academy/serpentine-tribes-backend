@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @Getter
 @Setter
-public class UserTokenDto {
+public class UserTokenDto implements JsonDto {
 
   @NotNull
   private String status;

@@ -62,7 +62,7 @@ public class LoginService {
     User userToReturn = userRepository.findByUsername(inputUserName);
     UserTokenDto userTokenDtoReturn = UserTokenDto.builder()
         .status("ok")
-        .token(userToReturn.getToken())
+        .token(tokenService.generateToken(userToReturn))
         .build();
     return userTokenDtoReturn;
   }
