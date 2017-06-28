@@ -20,6 +20,6 @@ public class UserDto implements JsonDto {
   @NonNull
   private String username;
   private long kingdomId;
-  
+  private String token;
 
 }
