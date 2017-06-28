@@ -21,6 +21,10 @@ public class TokenService {
 
   private Key key;
 
+  public void saveTokenToUser(User user){
+    userRepository.findByUsername(user.getUsername()).setToken(generateToken(user));
+  }
+
   public String generateToken(User user) {
     HashMap<String, Object> claims = new HashMap<>();
     claims.put("id", user.getId());
