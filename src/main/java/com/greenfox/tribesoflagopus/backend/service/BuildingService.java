@@ -19,36 +19,15 @@ public class BuildingService {
   KingdomRepository kingdomRepository;
 
   @Autowired
-  UserRepository userRepository;
-
-  @Autowired
   DtoService dtoService;
 
-  @Autowired
-  ErrorService errorService;
-
-  public ResponseEntity<JsonDto> createListOfBuildings(long userId) {
-
-    if(!userIdExists(userId)) {
-      StatusResponse userIdNotFoundStatus = errorService.getUserIdNotFoundStatus();
-      return ResponseEntity.status(404).body(userIdNotFoundStatus);
-    }
-
-    BuildingListDto buildings = createBuildingList(userId);
-    return ResponseEntity.ok().body(buildings);
-  }
-
-  private BuildingListDto createBuildingList(long userId) {
+  public BuildingListDto createBuildingList(long userId) {
     List<Building> buildingsToConvertToDto = kingdomRepository.findOneByUserId(userId).getBuildings();
     List<BuildingDto> buildingDtos = dtoService.convertFromBuildings(buildingsToConvertToDto);
     BuildingListDto buildingsToReturn = BuildingListDto.builder()
         .buildings(buildingDtos)
         .build();
     return buildingsToReturn;
-  }
-
-  private boolean userIdExists(long userId) {
-    return userRepository.exists(userId);
   }
 
 }
