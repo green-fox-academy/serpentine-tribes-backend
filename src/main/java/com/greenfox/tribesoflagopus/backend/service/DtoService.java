@@ -83,4 +83,13 @@ public class DtoService {
         .location(convertFromLocation(kingdom.getLocation()))
         .build();
   }
+
+  public BuildingDto convertfromBuilding(Building building) {
+    return BuildingDto.builder()
+        .id(building.getId())
+        .type(building.getType())
+        .level(building.getLevel())
+        .hp(building.getHp())
+        .build();
+  }
 }

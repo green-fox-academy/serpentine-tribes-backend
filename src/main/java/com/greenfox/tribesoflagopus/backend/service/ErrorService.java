@@ -63,4 +63,12 @@ public class ErrorService {
     return userIdNotFound;
   }
 
+  public StatusResponse getInvalidBuildingTypeStatus() {
+    StatusResponse invalidBuildingType = StatusResponse.builder()
+        .status("error")
+        .message("Invalid building type!")
+        .build();
+    return invalidBuildingType;
+  }
+
 }
