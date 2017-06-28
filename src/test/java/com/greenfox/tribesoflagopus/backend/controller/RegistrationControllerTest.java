@@ -69,7 +69,7 @@ public class RegistrationControllerTest {
     long kingdomId = testUserRepository.findByUsername("TestUser").getKingdom().getId();
     assertTrue(testUserRepository.existsByUsername("TestUser"));
     assertTrue(testKingdomRepository.existsById(kingdomId));
-    assertTrue(testBuildingRepository.existsByBuildingTypeAndKingdomId("townhall", kingdomId));
+    assertTrue(testBuildingRepository.existsByTypeAndKingdomId("townhall", kingdomId));
     assertTrue(testLocationRepository.existsByKingdomId(kingdomId));
 
     testUserRepository.deleteByUsername("TestUser");
@@ -92,7 +92,7 @@ public class RegistrationControllerTest {
     long kingdomId = testUserRepository.findByUsername("TestUserWithoutKingdom").getKingdom().getId();
     assertTrue(testUserRepository.existsByUsername("TestUserWithoutKingdom"));
     assertTrue(testKingdomRepository.existsById(kingdomId));
-    assertTrue(testBuildingRepository.existsByBuildingTypeAndKingdomId("townhall", kingdomId));
+    assertTrue(testBuildingRepository.existsByTypeAndKingdomId("townhall", kingdomId));
     assertTrue(testLocationRepository.existsByKingdomId(kingdomId));
 
     testUserRepository.deleteByUsername("TestUserWithoutKingdom");

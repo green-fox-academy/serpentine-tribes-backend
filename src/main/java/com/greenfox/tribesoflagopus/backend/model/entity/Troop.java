@@ -6,19 +6,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@SequenceGenerator(name = "seq_store", sequenceName = "troop_sequence")
 @Getter
 @Setter
 @NoArgsConstructor
 public class Troop {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
   private long id;
 
   @ManyToOne(fetch = FetchType.EAGER)

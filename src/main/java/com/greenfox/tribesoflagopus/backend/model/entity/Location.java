@@ -6,19 +6,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@SequenceGenerator(name = "seq_store", sequenceName = "location_sequence")
 @Getter
 @Setter
 @NoArgsConstructor
 public class Location {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
   private long id;
   private Integer x;
   private Integer y;
