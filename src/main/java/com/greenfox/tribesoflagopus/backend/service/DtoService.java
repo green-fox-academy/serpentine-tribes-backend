@@ -5,6 +5,7 @@ import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.ResourceDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.TroopListDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Building;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Location;
@@ -81,6 +82,13 @@ public class DtoService {
         .resources(convertFromResources(kingdom.getResources()))
         .troops(convertFromTroops(kingdom.getTroops()))
         .location(convertFromLocation(kingdom.getLocation()))
+        .build();
+  }
+
+  public TroopListDto createTroopListDto(List<Troop> troops) {
+    List<TroopDto> listOfTroopDtos = convertFromTroops(troops);
+    return TroopListDto.builder()
+        .troops(listOfTroopDtos)
         .build();
   }
 }

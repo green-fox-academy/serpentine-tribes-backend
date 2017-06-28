@@ -55,4 +55,12 @@ public class ErrorService {
     return incorrectPassword;
   }
 
+  public StatusResponse getUserIdNotFoundStatus() {
+    StatusResponse userIdNotFound = StatusResponse.builder()
+        .status("error")
+        .message("UserId not found")
+        .build();
+    return userIdNotFound;
+  }
+
 }
