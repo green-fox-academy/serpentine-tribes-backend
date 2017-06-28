@@ -67,4 +67,34 @@ public class TroopControllerTest {
         .andExpect(jsonPath("$.message", is("UserId not found")))
         .andDo(print());
   }
+
+  @Test
+  public void showOneTroop_withExistingIds() throws Exception {
+    mockMvc.perform(get("/1/kingdom/troops/1"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").exists())
+        .andExpect(jsonPath("$.level").exists())
+        .andExpect(jsonPath("$.hp").exists())
+        .andExpect(jsonPath("$.attack").exists())
+        .andExpect(jsonPath("$.defence").exists())
+        .andDo(print());
+  }
+
+  @Test
+  public void showOneTroop_withNonExistentUserId() throws Exception {
+    mockMvc.perform(get("/666/kingdom/troops/1"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("<id> not found")))
+        .andDo(print());
+  }
+
+  @Test
+  public void showOneTroop_withNonExistentTroopId() throws Exception {
+    mockMvc.perform(get("/1/kingdom/troops/666"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("<id> not found")))
+        .andDo(print());
+  }
 }

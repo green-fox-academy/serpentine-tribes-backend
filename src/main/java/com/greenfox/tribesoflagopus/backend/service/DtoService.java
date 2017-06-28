@@ -51,16 +51,20 @@ public class DtoService {
     List<TroopDto> listOfTroopDtos = new ArrayList<>();
 
     for (Troop troop : troops) {
-      TroopDto troopDto = TroopDto.builder()
-          .id(troop.getId())
-          .level(troop.getLevel())
-          .hp(troop.getHp())
-          .attack(troop.getAttack())
-          .defence(troop.getDefence())
-          .build();
+      TroopDto troopDto = convertFromTroop(troop);
       listOfTroopDtos.add(troopDto);
     }
     return listOfTroopDtos;
+  }
+
+  public TroopDto convertFromTroop(Troop troop) {
+    return TroopDto.builder()
+        .id(troop.getId())
+        .level(troop.getLevel())
+        .hp(troop.getHp())
+        .attack(troop.getAttack())
+        .defence(troop.getDefence())
+        .build();
   }
 
   public LocationDto convertFromLocation(Location location) {

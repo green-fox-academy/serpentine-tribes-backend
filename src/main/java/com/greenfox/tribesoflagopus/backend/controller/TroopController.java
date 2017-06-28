@@ -1,6 +1,7 @@
 package com.greenfox.tribesoflagopus.backend.controller;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.service.ErrorService;
 import com.greenfox.tribesoflagopus.backend.service.TroopService;
 import com.greenfox.tribesoflagopus.backend.service.UserService;
@@ -35,5 +36,17 @@ public class TroopController {
     }
 
     return ResponseEntity.ok().body(troopService.listTroopsOfUser(userId));
+  }
+
+  @GetMapping(value = "/{userId}/kingdom/troops/{troopId}")
+  public ResponseEntity<JsonDto> showOneTroop(@PathVariable Long userId, @PathVariable Long troopId) {
+
+    if (troopService.existsByIdAndUserId(troopId, userId)) {
+      return ResponseEntity.ok().body(troopService.fetchTroop(userId, troopId));
+
+    } else {
+//      TODO create proper error message after the API specification is clear on this.
+      return ResponseEntity.status(404).body(StatusResponse.builder().status("error").message("<id> not found").build());
+    }
   }
 }
