@@ -32,6 +32,7 @@ public class User {
 
   private String avatar;
   private long points;
+
   private String token;
 
   @Builder
