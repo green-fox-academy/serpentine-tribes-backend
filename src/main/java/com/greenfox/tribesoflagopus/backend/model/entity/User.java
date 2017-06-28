@@ -33,6 +33,8 @@ public class User {
   private String avatar;
   private long points;
 
+  private String token;
+
   @Builder
   public User(String username, String password, String avatar, long points) {
     this.username = username;
