@@ -51,7 +51,7 @@ public class RegistrationController {
 
     registrationService.register(registerInput, bindingResult);
     UserDto userDto = registrationService.createUserDto(registerInput.getUsername());
-    
+
     return ResponseEntity.ok().body(userDto);
   }
 
