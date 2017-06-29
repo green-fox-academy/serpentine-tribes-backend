@@ -8,12 +8,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
+import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,6 +29,11 @@ import org.springframework.http.MediaType;
 @SpringBootTest(classes = BackendApplication.class)
 @WebAppConfiguration
 public class TroopControllerTest {
+
+  public static final String TOKEN_INPUT_REQUEST_HEADER = "X-tribes-token";
+
+  @MockBean
+  TokenService mockTokenService;
 
   private MockMvc mockMvc;
   private HttpMessageConverter mappingJackson2HttpMessageConverter;
@@ -95,6 +103,22 @@ public class TroopControllerTest {
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("<id> not found")))
+        .andDo(print());
+  }
+
+  @Test
+  public void createNewTroop() throws Exception {
+    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+
+    mockMvc.perform(post("/kingdom/troops")
+    .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").exists())
+        .andExpect(jsonPath("$.level").exists())
+        .andExpect(jsonPath("$.hp").exists())
+        .andExpect(jsonPath("$.attack").exists())
+        .andExpect(jsonPath("$.defence").exists())
         .andDo(print());
   }
 }
