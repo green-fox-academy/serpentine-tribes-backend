@@ -43,7 +43,7 @@ public class BuildingService {
   }
 
   public BuildingDto addNewBuilding(String type, long userId) {
-    Kingdom kingdomOfNewBuilding = findKingdomByUserId(userId) ;
+    Kingdom kingdomOfNewBuilding = findKingdomByUserId(userId);
     createAndSaveNewBuilding(type, kingdomOfNewBuilding);
     BuildingDto buildingDto = getTheNewestBuildingByTypeAndUser(kingdomOfNewBuilding, type);
     return buildingDto;
@@ -76,8 +76,6 @@ public class BuildingService {
   public Kingdom findKingdomByUserId(Long userId) {
     return kingdomRepository.findOneByUserId(userId);
   }
-
-
 
 
 }
