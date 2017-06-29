@@ -1,5 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
+import com.greenfox.tribesoflagopus.backend.model.entity.User;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,5 +17,17 @@ public class UserService {
 
   public boolean existsUserById(Long userId) {
     return userRepository.exists(userId);
+  }
+
+  public boolean existsUserByUsername(String username){
+    return  userRepository.existsByUsername(username);
+  }
+
+  public boolean inputPasswordIsCorrect(String username, String password) {
+    return password.equals(userRepository.findByUsername(username).getPassword());
+  }
+
+  public User findUserByUsername(String username) {
+    return userRepository.findByUsername(username);
   }
 }

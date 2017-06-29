@@ -25,42 +25,15 @@ public class LoginService {
   private String inputUserName;
   private String inputPassword;
 
-  public ResponseEntity<JsonDto> login(@Valid UserLoginInput loginInput,
+  public void login(@Valid UserLoginInput loginInput,
                                        BindingResult bindingResult){
-
-    if(bindingResult.hasErrors()){
-      StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
-      return ResponseEntity.badRequest().body(missingParameterStatus);
-    }
 
     inputUserName = loginInput.getUsername();
     inputPassword = loginInput.getPassword();
-
-    if (!inputUserNameExists()) {
-      StatusResponse incorrectUser = errorService.getIncorrectUserStatus(loginInput.getUsername());
-      return ResponseEntity.status(401).body(incorrectUser);
-    }
-
-    if (!inputPasswordIsCorrect()) {
-      StatusResponse incorrectPassword = errorService.getIncorrectPasswordStatus();
-      return ResponseEntity.status(401).body(incorrectPassword);
-    }
-
-    tokenService.saveTokenToUser(userRepository.findByUsername(inputUserName));
-    UserTokenDto userTokenDto = createUserTokenDto();
-    return ResponseEntity.ok().body(userTokenDto);
   }
 
-  private boolean inputUserNameExists() {
-    return userRepository.existsByUsername(inputUserName);
-  }
-
-  private boolean inputPasswordIsCorrect() {
-    return inputPassword.equals(userRepository.findByUsername(inputUserName).getPassword());
-  }
-
-  private UserTokenDto createUserTokenDto() {
-    User userToReturn = userRepository.findByUsername(inputUserName);
+  public UserTokenDto createUserTokenDto(String username) {
+    User userToReturn = userRepository.findByUsername(username);
     UserTokenDto userTokenDtoReturn = UserTokenDto.builder()
         .status("ok")
         .token(userToReturn.getToken())
