@@ -63,6 +63,14 @@ public class ErrorService {
     return userIdNotFound;
   }
 
+  public StatusResponse getUserIdWasNotRecoverableFromToken() {
+    StatusResponse userIdNotFound = StatusResponse.builder()
+        .status("error")
+        .message("User ID not recoverable from token")
+        .build();
+    return userIdNotFound;
+  }
+
   public StatusResponse getInvalidBuildingTypeStatus() {
     StatusResponse invalidBuildingType = StatusResponse.builder()
         .status("error")
@@ -71,4 +79,19 @@ public class ErrorService {
     return invalidBuildingType;
   }
 
+  public StatusResponse getTroopIdNotReceivedStatus() {
+    StatusResponse troopIdNotReceived = StatusResponse.builder()
+        .status("error")
+        .message("Troop ID not received")
+        .build();
+    return troopIdNotReceived;
+  }
+
+  public StatusResponse getTroopIdNotFoundStatus() {
+    StatusResponse troopIdNotFound = StatusResponse.builder()
+        .status("error")
+        .message("Troop ID not found")
+        .build();
+    return troopIdNotFound;
+  }
 }
