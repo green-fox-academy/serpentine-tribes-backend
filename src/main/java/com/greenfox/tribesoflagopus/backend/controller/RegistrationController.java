@@ -6,6 +6,8 @@ import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
 import com.greenfox.tribesoflagopus.backend.service.ErrorService;
 import com.greenfox.tribesoflagopus.backend.service.RegistrationService;
 import javax.validation.Valid;
+
+import com.greenfox.tribesoflagopus.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,12 +20,15 @@ public class RegistrationController {
 
   private final RegistrationService registrationService;
   private final ErrorService errorService;
+  private final UserService userService;
 
   @Autowired
   public RegistrationController(
-          RegistrationService registrationService, ErrorService errorService) {
+          RegistrationService registrationService, ErrorService errorService,
+          UserService userService) {
     this.registrationService = registrationService;
     this.errorService = errorService;
+    this.userService = userService;
   }
 
   @PostMapping(value = "/register")
@@ -35,7 +40,12 @@ public class RegistrationController {
       StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
-    
+
+    if (userService.existsUserByUsername(registerInput.getUsername())){
+      StatusResponse occupiedUserNameStatus = errorService.getOccupiedUserNameStatus();
+      return ResponseEntity.status(409).body(occupiedUserNameStatus);
+    }
+
     return registrationService.register(registerInput, bindingResult);
   }
 

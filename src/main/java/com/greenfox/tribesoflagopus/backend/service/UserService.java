@@ -17,4 +17,8 @@ public class UserService {
   public boolean existsUserById(Long userId) {
     return userRepository.exists(userId);
   }
+
+  public boolean existsUserByUsername(String username){
+    return  userRepository.existsByUsername(username);
+  }
 }

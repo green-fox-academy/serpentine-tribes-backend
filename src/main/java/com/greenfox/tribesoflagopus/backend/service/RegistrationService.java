@@ -40,11 +40,6 @@ public class RegistrationService {
     inputPassword = registerInput.getPassword();
     updateKingdomName(registerInput);
 
-    if (occupiedUserName()) {
-      StatusResponse occupiedUserNameStatus = errorService.getOccupiedUserNameStatus();
-      return ResponseEntity.status(409).body(occupiedUserNameStatus);
-    }
-
     User user = createUserWithKingdom();
     UserDto userDto = createUserDto();
     return ResponseEntity.ok().body(userDto);
