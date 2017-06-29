@@ -9,12 +9,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@SequenceGenerator(name = "seq_store", sequenceName = "kingdom_sequence")
 @Getter
 @NoArgsConstructor
 public class Kingdom {
@@ -30,7 +32,7 @@ public class Kingdom {
 
   @Setter
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
   private long id;
 
   @Setter
@@ -40,9 +42,17 @@ public class Kingdom {
   @OneToOne
   private User user;
 
-  @Setter
   @OneToOne(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private Location location;
+
+  /**
+   * {@code setLocation} is a <em>bidirectional</em> setter.
+   * @param location The {@code Location} object to be set as the this {@code Kingdom}'s child entity
+   */
+  public void setLocation(Location location) {
+    this.location = location;
+    location.setKingdom(this);
+  }
 
   @Builder
   public Kingdom(String name) {
@@ -52,7 +62,7 @@ public class Kingdom {
 
   private void createTownHall() {
     Building townhall = Building.builder()
-        .buildingType("townhall")
+        .type("townhall")
         .build();
     buildings.add(townhall);
     townhall.setKingdom(this);

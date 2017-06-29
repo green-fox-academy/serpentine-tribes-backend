@@ -23,27 +23,19 @@ public class BackendApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		System.out.println("Hello, World!");
 
-		if (!userRepository.exists(1L)) {
+		if (!userRepository.existsByUsername("Noemi")) {
 			User user = User.builder()
-              .username("Bond")
-              .password("password123")
-              .build();
+							.username("Noemi")
+							.password("passnoemi")
+							.build();
 
 			Kingdom kingdom = Kingdom.builder()
-              .name("My new Kingdom")
-              .build();
+							.name("Noemi's Kingdom")
+							.build();
 
 			user.setKingdom(kingdom);
 			kingdom.setUser(user);
 
-			Troop troop = Troop.builder()
-              .attack(5)
-              .defence(1)
-              .hp(10)
-              .level(1)
-              .build();
-
-			kingdom.addTroop(troop);
 			userRepository.save(user);
 		}
 	}

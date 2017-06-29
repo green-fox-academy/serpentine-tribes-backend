@@ -4,68 +4,67 @@ import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserLoginInput;
+import com.greenfox.tribesoflagopus.backend.model.entity.User;
+import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 public class LoginService {
+
+  @Autowired
+  UserRepository userRepository;
+
+  @Autowired
+  ErrorService errorService;
+
+  private String inputUserName;
+  private String inputPassword;
 
   public ResponseEntity<JsonDto> login(@Valid UserLoginInput loginInput,
                                        BindingResult bindingResult){
 
     if(bindingResult.hasErrors()){
-      List<FieldError> listOfMissingFields = bindingResult.getFieldErrors();
-      ArrayList<String> missingFields = new ArrayList<>();
-      for (FieldError fieldError : listOfMissingFields) {
-        missingFields.add(fieldError.getField());
-      }
-      Collections.sort(missingFields);
-
-      String error = String.join(", ", missingFields);
-
-      StatusResponse missingParameterStatus = StatusResponse.builder()
-              .status("error")
-              .message("Missing parameter(s): " + error + "!")
-              .build();
+      StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
       return ResponseEntity.badRequest().body(missingParameterStatus);
     }
 
-    if (loginInput == null) {
-      StatusResponse missingAllFields = StatusResponse.builder()
-              .status("error")
-              .message("Missing parameter(s): password, username!")
-              .build();
-      return ResponseEntity.badRequest().body(missingAllFields);
-    }
+    inputUserName = loginInput.getUsername();
+    inputPassword = loginInput.getPassword();
 
-    if (!"Bond".equals(loginInput.getUsername())) {
-      StatusResponse incorrectUser = StatusResponse.builder()
-              .status("error")
-              .message("No such user: " + loginInput.getUsername())
-              .build();
+    if (!inputUserNameExists()) {
+      StatusResponse incorrectUser = errorService.getIncorrectUserStatus(loginInput.getUsername());
       return ResponseEntity.status(401).body(incorrectUser);
     }
 
-    if (!"password123".equals(loginInput.getPassword())) {
-      StatusResponse incorrectPassword = StatusResponse.builder()
-              .status("error")
-              .message("Wrong password")
-              .build();
+    if (!inputPasswordIsCorrect()) {
+      StatusResponse incorrectPassword = errorService.getIncorrectPasswordStatus();
       return ResponseEntity.status(401).body(incorrectPassword);
     }
 
-    UserDto mockUser = UserDto.builder()
-        .id(1)
-        .username("Bond")
-        .kingdomId(1)
+    UserDto dtoUserToReturn = createUserDto();
+    return ResponseEntity.ok().body(dtoUserToReturn);
+  }
+
+  private boolean inputUserNameExists() {
+    return userRepository.existsByUsername(inputUserName);
+  }
+
+  private boolean inputPasswordIsCorrect() {
+    return inputPassword.equals(userRepository.findByUsername(inputUserName).getPassword());
+  }
+
+  private UserDto createUserDto() {
+    User userToReturn = userRepository.findByUsername(inputUserName);
+    UserDto dtoUserToReturn = UserDto.builder()
+        .id(userToReturn.getId())
+        .username(userToReturn.getUsername())
+        .kingdomId(userToReturn.getKingdom().getId())
         .build();
-    return ResponseEntity.ok().body(mockUser);
+    return dtoUserToReturn;
   }
 }
