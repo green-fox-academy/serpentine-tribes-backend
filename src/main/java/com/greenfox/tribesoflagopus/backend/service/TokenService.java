@@ -23,6 +23,7 @@ public class TokenService {
 
   public void saveTokenToUser(User user){
     userRepository.findByUsername(user.getUsername()).setToken(generateToken(user));
+    userRepository.save(user);
   }
 
   public String generateToken(User user) {
@@ -54,12 +55,8 @@ public class TokenService {
 
   private long getIdFromToken(String token) {
     long id;
-    try {
       Claims claims = getClaimsFromToken(token);
       id = (Integer) claims.get("id");
-    } catch (MissingClaimException e) {
-      id = -1L;
-    }
     return id;
   }
 
