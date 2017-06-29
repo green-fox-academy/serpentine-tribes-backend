@@ -22,9 +22,6 @@ public class LoginService {
   @Autowired
   TokenService tokenService;
 
-  @Autowired
-  UserService userService;
-
   private String inputUserName;
   private String inputPassword;
 
