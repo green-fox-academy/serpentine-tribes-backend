@@ -22,14 +22,8 @@ public class LoginService {
   @Autowired
   TokenService tokenService;
 
-  private String inputUserName;
-  private String inputPassword;
-
-  public void login(@Valid UserLoginInput loginInput,
-                                       BindingResult bindingResult){
-
-    inputUserName = loginInput.getUsername();
-    inputPassword = loginInput.getPassword();
+  public boolean inputPasswordIsCorrect(String username, String password) {
+    return password.equals(userRepository.findByUsername(username).getPassword());
   }
 
   public UserTokenDto createUserTokenDto(String username) {

@@ -23,10 +23,6 @@ public class UserService {
     return  userRepository.existsByUsername(username);
   }
 
-  public boolean inputPasswordIsCorrect(String username, String password) {
-    return password.equals(userRepository.findByUsername(username).getPassword());
-  }
-
   public User findUserByUsername(String username) {
     return userRepository.findByUsername(username);
   }
