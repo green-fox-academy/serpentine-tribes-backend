@@ -23,7 +23,7 @@ public class Troop {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
   private long id;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   private Kingdom kingdom;
 
   private int level = 1;
@@ -37,5 +37,9 @@ public class Troop {
     this.hp = hp;
     this.attack = attack;
     this.defence = defence;
+  }
+
+  public static class TroopBuilder {
+    private int level = 1;
   }
 }

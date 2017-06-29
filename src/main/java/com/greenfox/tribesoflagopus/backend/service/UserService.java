@@ -17,5 +17,4 @@ public class UserService {
   public boolean existsUserById(Long userId) {
     return userRepository.exists(userId);
   }
-
 }

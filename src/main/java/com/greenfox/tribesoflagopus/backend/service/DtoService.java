@@ -5,6 +5,7 @@ import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.ResourceDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.TroopListDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Building;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Location;
@@ -50,16 +51,20 @@ public class DtoService {
     List<TroopDto> listOfTroopDtos = new ArrayList<>();
 
     for (Troop troop : troops) {
-      TroopDto troopDto = TroopDto.builder()
-          .id(troop.getId())
-          .level(troop.getLevel())
-          .hp(troop.getHp())
-          .attack(troop.getAttack())
-          .defence(troop.getDefence())
-          .build();
+      TroopDto troopDto = convertFromTroop(troop);
       listOfTroopDtos.add(troopDto);
     }
     return listOfTroopDtos;
+  }
+
+  public TroopDto convertFromTroop(Troop troop) {
+    return TroopDto.builder()
+        .id(troop.getId())
+        .level(troop.getLevel())
+        .hp(troop.getHp())
+        .attack(troop.getAttack())
+        .defence(troop.getDefence())
+        .build();
   }
 
   public LocationDto convertFromLocation(Location location) {
@@ -90,6 +95,13 @@ public class DtoService {
         .type(building.getType())
         .level(building.getLevel())
         .hp(building.getHp())
+        .build();
+  }
+
+  public TroopListDto createTroopListDto(List<Troop> troops) {
+    List<TroopDto> listOfTroopDtos = convertFromTroops(troops);
+    return TroopListDto.builder()
+        .troops(listOfTroopDtos)
         .build();
   }
 }

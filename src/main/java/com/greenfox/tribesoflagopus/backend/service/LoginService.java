@@ -1,9 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
-import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
-import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
-import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
-import com.greenfox.tribesoflagopus.backend.model.dto.UserLoginInput;
+import com.greenfox.tribesoflagopus.backend.model.dto.*;
 import com.greenfox.tribesoflagopus.backend.model.entity.User;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +18,12 @@ public class LoginService {
 
   @Autowired
   ErrorService errorService;
+
+  @Autowired
+  TokenService tokenService;
+
+  @Autowired
+  UserService userService;
 
   private String inputUserName;
   private String inputPassword;
@@ -46,8 +49,9 @@ public class LoginService {
       return ResponseEntity.status(401).body(incorrectPassword);
     }
 
-    UserDto dtoUserToReturn = createUserDto();
-    return ResponseEntity.ok().body(dtoUserToReturn);
+    tokenService.saveTokenToUser(userRepository.findByUsername(inputUserName));
+    UserTokenDto userTokenDto = createUserTokenDto();
+    return ResponseEntity.ok().body(userTokenDto);
   }
 
   private boolean inputUserNameExists() {
@@ -58,13 +62,12 @@ public class LoginService {
     return inputPassword.equals(userRepository.findByUsername(inputUserName).getPassword());
   }
 
-  private UserDto createUserDto() {
+  private UserTokenDto createUserTokenDto() {
     User userToReturn = userRepository.findByUsername(inputUserName);
-    UserDto dtoUserToReturn = UserDto.builder()
-        .id(userToReturn.getId())
-        .username(userToReturn.getUsername())
-        .kingdomId(userToReturn.getKingdom().getId())
+    UserTokenDto userTokenDtoReturn = UserTokenDto.builder()
+        .status("ok")
+        .token(userToReturn.getToken())
         .build();
-    return dtoUserToReturn;
+    return userTokenDtoReturn;
   }
 }
