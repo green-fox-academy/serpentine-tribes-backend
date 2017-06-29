@@ -2,6 +2,7 @@ package com.greenfox.tribesoflagopus.backend.controller;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
+import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
 import com.greenfox.tribesoflagopus.backend.service.ErrorService;
 import com.greenfox.tribesoflagopus.backend.service.RegistrationService;
@@ -46,7 +47,8 @@ public class RegistrationController {
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
-    return registrationService.register(registerInput, bindingResult);
+    UserDto userDto = registrationService.createUserDto(registerInput.getUsername());
+    return ResponseEntity.ok().body(userDto);
   }
 
 }
