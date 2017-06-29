@@ -21,7 +21,7 @@ public class Troop {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
-  private long id;
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   private Kingdom kingdom;

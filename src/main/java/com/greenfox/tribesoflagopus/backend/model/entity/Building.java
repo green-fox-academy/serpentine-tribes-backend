@@ -21,7 +21,7 @@ public class Building {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
-  private long id;
+  private Long id;
 
   private String type;
   private int level;
