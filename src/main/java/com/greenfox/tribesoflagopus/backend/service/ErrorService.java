@@ -71,4 +71,20 @@ public class ErrorService {
     return invalidBuildingType;
   }
 
+  public StatusResponse getInvalidIdStatus(Long id) {
+    StatusResponse invalidId = StatusResponse.builder()
+        .status("error")
+        .message(String.format("Id: %d not found!", id))
+        .build();
+    return invalidId;
+  }
+
+  public StatusResponse getInvalidBuildingLevelStatus() {
+    StatusResponse invalidBuildingLevel = StatusResponse.builder()
+        .status("error")
+        .message("Invalid building level!")
+        .build();
+    return invalidBuildingLevel;
+  }
+
 }
