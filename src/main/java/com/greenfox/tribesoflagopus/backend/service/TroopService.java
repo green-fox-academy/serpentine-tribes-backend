@@ -58,15 +58,14 @@ public class TroopService {
 
   public TroopDto addNewTroop(Long userId) {
     Troop newTroop = Troop.builder().build();
-    addTroopToUsersKingdom(newTroop, userId);
-    return dtoService.convertFromTroop(newTroop);
+    Troop savedTroop = addTroopToUsersKingdom(newTroop, userId);
+    return dtoService.convertFromTroop(savedTroop);
   }
 
   @Transactional
   public Troop addTroopToUsersKingdom(Troop troop, Long userId) {
     Kingdom existingKingdom = kingdomRepository.findOneByUserId(userId);
     existingKingdom.addTroop(troop);
-    kingdomRepository.save(existingKingdom);
-    return troop;
+    return troopRepository.save(troop);
   }
 }
