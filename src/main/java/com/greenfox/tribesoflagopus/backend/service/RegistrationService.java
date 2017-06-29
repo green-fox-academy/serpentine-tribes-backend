@@ -36,11 +36,6 @@ public class RegistrationService {
   public ResponseEntity<JsonDto> register(@Valid UserRegisterInput registerInput,
       BindingResult bindingResult) {
 
-    if (bindingResult.hasErrors()) {
-      StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
-      return ResponseEntity.badRequest().body(missingParameterStatus);
-    }
-
     inputUsername = registerInput.getUsername();
     inputPassword = registerInput.getPassword();
     updateKingdomName(registerInput);
