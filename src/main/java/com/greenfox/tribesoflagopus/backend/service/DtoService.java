@@ -89,6 +89,15 @@ public class DtoService {
         .build();
   }
 
+  public BuildingDto convertfromBuilding(Building building) {
+    return BuildingDto.builder()
+        .id(building.getId())
+        .type(building.getType())
+        .level(building.getLevel())
+        .hp(building.getHp())
+        .build();
+  }
+
   public TroopListDto createTroopListDto(List<Troop> troops) {
     List<TroopDto> listOfTroopDtos = convertFromTroops(troops);
     return TroopListDto.builder()

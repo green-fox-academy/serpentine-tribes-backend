@@ -33,7 +33,7 @@ public class Kingdom {
   @Setter
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
-  private long id;
+  private Long id;
 
   @Setter
   private String name;
