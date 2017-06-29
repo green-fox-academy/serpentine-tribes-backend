@@ -42,8 +42,6 @@ public class BuildingController {
     return ResponseEntity.ok().body(buildings);
   }
 
-  //Todo: handle null input
-  //Todo: handle invalid buildingtype with annotation?
   @PostMapping("/{userId}/kingdom/buildings")
   public ResponseEntity<JsonDto> addNewBuildingToKingdom(
       @Valid @RequestBody BuildingTypeInputDto buildingTypeInputDto,

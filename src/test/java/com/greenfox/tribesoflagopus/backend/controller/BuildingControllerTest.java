@@ -40,7 +40,6 @@ public class BuildingControllerTest {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
   }
 
-  //Todo: fix this test to use real mockito to test database
   @Test
   public void getBuildingListWithInValidId() throws Exception {
     //Mockito.when(userService.existsUserById(200L)).thenReturn(false);
