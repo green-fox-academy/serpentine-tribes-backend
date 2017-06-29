@@ -49,6 +49,7 @@ public class RegistrationController {
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
+    registrationService.register(registerInput, bindingResult);
     UserDto userDto = registrationService.createUserDto(registerInput.getUsername());
     return ResponseEntity.ok().body(userDto);
   }
