@@ -41,6 +41,9 @@ public class TroopController {
   public ResponseEntity<JsonDto> listTroops(@RequestHeader(value = "X-tribes-token") String token) {
 
     Long userId = tokenService.getIdFromToken(token);
+    if (userId == null) {
+      return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
+    }
 
     if (!userService.existsUserById(userId)) {
       return ResponseEntity.status(404).body(errorService.getUserIdNotFoundStatus());
@@ -54,6 +57,9 @@ public class TroopController {
       @PathVariable Long troopId) {
 
     Long userId = tokenService.getIdFromToken(token);
+    if (userId == null) {
+      return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
+    }
 
     if (troopService.existsByIdAndUserId(troopId, userId)) {
       return ResponseEntity.ok().body(troopService.fetchTroop(userId, troopId));
@@ -70,7 +76,6 @@ public class TroopController {
       @RequestHeader(value = "X-tribes-token") String token) {
 
     Long userId = tokenService.getIdFromToken(token);
-
     if (userId == null) {
       return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
     }

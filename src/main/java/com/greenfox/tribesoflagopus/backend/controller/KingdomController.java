@@ -2,6 +2,7 @@ package com.greenfox.tribesoflagopus.backend.controller;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.KingdomInputModifyDto;
+import com.greenfox.tribesoflagopus.backend.service.ErrorService;
 import com.greenfox.tribesoflagopus.backend.service.KingdomService;
 import javax.validation.Valid;
 
@@ -15,18 +16,28 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class KingdomController {
 
+  private final ErrorService errorService;
   private final KingdomService kingdomService;
   private final TokenService tokenService;
 
   @Autowired
-  public KingdomController(KingdomService kingdomService, TokenService tokenService) {
+  public KingdomController(
+      ErrorService errorService,
+      KingdomService kingdomService,
+      TokenService tokenService) {
+    this.errorService = errorService;
     this.kingdomService = kingdomService;
     this.tokenService = tokenService;
   }
 
   @GetMapping("/kingdom")
   public ResponseEntity<JsonDto> showKingdom(@RequestHeader(value = "X-tribes-token") String token) {
+
     Long userId = tokenService.getIdFromToken(token);
+    if (userId == null) {
+      return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
+    }
+
     return kingdomService.showKingdom(userId);
   }
 
@@ -37,7 +48,12 @@ public class KingdomController {
   public ResponseEntity<JsonDto> modifyKingdom(
           @RequestHeader(value = "X-tribes-token") String token,
       @Valid @RequestBody KingdomInputModifyDto kingdomInputModifyDto) {
+
     Long userId = tokenService.getIdFromToken(token);
+    if (userId == null) {
+      return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
+    }
+
     return kingdomService.modifyKingdom(userId, kingdomInputModifyDto);
   }
 

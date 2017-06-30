@@ -42,6 +42,10 @@ public class BuildingController {
       @RequestHeader(value = "X-tribes-token") String token) {
 
     Long userId = tokenService.getIdFromToken(token);
+    if (userId == null) {
+      return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
+    }
+
     if (!userService.existsUserById(userId)) {
       StatusResponse userIdNotFoundStatus = errorService.getUserIdNotFoundStatus();
       return ResponseEntity.status(404).body(userIdNotFoundStatus);
@@ -57,6 +61,10 @@ public class BuildingController {
       @RequestHeader(value = "X-tribes-token") String token) {
 
     Long userId = tokenService.getIdFromToken(token);
+    if (userId == null) {
+      return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
+    }
+
     if (bindingResult.hasErrors()) {
       StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
       return ResponseEntity.badRequest().body(missingParameterStatus);
@@ -81,6 +89,10 @@ public class BuildingController {
       @Valid @PathVariable(value = "buildingId") Long buildingId) {
 
     Long userId = tokenService.getIdFromToken(token);
+    if (userId == null) {
+      return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
+    }
+
     if (bindingResult.hasErrors()) {
       StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
       return ResponseEntity.badRequest().body(missingParameterStatus);

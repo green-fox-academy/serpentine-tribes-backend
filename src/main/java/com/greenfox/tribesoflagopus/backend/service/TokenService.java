@@ -4,7 +4,6 @@ import com.greenfox.tribesoflagopus.backend.model.entity.User;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MissingClaimException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,10 +52,15 @@ public class TokenService {
   }
 
 
-  public long getIdFromToken(String token) {
-    long id;
+  public Long getIdFromToken(String token) {
+    Long id;
+    try {
       Claims claims = getClaimsFromToken(token);
-      id = (Integer) claims.get("id");
+      Integer recoveredId = (Integer) claims.get("id");
+      id = recoveredId.longValue();
+    } catch (Exception e) {
+      id = null;
+    }
     return id;
   }
 
