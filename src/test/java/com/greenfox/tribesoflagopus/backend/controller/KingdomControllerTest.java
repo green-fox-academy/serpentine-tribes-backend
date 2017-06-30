@@ -10,11 +10,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
 import java.util.Arrays;
+
+import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,6 +31,11 @@ import org.springframework.http.MediaType;
 @SpringBootTest(classes = BackendApplication.class)
 @WebAppConfiguration
 public class KingdomControllerTest {
+
+  public static final String TOKEN_INPUT_REQUEST_HEADER = "X-tribes-token";
+
+  @MockBean
+  TokenService mockTokenService;
 
   private MockMvc mockMvc;
   private HttpMessageConverter mappingJackson2HttpMessageConverter;
@@ -54,7 +63,11 @@ public class KingdomControllerTest {
 
   @Test
   public void showKingdom_getKnownExistingKingdom() throws Exception {
-    mockMvc.perform(get("/1/kingdom"))
+    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+
+    mockMvc.perform(get("/kingdom")
+            .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.name").exists())
@@ -68,7 +81,11 @@ public class KingdomControllerTest {
 
   @Test
   public void showKingdom_withNonExistentUserId() throws Exception {
-    mockMvc.perform(get("/666/kingdom"))
+    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(666L);
+
+    mockMvc.perform(get("/kingdom")
+            .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("user_id not found")))
@@ -77,7 +94,11 @@ public class KingdomControllerTest {
 
   @Test
   public void modifyKingdom_withValidRequestFields() throws Exception {
-    mockMvc.perform(put("/1/kingdom")
+    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+
+    mockMvc.perform(put("/kingdom")
+            .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{"
             + "\"name\" : \"MI5\","
@@ -100,7 +121,11 @@ public class KingdomControllerTest {
 
   @Test
   public void modifyKingdom_withNonExistentUserId() throws Exception {
-    mockMvc.perform(put("/666/kingdom")
+    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(666L);
+
+    mockMvc.perform(put("/kingdom")
+            .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{"
             + "\"name\" : \"MI5\","

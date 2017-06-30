@@ -37,8 +37,10 @@ public class TroopController {
     this.userService = userService;
   }
 
-  @GetMapping(value = "/{userId}/kingdom/troops")
-  public ResponseEntity<JsonDto> listTroops(@PathVariable Long userId) {
+  @GetMapping(value = "/kingdom/troops")
+  public ResponseEntity<JsonDto> listTroops(@RequestHeader(value = "X-tribes-token") String token) {
+
+    Long userId = tokenService.getIdFromToken(token);
 
     if (!userService.existsUserById(userId)) {
       return ResponseEntity.status(404).body(errorService.getUserIdNotFoundStatus());
@@ -47,9 +49,11 @@ public class TroopController {
     return ResponseEntity.ok().body(troopService.listTroopsOfUser(userId));
   }
 
-  @GetMapping(value = "/{userId}/kingdom/troops/{troopId}")
-  public ResponseEntity<JsonDto> showOneTroop(@PathVariable Long userId,
+  @GetMapping(value = "/kingdom/troops/{troopId}")
+  public ResponseEntity<JsonDto> showOneTroop(@RequestHeader(value = "X-tribes-token") String token,
       @PathVariable Long troopId) {
+
+    Long userId = tokenService.getIdFromToken(token);
 
     if (troopService.existsByIdAndUserId(troopId, userId)) {
       return ResponseEntity.ok().body(troopService.fetchTroop(userId, troopId));
