@@ -150,6 +150,21 @@ public class BuildingControllerTest {
   }
 
   @Test
+  public void updateBuildingWithInValidUserId() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockUserRepository.exists(1L)).thenReturn(false);
+    Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(true);
+    mockMvc.perform(put("/kingdom/buildings/1")
+        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"level\" : " + 2 + "}"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Id: 1 not found!")))
+        .andDo(print());
+  }
+
+  @Test
   public void updateBuildingWithMissingBuildingLevel() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
