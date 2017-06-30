@@ -57,7 +57,11 @@ public class TroopService {
   }
 
   public TroopDto addNewTroop(Long userId) {
-    Troop newTroop = Troop.builder().build();
+    Troop newTroop = Troop.builder()
+        .hp(1)
+        .attack(1)
+        .defence(1)
+        .build();
     Troop savedTroop = addTroopToUsersKingdom(newTroop, userId);
     return dtoService.convertFromTroop(savedTroop);
   }
