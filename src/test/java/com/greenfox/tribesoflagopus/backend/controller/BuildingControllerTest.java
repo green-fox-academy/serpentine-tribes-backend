@@ -13,6 +13,7 @@ import com.greenfox.tribesoflagopus.backend.mockbuilder.MockKingdomBuilder;
 import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
 import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
+import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,10 +34,18 @@ import org.springframework.web.context.WebApplicationContext;
 @WebAppConfiguration
 public class BuildingControllerTest {
 
+  public static final String TOKEN_INPUT_REQUEST_HEADER = "X-tribes-token";
+  public static final String mockToken =
+      "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
+
+
   private MockMvc mockMvc;
 
   @Autowired
   private WebApplicationContext webApplicationContext;
+
+  @MockBean
+  TokenService mockTokenService;
 
   @MockBean
   UserRepository mockUserRepository;
@@ -51,8 +60,10 @@ public class BuildingControllerTest {
 
   @Test
   public void getBuildingListWithInValidUserId() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(false);
-    mockMvc.perform(get("/1/kingdom/buildings"))
+    mockMvc.perform(get("/kingdom/buildings")
+        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("UserId not found")))
@@ -61,8 +72,10 @@ public class BuildingControllerTest {
 
   @Test
   public void addNewBuildingMissingBuildingType() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
-    mockMvc.perform(post("/1/kingdom/buildings")
+    mockMvc.perform(post("/kingdom/buildings")
+        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"motvalidtype\" : \"notvalid\"" + "}"))
         .andExpect(status().isBadRequest())
@@ -73,7 +86,9 @@ public class BuildingControllerTest {
 
   @Test
   public void addNewBuildingWithNoParameter() throws Exception {
-    mockMvc.perform(post("/1/kingdom/buildings"))
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    mockMvc.perform(post("/kingdom/buildings")
+        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("Missing input")))
@@ -82,8 +97,10 @@ public class BuildingControllerTest {
 
   @Test
   public void addNewBuildingWithInValidUserId() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(false);
-    mockMvc.perform(post("/1/kingdom/buildings")
+    mockMvc.perform(post("/kingdom/buildings")
+        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"type\" : \"farm\"" + "}"))
         .andExpect(status().isNotFound())
@@ -94,8 +111,10 @@ public class BuildingControllerTest {
 
   @Test
   public void addNewBuildingWithInValidBuildingType() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
-    mockMvc.perform(post("/1/kingdom/buildings")
+    mockMvc.perform(post("/kingdom/buildings")
+        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"type\" : \"house\"" + "}"))
         .andExpect(status().isBadRequest())
@@ -106,7 +125,9 @@ public class BuildingControllerTest {
 
   @Test
   public void updateBuildingWithNoParameter() throws Exception {
-    mockMvc.perform(put("/1/kingdom/buildings/1"))
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    mockMvc.perform(put("/kingdom/buildings/1")
+        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("Missing input")))
@@ -115,9 +136,11 @@ public class BuildingControllerTest {
 
   @Test
   public void updateBuildingWithInValidBuildingId() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
     Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(false);
-    mockMvc.perform(put("/1/kingdom/buildings/1")
+    mockMvc.perform(put("/kingdom/buildings/1")
+        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"level\" : " + 2 + "}"))
         .andExpect(status().isNotFound())
@@ -128,9 +151,11 @@ public class BuildingControllerTest {
 
   @Test
   public void updateBuildingWithMissingBuildingLevel() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
     Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(true);
-    mockMvc.perform(put("/1/kingdom/buildings/1")
+    mockMvc.perform(put("/kingdom/buildings/1")
+        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"notvalidtype\" : " + 2 + "}"))
         .andExpect(status().isBadRequest())
@@ -141,9 +166,11 @@ public class BuildingControllerTest {
 
   @Test
   public void updateBuildingWithInvalidBuildingLevelAsInt() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
     Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(true);
-    mockMvc.perform(put("/1/kingdom/buildings/1")
+    mockMvc.perform(put("/kingdom/buildings/1")
+        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"level\" : " + 0 + "}"))
         .andExpect(status().isBadRequest())
