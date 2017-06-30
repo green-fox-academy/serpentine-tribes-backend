@@ -8,6 +8,7 @@ import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.service.BuildingService;
 import com.greenfox.tribesoflagopus.backend.service.ErrorService;
+import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import com.greenfox.tribesoflagopus.backend.service.UserService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +24,24 @@ public class BuildingController {
   private final BuildingService buildingService;
   private final UserService userService;
   private final ErrorService errorService;
+  private final TokenService tokenService;
 
   @Autowired
   public BuildingController(
       BuildingService buildingService,
       UserService userService,
-      ErrorService errorService) {
+      ErrorService errorService, TokenService tokenService) {
     this.buildingService = buildingService;
     this.userService = userService;
     this.errorService = errorService;
+    this.tokenService = tokenService;
   }
 
-  @GetMapping("/{userId}/kingdom/buildings")
+  @GetMapping("/kingdom/buildings")
   public ResponseEntity<JsonDto> getListOfBuildings(
-      @Valid @PathVariable(value = "userId") long userId) {
+      @RequestHeader(value = "X-tribes-token") String token) {
+
+    Long userId = tokenService.getIdFromToken(token);
     if (!userService.existsUserById(userId)) {
       StatusResponse userIdNotFoundStatus = errorService.getUserIdNotFoundStatus();
       return ResponseEntity.status(404).body(userIdNotFoundStatus);
@@ -45,12 +50,13 @@ public class BuildingController {
     return ResponseEntity.ok().body(buildings);
   }
 
-  @PostMapping("/{userId}/kingdom/buildings")
+  @PostMapping("/kingdom/buildings")
   public ResponseEntity<JsonDto> addNewBuildingToKingdom(
       @Valid @RequestBody BuildingTypeInputDto buildingTypeInputDto,
       BindingResult bindingResult,
-      @Valid @PathVariable(value = "userId") long userId) {
+      @RequestHeader(value = "X-tribes-token") String token) {
 
+    Long userId = tokenService.getIdFromToken(token);
     if (bindingResult.hasErrors()) {
       StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
       return ResponseEntity.badRequest().body(missingParameterStatus);
@@ -67,13 +73,14 @@ public class BuildingController {
     return ResponseEntity.ok().body(newBuildingDto);
   }
 
-  @PutMapping("/{userId}/kingdom/buildings/{buildingId}")
+  @PutMapping("/kingdom/buildings/{buildingId}")
   public ResponseEntity<JsonDto> updateBuildingLevel(
       @Valid @RequestBody BuildingLevelInputDto buildingLevelInputDto,
       BindingResult bindingResult,
-      @Valid @PathVariable(value = "userId") Long userId,
+      @RequestHeader(value = "X-tribes-token") String token,
       @Valid @PathVariable(value = "buildingId") Long buildingId) {
 
+    Long userId = tokenService.getIdFromToken(token);
     if (bindingResult.hasErrors()) {
       StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
       return ResponseEntity.badRequest().body(missingParameterStatus);
