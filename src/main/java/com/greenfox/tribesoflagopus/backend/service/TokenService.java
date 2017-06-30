@@ -53,7 +53,7 @@ public class TokenService {
   }
 
 
-  private long getIdFromToken(String token) {
+  public long getIdFromToken(String token) {
     long id;
       Claims claims = getClaimsFromToken(token);
       id = (Integer) claims.get("id");

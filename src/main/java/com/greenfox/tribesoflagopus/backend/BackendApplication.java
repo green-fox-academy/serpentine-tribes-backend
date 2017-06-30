@@ -45,7 +45,8 @@ public class BackendApplication implements CommandLineRunner {
 
 		if (!troopService.existsByUserName("Noemi")) {
 			Troop troop = Troop.builder().build();
-			troopService.addTroopToUsersKingdom(troop, "Noemi");
+			Long userId = userRepository.findByUsername("Noemi").getId();
+			troopService.addTroopToUsersKingdom(troop, userId);
 		}
 	}
 }

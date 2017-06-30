@@ -33,26 +33,14 @@ public class RegistrationService {
   private final Integer locationMinValue = 1;
   private final Integer locationMaxValue = 100;
 
-  public ResponseEntity<JsonDto> register(@Valid UserRegisterInput registerInput,
+  public void register(@Valid UserRegisterInput registerInput,
       BindingResult bindingResult) {
-
-    if (bindingResult.hasErrors()) {
-      StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
-      return ResponseEntity.badRequest().body(missingParameterStatus);
-    }
 
     inputUsername = registerInput.getUsername();
     inputPassword = registerInput.getPassword();
     updateKingdomName(registerInput);
 
-    if (occupiedUserName()) {
-      StatusResponse occupiedUserNameStatus = errorService.getOccupiedUserNameStatus();
-      return ResponseEntity.status(409).body(occupiedUserNameStatus);
-    }
-
     User user = createUserWithKingdom();
-    UserDto userDto = createUserDto();
-    return ResponseEntity.ok().body(userDto);
   }
 
   private void updateKingdomName(UserRegisterInput registerInput) {
@@ -62,10 +50,6 @@ public class RegistrationService {
     } else {
       kingdomName = inputKingdomName;
     }
-  }
-
-  private boolean occupiedUserName() {
-    return userRepository.existsByUsername(inputUsername);
   }
 
   private User createUserWithKingdom() {
@@ -106,8 +90,8 @@ public class RegistrationService {
     return randomNumber;
   }
 
-  private UserDto createUserDto() {
-    User user = userRepository.findByUsername(inputUsername);
+  public UserDto createUserDto(String username) {
+    User user = userRepository.findByUsername(username);
     UserDto userDto = UserDto.builder()
         .id(user.getId())
         .username(user.getUsername())
