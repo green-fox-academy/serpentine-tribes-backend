@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
 import com.greenfox.tribesoflagopus.backend.mockbuilder.MockBuildingListBuilder;
+import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
 import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import org.junit.Before;
@@ -38,6 +39,9 @@ public class BuildingControllerTest {
 
   @MockBean
   UserRepository mockUserRepository;
+
+  @MockBean
+  BuildingRepository mockBuildingRepository;
 
   @MockBean
   KingdomRepository mockKingdomRepository;
@@ -78,20 +82,17 @@ public class BuildingControllerTest {
         .andDo(print());
   }
 
-  /*
   @Test
   public void addNewBuildingMissingBuildingType() throws Exception {
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
     mockMvc.perform(post("/1/kingdom/buildings")
         .contentType(MediaType.APPLICATION_JSON_UTF8)
-        .content("{"
-            + "\"notValidFieldName\" : \"notValidInput\","
-            + "}"))
+        .content("{" + "\"motvalidtype\" : \"notvalid\"" + "}"))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("Missing parameter(s): type!")))
         .andDo(print());
-  }*/
+  }
 
   @Test
   public void addNewBuildingWithNoParameter() throws Exception {
@@ -114,4 +115,63 @@ public class BuildingControllerTest {
         .andDo(print());
   }
 
+  @Test
+  public void addNewBuildingWithInValidBuildingType() throws Exception {
+    Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
+    mockMvc.perform(post("/1/kingdom/buildings")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"type\" : \"house\"" + "}"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Invalid building type!")))
+        .andDo(print());
+  }
+
+  @Test
+  public void updateBuildingWithNoParameter() throws Exception {
+    mockMvc.perform(put("/1/kingdom/buildings/1"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Missing input")))
+        .andDo(print());
+  }
+
+  @Test
+  public void updateBuildingWithInValidBuildingId() throws Exception {
+    Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
+    Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(false);
+    mockMvc.perform(put("/1/kingdom/buildings/1")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"level\" : " + 2 + "}"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Id: 1 not found!")))
+        .andDo(print());
+  }
+
+  @Test
+  public void updateBuildingWithMissingBuildingLevel() throws Exception {
+    Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
+    Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(true);
+    mockMvc.perform(put("/1/kingdom/buildings/1")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"notvalidtype\" : " + 2 + "}"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Missing parameter(s): level!")))
+        .andDo(print());
+  }
+
+  @Test
+  public void updateBuildingWithInvalidBuildingLevelAsInt() throws Exception {
+    Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
+    Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(true);
+    mockMvc.perform(put("/1/kingdom/buildings/1")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"level\" : " + 0 + "}"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Invalid building level!")))
+        .andDo(print());
+  }
 }
