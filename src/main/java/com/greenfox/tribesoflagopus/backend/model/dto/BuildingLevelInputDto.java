@@ -8,9 +8,9 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class BuildingTypeInputDto implements JsonDto {
+public class BuildingLevelInputDto implements JsonDto {
 
   @NotNull
-  private String type;
+  private Integer level;
 
 }
