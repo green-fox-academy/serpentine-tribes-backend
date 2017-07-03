@@ -21,7 +21,7 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
-  private long id;
+  private Long id;
 
   private String username;
 
@@ -32,6 +32,8 @@ public class User {
 
   private String avatar;
   private long points;
+
+  private String token;
 
   @Builder
   public User(String username, String password, String avatar, long points) {

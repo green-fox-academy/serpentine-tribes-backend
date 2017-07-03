@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,9 +22,10 @@ public class Troop {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
-  private long id;
+  private Long id;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @NotNull
   private Kingdom kingdom;
 
   private int level = 1;
@@ -37,5 +39,9 @@ public class Troop {
     this.hp = hp;
     this.attack = attack;
     this.defence = defence;
+  }
+
+  public static class TroopBuilder {
+    private int level = 1;
   }
 }

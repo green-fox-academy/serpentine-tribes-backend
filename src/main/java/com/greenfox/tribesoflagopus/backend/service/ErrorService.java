@@ -55,4 +55,59 @@ public class ErrorService {
     return incorrectPassword;
   }
 
+  public StatusResponse getUserIdNotFoundStatus() {
+    StatusResponse userIdNotFound = StatusResponse.builder()
+        .status("error")
+        .message("UserId not found")
+        .build();
+    return userIdNotFound;
+  }
+
+  public StatusResponse getUserIdWasNotRecoverableFromToken() {
+    StatusResponse userIdNotFound = StatusResponse.builder()
+        .status("error")
+        .message("User ID not recoverable from token")
+        .build();
+    return userIdNotFound;
+  }
+
+  public StatusResponse getInvalidBuildingTypeStatus() {
+    StatusResponse invalidBuildingType = StatusResponse.builder()
+        .status("error")
+        .message("Invalid building type!")
+        .build();
+    return invalidBuildingType;
+  }
+
+  public StatusResponse getInvalidIdStatus(Long id) {
+    StatusResponse invalidId = StatusResponse.builder()
+        .status("error")
+        .message(String.format("Id: %d not found!", id))
+        .build();
+    return invalidId;
+  }
+
+  public StatusResponse getInvalidBuildingLevelStatus() {
+    StatusResponse invalidBuildingLevel = StatusResponse.builder()
+        .status("error")
+        .message("Invalid building level!")
+        .build();
+    return invalidBuildingLevel;
+  }
+
+  public StatusResponse getTroopIdNotReceivedStatus() {
+    StatusResponse troopIdNotReceived = StatusResponse.builder()
+        .status("error")
+        .message("Troop ID not received")
+        .build();
+    return troopIdNotReceived;
+  }
+
+  public StatusResponse getTroopIdNotFoundStatus() {
+    StatusResponse troopIdNotFound = StatusResponse.builder()
+        .status("error")
+        .message("Troop ID not found")
+        .build();
+    return troopIdNotFound;
+  }
 }

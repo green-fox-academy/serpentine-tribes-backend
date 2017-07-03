@@ -9,8 +9,8 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-@JsonPropertyOrder({"id", "level", "hp", "attack", "defence"})
-public class BuildingDto {
+@JsonPropertyOrder({"id", "type", "level", "hp"})
+public class BuildingDto implements JsonDto {
 
   @NonNull
   private Long id;

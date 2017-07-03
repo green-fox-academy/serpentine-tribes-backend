@@ -4,6 +4,7 @@ import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.User;
 import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
+import com.greenfox.tribesoflagopus.backend.service.TroopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +12,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class BackendApplication implements CommandLineRunner {
+
+	@Autowired
+	TroopService troopService;
 
 	@Autowired
 	UserRepository userRepository;
@@ -37,6 +41,12 @@ public class BackendApplication implements CommandLineRunner {
 			kingdom.setUser(user);
 
 			userRepository.save(user);
+		}
+
+		if (!troopService.existsByUserName("Noemi")) {
+			Troop troop = Troop.builder().build();
+			Long userId = userRepository.findByUsername("Noemi").getId();
+			troopService.addTroopToUsersKingdom(troop, userId);
 		}
 	}
 }
