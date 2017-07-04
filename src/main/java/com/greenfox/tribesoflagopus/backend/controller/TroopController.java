@@ -65,9 +65,8 @@ public class TroopController {
       return ResponseEntity.ok().body(troopService.fetchTroop(userId, troopId));
 
     } else {
-//      TODO create proper error message after the API specification is clear on this.
-      return ResponseEntity.status(404)
-          .body(StatusResponse.builder().status("error").message("<id> not found").build());
+      StatusResponse troopIdNotFound = errorService.getTroopIdNotFoundStatus();
+      return ResponseEntity.status(404).body(troopIdNotFound);
     }
   }
 
