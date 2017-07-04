@@ -1,6 +1,5 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
-import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Location;
@@ -37,11 +36,9 @@ public class UserService {
     return password.equals(userRepository.findByUsername(username).getPassword());
   }
 
-  public void register(UserRegisterInput registerInput) {
-
+  public User register(UserRegisterInput registerInput) {
     UserRegisterInput processedRegisterInput = setDefaultKingdomNameIfNeeded(registerInput);
-
-    User user = createUserWithKingdom(processedRegisterInput);
+    return createUserWithKingdom(processedRegisterInput);
   }
 
   public User createUserWithKingdom(UserRegisterInput registerInput) {
@@ -63,8 +60,7 @@ public class UserService {
     user.setKingdom(kingdom);
     kingdom.setUser(user);
 
-    userRepository.save(user);
-    return user;
+    return userRepository.save(user);
   }
 
   private UserRegisterInput setDefaultKingdomNameIfNeeded(UserRegisterInput registerInput) {
@@ -73,15 +69,5 @@ public class UserService {
       registerInput.setKingdom(String.format("%s's kingdom", registerInput.getUsername()));
     }
     return registerInput;
-  }
-
-  public UserDto createUserDto(String username) {
-    User user = userRepository.findByUsername(username);
-    UserDto userDto = UserDto.builder()
-        .id(user.getId())
-        .username(user.getUsername())
-        .kingdomId(user.getKingdom().getId())
-        .build();
-    return userDto;
   }
 }

@@ -6,12 +6,14 @@ import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.ResourceDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopListDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserTokenDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Building;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Location;
 import com.greenfox.tribesoflagopus.backend.model.entity.Resource;
 import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
+import com.greenfox.tribesoflagopus.backend.model.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,15 @@ public class DtoService {
         .status("ok")
         .token(token)
         .build();
+  }
+
+  public UserDto createUserDto(User user) {
+    UserDto userDto = UserDto.builder()
+        .id(user.getId())
+        .username(user.getUsername())
+        .kingdomId(user.getKingdom().getId())
+        .build();
+    return userDto;
   }
 
   public List<BuildingDto> convertFromBuildings(List<Building> buildings) {
