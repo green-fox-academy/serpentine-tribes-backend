@@ -16,10 +16,8 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
   protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
       HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-    StatusResponse messageNotReadableError = StatusResponse.builder()
-        .status("error")
-        .message("Missing input")
-        .build();
+    StatusResponse messageNotReadableError =
+        StatusResponse.error("Missing input");
 
     return super.handleExceptionInternal(ex, messageNotReadableError, headers, status, request);
   }
