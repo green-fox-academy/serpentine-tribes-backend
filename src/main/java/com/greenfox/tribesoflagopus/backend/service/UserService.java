@@ -19,11 +19,15 @@ public class UserService {
     return userRepository.exists(userId);
   }
 
-  public boolean existsUserByUsername(String username){
-    return  userRepository.existsByUsername(username);
+  public boolean existsUserByUsername(String username) {
+    return userRepository.existsByUsername(username);
   }
 
   public User findUserByUsername(String username) {
     return userRepository.findByUsername(username);
+  }
+
+  public boolean isPasswordCorrect(String username, String password) {
+    return password.equals(userRepository.findByUsername(username).getPassword());
   }
 }

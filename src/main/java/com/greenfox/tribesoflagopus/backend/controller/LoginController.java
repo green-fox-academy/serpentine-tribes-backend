@@ -50,7 +50,7 @@ public class LoginController {
       return ResponseEntity.status(401).body(incorrectUser);
     }
 
-    if (!loginService.inputPasswordIsCorrect(userLoginInput.getUsername(), userLoginInput.getPassword())) {
+    if (!userService.isPasswordCorrect(userLoginInput.getUsername(), userLoginInput.getPassword())) {
       StatusResponse incorrectPassword = errorService.getIncorrectPasswordStatus();
       return ResponseEntity.status(401).body(incorrectPassword);
     }
