@@ -30,7 +30,8 @@ public class BuildingController {
   public BuildingController(
       BuildingService buildingService,
       UserService userService,
-      ErrorService errorService, TokenService tokenService) {
+      ErrorService errorService,
+      TokenService tokenService) {
     this.buildingService = buildingService;
     this.userService = userService;
     this.errorService = errorService;
@@ -50,7 +51,7 @@ public class BuildingController {
       StatusResponse userIdNotFoundStatus = errorService.getUserIdNotFoundStatus();
       return ResponseEntity.status(404).body(userIdNotFoundStatus);
     }
-    BuildingListDto buildings = buildingService.createBuildingList(userId);
+    BuildingListDto buildings = buildingService.getBuildingList(userId);
     return ResponseEntity.ok().body(buildings);
   }
 

@@ -1,6 +1,5 @@
 package com.greenfox.tribesoflagopus.backend.controller;
 
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.hamcrest.Matchers.*;
@@ -8,16 +7,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
-import com.greenfox.tribesoflagopus.backend.mockbuilder.MockBuildingListBuilder;
-import com.greenfox.tribesoflagopus.backend.mockbuilder.MockKingdomBuilder;
 import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
-import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
@@ -35,7 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 public class BuildingControllerTest {
 
   public static final String TOKEN_INPUT_REQUEST_HEADER = "X-tribes-token";
-  public static final String mockToken =
+  public static final String MOCK_TOKEN =
       "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
 
 
@@ -60,10 +54,10 @@ public class BuildingControllerTest {
 
   @Test
   public void getBuildingListWithInValidUserId() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(false);
     mockMvc.perform(get("/kingdom/buildings")
-        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("UserId not found")))
@@ -72,10 +66,10 @@ public class BuildingControllerTest {
 
   @Test
   public void addNewBuildingMissingBuildingType() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
     mockMvc.perform(post("/kingdom/buildings")
-        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"motvalidtype\" : \"notvalid\"" + "}"))
         .andExpect(status().isBadRequest())
@@ -86,9 +80,9 @@ public class BuildingControllerTest {
 
   @Test
   public void addNewBuildingWithNoParameter() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     mockMvc.perform(post("/kingdom/buildings")
-        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("Missing input")))
@@ -97,10 +91,10 @@ public class BuildingControllerTest {
 
   @Test
   public void addNewBuildingWithInValidUserId() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(false);
     mockMvc.perform(post("/kingdom/buildings")
-        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"type\" : \"farm\"" + "}"))
         .andExpect(status().isNotFound())
@@ -111,10 +105,10 @@ public class BuildingControllerTest {
 
   @Test
   public void addNewBuildingWithInValidBuildingType() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
     mockMvc.perform(post("/kingdom/buildings")
-        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"type\" : \"house\"" + "}"))
         .andExpect(status().isBadRequest())
@@ -125,9 +119,9 @@ public class BuildingControllerTest {
 
   @Test
   public void updateBuildingWithNoParameter() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     mockMvc.perform(put("/kingdom/buildings/1")
-        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("Missing input")))
@@ -136,11 +130,11 @@ public class BuildingControllerTest {
 
   @Test
   public void updateBuildingWithInValidBuildingId() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
     Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(false);
     mockMvc.perform(put("/kingdom/buildings/1")
-        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"level\" : " + 2 + "}"))
         .andExpect(status().isNotFound())
@@ -151,11 +145,11 @@ public class BuildingControllerTest {
 
   @Test
   public void updateBuildingWithInValidUserId() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(false);
     Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(true);
     mockMvc.perform(put("/kingdom/buildings/1")
-        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"level\" : " + 2 + "}"))
         .andExpect(status().isNotFound())
@@ -166,11 +160,11 @@ public class BuildingControllerTest {
 
   @Test
   public void updateBuildingWithMissingBuildingLevel() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
     Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(true);
     mockMvc.perform(put("/kingdom/buildings/1")
-        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"notvalidtype\" : " + 2 + "}"))
         .andExpect(status().isBadRequest())
@@ -181,11 +175,11 @@ public class BuildingControllerTest {
 
   @Test
   public void updateBuildingWithInvalidBuildingLevelAsInt() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
     Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(true);
     mockMvc.perform(put("/kingdom/buildings/1")
-        .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"level\" : " + 0 + "}"))
         .andExpect(status().isBadRequest())

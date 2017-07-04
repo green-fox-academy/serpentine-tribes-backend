@@ -23,7 +23,7 @@ public class BuildingService {
   @Autowired
   DtoService dtoService;
 
-  public BuildingListDto createBuildingList(long userId) {
+  public BuildingListDto getBuildingList(long userId) {
     List<Building> buildingsToConvertToDto = findKingdomByUserId(userId)
         .getBuildings();
     List<BuildingDto> buildingDtos = dtoService.convertFromBuildings(buildingsToConvertToDto);
