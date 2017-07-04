@@ -6,6 +6,7 @@ import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.ResourceDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopListDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.UserTokenDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Building;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Location;
@@ -17,6 +18,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DtoService {
+
+  public UserTokenDto createUserTokenDto(String token) {
+    return UserTokenDto.builder()
+        .status("ok")
+        .token(token)
+        .build();
+  }
 
   public List<BuildingDto> convertFromBuildings(List<Building> buildings) {
     List<BuildingDto> listOfBuildingDtos = new ArrayList<>();
