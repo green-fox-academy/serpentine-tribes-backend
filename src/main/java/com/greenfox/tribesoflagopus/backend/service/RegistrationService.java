@@ -1,19 +1,14 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
-import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
-import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Location;
 import com.greenfox.tribesoflagopus.backend.model.entity.User;
 import com.greenfox.tribesoflagopus.backend.repository.LocationRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
 @Service
 public class RegistrationService {
@@ -24,17 +19,13 @@ public class RegistrationService {
   @Autowired
   LocationRepository locationRepository;
 
-  @Autowired
-  ErrorService errorService;
-
   private String inputUsername;
   private String inputPassword;
   private String kingdomName;
   private final Integer locationMinValue = 1;
   private final Integer locationMaxValue = 100;
 
-  public void register(@Valid UserRegisterInput registerInput,
-      BindingResult bindingResult) {
+  public void register(UserRegisterInput registerInput) {
 
     inputUsername = registerInput.getUsername();
     inputPassword = registerInput.getPassword();
