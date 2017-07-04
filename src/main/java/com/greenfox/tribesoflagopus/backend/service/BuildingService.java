@@ -1,12 +1,10 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
-import com.greenfox.tribesoflagopus.backend.model.dto.BuildingLevelInputDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.BuildingListDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Building;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
-import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,27 +13,22 @@ import org.springframework.stereotype.Service;
 public class BuildingService {
 
   private final BuildingRepository buildingRepository;
-  private final KingdomRepository kingdomRepository;
   private final DtoService dtoService;
+  private final KingdomService kingdomService;
 
   @Autowired
   public BuildingService(
       BuildingRepository buildingRepository,
-      KingdomRepository kingdomRepository,
-      DtoService dtoService) {
+      DtoService dtoService,
+      KingdomService kingdomService) {
     this.buildingRepository = buildingRepository;
-    this.kingdomRepository = kingdomRepository;
     this.dtoService = dtoService;
+    this.kingdomService = kingdomService;
   }
 
   public BuildingListDto getBuildingList(long userId) {
-    List<Building> buildingsToConvertToDto = findKingdomByUserId(userId)
-        .getBuildings();
-    List<BuildingDto> buildingDtos = dtoService.convertFromBuildings(buildingsToConvertToDto);
-    BuildingListDto buildingsToReturn = BuildingListDto.builder()
-        .buildings(buildingDtos)
-        .build();
-    return buildingsToReturn;
+    List<Building> buildings = kingdomService.getBuildingsByUserId(userId);
+    return dtoService.convertToBuildingListDtoFromBuildings(buildings);
   }
 
   public boolean validBuildingType(String inputBuildingType) {
@@ -48,38 +41,25 @@ public class BuildingService {
   }
 
   public BuildingDto addNewBuilding(String type, long userId) {
-    Kingdom kingdomOfNewBuilding = findKingdomByUserId(userId);
-    createAndSaveNewBuilding(type, kingdomOfNewBuilding);
-    BuildingDto buildingDto = getTheNewestBuildingByTypeAndUser(kingdomOfNewBuilding, type);
+    Building building = createAndSaveNewBuilding(type, userId);
+    BuildingDto buildingDto = dtoService.convertfromBuilding(building);
     return buildingDto;
   }
 
-  public void createAndSaveNewBuilding(String inputBuildingType, Kingdom kingdom) {
+  public Building createAndSaveNewBuilding(String type, Long userId) {
+    Kingdom kingdom = kingdomService.findKingdomByUserId(userId);
     Building newBuilding = Building.builder()
-        .type(inputBuildingType)
+        .type(type)
         .build();
     kingdom.addBuilding(newBuilding);
-    kingdomRepository.save(kingdom);
+    return buildingRepository.save(newBuilding);
   }
 
-  public BuildingDto getTheNewestBuildingByTypeAndUser(Kingdom kingdom, String type) {
-    Building building = buildingRepository.findTopByKingdomAndTypeOrderByIdDesc(kingdom, type);
-    return dtoService.convertfromBuilding(building);
-  }
-
-  public BuildingDto updateBuilding(Long buildingId, BuildingLevelInputDto buildingLevelInputDto) {
+  public BuildingDto updateBuilding(Long buildingId, Integer level) {
     Building building = buildingRepository.findById(buildingId);
-    building.setLevel(buildingLevelInputDto.getLevel());
+    building.setLevel(level);
     buildingRepository.save(building);
     return dtoService.convertfromBuilding(building);
-  }
-
-  public boolean existsBuildingById(Long buildingId) {
-    return buildingRepository.exists(buildingId);
-  }
-
-  public Kingdom findKingdomByUserId(Long userId) {
-    return kingdomRepository.findOneByUserId(userId);
   }
 
   public boolean existsByBuildingIdAndUserId(Long buildingId, Long userId) {

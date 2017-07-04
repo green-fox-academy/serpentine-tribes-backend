@@ -106,7 +106,7 @@ public class BuildingController {
     }
 
     BuildingDto updatedBuildingDto = buildingService
-        .updateBuilding(buildingId, buildingLevelInputDto);
+        .updateBuilding(buildingId, buildingLevelInputDto.getLevel());
     return ResponseEntity.ok().body(updatedBuildingDto);
   }
 
