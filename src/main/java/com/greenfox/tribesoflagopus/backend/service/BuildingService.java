@@ -14,14 +14,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class BuildingService {
 
-  @Autowired
-  BuildingRepository buildingRepository;
+  private final BuildingRepository buildingRepository;
+  private final KingdomRepository kingdomRepository;
+  private final DtoService dtoService;
 
   @Autowired
-  KingdomRepository kingdomRepository;
-
-  @Autowired
-  DtoService dtoService;
+  public BuildingService(
+      BuildingRepository buildingRepository,
+      KingdomRepository kingdomRepository,
+      DtoService dtoService) {
+    this.buildingRepository = buildingRepository;
+    this.kingdomRepository = kingdomRepository;
+    this.dtoService = dtoService;
+  }
 
   public BuildingListDto getBuildingList(long userId) {
     List<Building> buildingsToConvertToDto = findKingdomByUserId(userId)

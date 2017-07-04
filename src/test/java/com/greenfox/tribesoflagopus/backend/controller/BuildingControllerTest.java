@@ -14,9 +14,7 @@ import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,7 +32,6 @@ public class BuildingControllerTest {
   public static final String TOKEN_INPUT_REQUEST_HEADER = "X-tribes-token";
   public static final String MOCK_TOKEN =
       "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
-
 
   private MockMvc mockMvc;
 
