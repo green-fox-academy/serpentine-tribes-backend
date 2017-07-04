@@ -77,7 +77,9 @@ public class BuildingService {
     return kingdomRepository.findOneByUserId(userId);
   }
 
-
+  public boolean existsByBuildingIdAndUserId(Long buildingId, Long userId) {
+    return buildingRepository.existsByIdAndKingdomUserId(buildingId, userId);
+  }
 }
 
 

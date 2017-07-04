@@ -97,10 +97,7 @@ public class BuildingController {
     if (bindingResult.hasErrors()) {
       StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
       return ResponseEntity.badRequest().body(missingParameterStatus);
-    } else if (!userService.existsUserById(userId)) {
-      StatusResponse invalidIdStatus = errorService.getInvalidIdStatus(userId);
-      return ResponseEntity.status(404).body(invalidIdStatus);
-    } else if (!buildingService.existsBuildingById(buildingId)) {
+    } else if (!buildingService.existsByBuildingIdAndUserId(buildingId, userId)) {
       StatusResponse invalidIdStatus = errorService.getInvalidIdStatus(buildingId);
       return ResponseEntity.status(404).body(invalidIdStatus);
     } else if (buildingLevelInputDto.getLevel() < 1) {

@@ -9,11 +9,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
 import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
+import com.greenfox.tribesoflagopus.backend.service.BuildingService;
 import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -46,6 +49,9 @@ public class BuildingControllerTest {
 
   @MockBean
   BuildingRepository mockBuildingRepository;
+
+  @MockBean
+  BuildingService mockBuildingService;
 
   @Before
   public void setup() throws Exception {
@@ -128,26 +134,11 @@ public class BuildingControllerTest {
         .andDo(print());
   }
 
-  @Test
-  public void updateBuildingWithInValidBuildingId() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
-    Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
-    Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(false);
-    mockMvc.perform(put("/kingdom/buildings/1")
-        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        .content("{" + "\"level\" : " + 2 + "}"))
-        .andExpect(status().isNotFound())
-        .andExpect(jsonPath("$.status", is("error")))
-        .andExpect(jsonPath("$.message", is("Id: 1 not found!")))
-        .andDo(print());
-  }
 
   @Test
-  public void updateBuildingWithInValidUserId() throws Exception {
+  public void updateBuildingWithInValidBuildingIdAndUserId() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
-    Mockito.when(mockUserRepository.exists(1L)).thenReturn(false);
-    Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.existsByBuildingIdAndUserId(1L, 1L)).thenReturn(false);
     mockMvc.perform(put("/kingdom/buildings/1")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -161,8 +152,7 @@ public class BuildingControllerTest {
   @Test
   public void updateBuildingWithMissingBuildingLevel() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
-    Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
-    Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.existsByBuildingIdAndUserId(1L, 1L)).thenReturn(true);
     mockMvc.perform(put("/kingdom/buildings/1")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -176,8 +166,7 @@ public class BuildingControllerTest {
   @Test
   public void updateBuildingWithInvalidBuildingLevelAsInt() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
-    Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
-    Mockito.when(mockBuildingRepository.exists(1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.existsByBuildingIdAndUserId(1L, 1L)).thenReturn(true);
     mockMvc.perform(put("/kingdom/buildings/1")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
