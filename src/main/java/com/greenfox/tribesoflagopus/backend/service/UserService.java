@@ -37,6 +37,13 @@ public class UserService {
     return password.equals(userRepository.findByUsername(username).getPassword());
   }
 
+  public void register(UserRegisterInput registerInput) {
+
+    UserRegisterInput processedRegisterInput = setDefaultKingdomNameIfNeeded(registerInput);
+
+    User user = createUserWithKingdom(processedRegisterInput);
+  }
+
   public User createUserWithKingdom(UserRegisterInput registerInput) {
     User user = User.builder()
         .username(registerInput.getUsername())
@@ -60,19 +67,12 @@ public class UserService {
     return user;
   }
 
-  public UserRegisterInput setDefaultKingdomNameIfNeeded(UserRegisterInput registerInput) {
+  private UserRegisterInput setDefaultKingdomNameIfNeeded(UserRegisterInput registerInput) {
     String inputKingdomName = registerInput.getKingdom();
     if (inputKingdomName == null || inputKingdomName.equals("")) {
       registerInput.setKingdom(String.format("%s's kingdom", registerInput.getUsername()));
     }
     return registerInput;
-  }
-
-  public void register(UserRegisterInput registerInput) {
-
-    UserRegisterInput processedRegisterInput = setDefaultKingdomNameIfNeeded(registerInput);
-
-    User user = createUserWithKingdom(processedRegisterInput);
   }
 
   public UserDto createUserDto(String username) {
