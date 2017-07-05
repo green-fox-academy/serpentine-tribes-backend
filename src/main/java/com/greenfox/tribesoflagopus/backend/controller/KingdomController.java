@@ -7,6 +7,7 @@ import com.greenfox.tribesoflagopus.backend.service.KingdomService;
 import javax.validation.Valid;
 
 import com.greenfox.tribesoflagopus.backend.service.TokenService;
+import com.greenfox.tribesoflagopus.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +17,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class KingdomController {
 
+  private final UserService userService;
   private final ErrorService errorService;
   private final KingdomService kingdomService;
   private final TokenService tokenService;
 
   @Autowired
-  public KingdomController(
+  public KingdomController(UserService userService,
       ErrorService errorService,
       KingdomService kingdomService,
       TokenService tokenService) {
+    this.userService = userService;
     this.errorService = errorService;
     this.kingdomService = kingdomService;
     this.tokenService = tokenService;
@@ -38,7 +41,11 @@ public class KingdomController {
       return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
     }
 
-    return kingdomService.showKingdom(userId);
+    if (!userService.existsUserById(userId)) {
+      return ResponseEntity.status(404).body(errorService.getUserNotFoundStatus());
+    }
+
+    return ResponseEntity.ok().body(kingdomService.createKingdomDto(userId));
   }
 
   @PutMapping(value = "/kingdom",
@@ -54,7 +61,11 @@ public class KingdomController {
       return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
     }
 
-    return kingdomService.modifyKingdom(userId, kingdomInputModifyDto);
+    if (!userService.existsUserById(userId)) {
+      return ResponseEntity.status(404).body(errorService.getUserNotFoundStatus());
+    }
+
+    return ResponseEntity.ok().body(kingdomService.createModifiedKingdomDto(userId, kingdomInputModifyDto));
   }
 
 }
