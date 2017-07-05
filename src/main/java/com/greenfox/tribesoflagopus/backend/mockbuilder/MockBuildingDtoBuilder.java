@@ -9,22 +9,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class MockBuildingDtoBuilder {
 
-  private final DtoService dtoService;
   private BuildingDto mockBuildingDto;
 
-  @Autowired
   public MockBuildingDtoBuilder(DtoService dtoService) {
-    this.dtoService = dtoService;
-    Building mockBuilding = getMockBuilding();
-    this.mockBuildingDto = dtoService.convertfromBuilding(mockBuilding);
-  }
-
-  private Building getMockBuilding() {
-    Building mockBuilding = Building.builder()
+    BuildingDto mockBuilding = BuildingDto.builder()
+        .id(2L)
         .type("farm")
+        .level(1)
+        .hp(0)
         .build();
-    mockBuilding.setId(2L);
-    return mockBuilding;
   }
 
   public void setMockBuildingDto(BuildingDto mockBuildingDto) {

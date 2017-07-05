@@ -1,5 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.mockbuilder;
 
+import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.BuildingListDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Building;
 import com.greenfox.tribesoflagopus.backend.service.DtoService;
@@ -11,29 +12,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class MockBuildingListDtoBuilder {
 
-  private final DtoService dtoService;
   private BuildingListDto mockBuildingListDto;
 
-  @Autowired
   public MockBuildingListDtoBuilder(DtoService dtoService) {
-    List<Building> buildings = getMockBuildingList();
-    mockBuildingListDto = dtoService.convertToBuildingListDtoFromBuildings(buildings);
-    this.dtoService = dtoService;
-  }
-
-  private List<Building> getMockBuildingList() {
-    List<Building> mockBuildingList= new ArrayList<>();
-    Building mockBuilding1 = Building.builder()
+    BuildingDto mockBuilding1 = BuildingDto.builder()
+        .id(1L)
         .type("townhall")
+        .level(1)
+        .hp(0)
         .build();
-    Building mockBuilding2 = Building.builder()
+    BuildingDto mockBuilding2 = BuildingDto.builder()
+        .id(2L)
         .type("farm")
+        .level(1)
+        .hp(0)
         .build();
-    mockBuilding1.setId(1L);
-    mockBuilding2.setId(2L);
-    mockBuildingList.add(mockBuilding1);
-    mockBuildingList.add(mockBuilding2);
-    return mockBuildingList;
+    this.mockBuildingListDto = BuildingListDto.builder()
+         .building(mockBuilding1)
+         .building(mockBuilding2)
+         .build();
   }
 
   public void setMockBuildingListDto(BuildingListDto mockBuildingListDto) {

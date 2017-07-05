@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
+import com.greenfox.tribesoflagopus.backend.mockbuilder.MockBuildingDtoBuilder;
 import com.greenfox.tribesoflagopus.backend.mockbuilder.MockBuildingListDtoBuilder;
 import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
@@ -52,6 +53,9 @@ public class BuildingControllerTest {
   @Autowired
   MockBuildingListDtoBuilder mockBuildingListDtoBuilder;
 
+  @Autowired
+  MockBuildingDtoBuilder mockBuildingDtoBuilder;
+
   @Before
   public void setup() throws Exception {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -86,6 +90,24 @@ public class BuildingControllerTest {
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("UserId not found")))
+        .andDo(print());
+  }
+
+  @Test
+  public void addNewBuildingWithValidInputs() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(mockUserService.existsUserById(1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.addNewBuilding("farm", 1L))
+        .thenReturn(mockBuildingDtoBuilder.build());
+    mockMvc.perform(post("/kingdom/buildings")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"type\" : \"farm\"" + "}"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(2)))
+        .andExpect(jsonPath("$.type", is("farm")))
+        .andExpect(jsonPath("$.level", is(1)))
+        .andExpect(jsonPath("$.hp", is(0)))
         .andDo(print());
   }
 
