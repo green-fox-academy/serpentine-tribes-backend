@@ -20,9 +20,12 @@ public class TokenService {
 
   private Key key;
 
-  public void saveTokenToUser(User user){
-    userRepository.findByUsername(user.getUsername()).setToken(generateToken(user));
-    userRepository.save(user);
+  public String saveNewTokenToUser(String username){
+    User existingUser = userRepository.findByUsername(username);
+    String token = generateToken(existingUser);
+    existingUser.setToken(token);
+    userRepository.save(existingUser);
+    return token;
   }
 
   public String generateToken(User user) {

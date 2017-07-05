@@ -31,14 +31,15 @@ import org.springframework.http.MediaType;
 public class TroopControllerTest {
 
   public static final String TOKEN_INPUT_REQUEST_HEADER = "X-tribes-token";
+  public static final String
+      MOCK_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
 
   @MockBean
   TokenService mockTokenService;
-
   private MockMvc mockMvc;
+
+
   private HttpMessageConverter mappingJackson2HttpMessageConverter;
-
-
   @Autowired
   private WebApplicationContext webApplicationContext;
 
@@ -61,11 +62,10 @@ public class TroopControllerTest {
 
   @Test
   public void listTroops_withExistingUserId() throws Exception {
-    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
 
     mockMvc.perform(get("/kingdom/troops")
-            .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.troops").exists())
         .andDo(print());
@@ -73,11 +73,10 @@ public class TroopControllerTest {
 
   @Test
   public void listTroops_withNonExistentUserId() throws Exception {
-    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(666L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(666L);
 
     mockMvc.perform(get("/kingdom/troops")
-            .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("UserId not found")))
@@ -86,10 +85,9 @@ public class TroopControllerTest {
 
   @Test
   public void showOneTroop_withExistingIds() throws Exception {
-    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
 
-    mockMvc.perform(get("/kingdom/troops/1").header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
+    mockMvc.perform(get("/kingdom/troops/1").header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.level").exists())
@@ -100,36 +98,22 @@ public class TroopControllerTest {
   }
 
   @Test
-  public void showOneTroop_withNonExistentUserId() throws Exception {
-    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(666L);
-
-    mockMvc.perform(get("/kingdom/troops/1").header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
-        .andExpect(status().isNotFound())
-        .andExpect(jsonPath("$.status", is("error")))
-        .andExpect(jsonPath("$.message", is("<id> not found")))
-        .andDo(print());
-  }
-
-  @Test
   public void showOneTroop_withNonExistentTroopId() throws Exception {
-    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
 
-    mockMvc.perform(get("/kingdom/troops/666").header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
+    mockMvc.perform(get("/kingdom/troops/666").header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status", is("error")))
-        .andExpect(jsonPath("$.message", is("<id> not found")))
+        .andExpect(jsonPath("$.message", is("Troop ID not found")))
         .andDo(print());
   }
 
   @Test
   public void createNewTroop() throws Exception {
-    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
 
     mockMvc.perform(post("/kingdom/troops")
-    .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.level").exists())

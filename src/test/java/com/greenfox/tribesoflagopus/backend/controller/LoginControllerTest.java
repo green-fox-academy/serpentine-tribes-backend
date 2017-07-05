@@ -9,9 +9,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
-import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
-import com.greenfox.tribesoflagopus.backend.model.entity.User;
-import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,9 +31,6 @@ public class LoginControllerTest {
   @Autowired
   private WebApplicationContext webApplicationContext;
 
-  @Autowired
-  UserRepository testUserRepository;
-
   @Before
   public void setup() throws Exception {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -52,7 +46,7 @@ public class LoginControllerTest {
                     + "\"password\" : \"passnoemi\""
                     + "}"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.status").exists())
+            .andExpect(jsonPath("$.status", is("ok")))
             .andExpect(jsonPath("$.token").exists())
             .andDo(print());
   }
