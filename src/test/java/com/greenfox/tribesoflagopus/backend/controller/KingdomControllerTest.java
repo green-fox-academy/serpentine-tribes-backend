@@ -33,6 +33,8 @@ import org.springframework.http.MediaType;
 public class KingdomControllerTest {
 
   public static final String TOKEN_INPUT_REQUEST_HEADER = "X-tribes-token";
+  public static final String
+      MOCK_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
 
   @MockBean
   TokenService mockTokenService;
@@ -63,11 +65,10 @@ public class KingdomControllerTest {
 
   @Test
   public void showKingdom_getKnownExistingKingdom() throws Exception {
-    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
 
     mockMvc.perform(get("/kingdom")
-            .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.name").exists())
@@ -81,11 +82,10 @@ public class KingdomControllerTest {
 
   @Test
   public void showKingdom_withNonExistentUserId() throws Exception {
-    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(666L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(666L);
 
     mockMvc.perform(get("/kingdom")
-            .header(TOKEN_INPUT_REQUEST_HEADER, mockToken))
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("user_id not found")))
@@ -94,11 +94,10 @@ public class KingdomControllerTest {
 
   @Test
   public void modifyKingdom_withValidRequestFields() throws Exception {
-    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(1L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
 
     mockMvc.perform(put("/kingdom")
-            .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{"
             + "\"name\" : \"MI5\","
@@ -121,11 +120,10 @@ public class KingdomControllerTest {
 
   @Test
   public void modifyKingdom_withNonExistentUserId() throws Exception {
-    String mockToken = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
-    Mockito.when(mockTokenService.getIdFromToken(mockToken)).thenReturn(666L);
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(666L);
 
     mockMvc.perform(put("/kingdom")
-            .header(TOKEN_INPUT_REQUEST_HEADER, mockToken)
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{"
             + "\"name\" : \"MI5\","

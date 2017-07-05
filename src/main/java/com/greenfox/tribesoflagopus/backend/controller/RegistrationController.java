@@ -2,10 +2,10 @@ package com.greenfox.tribesoflagopus.backend.controller;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
-import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserRegisterInput;
+import com.greenfox.tribesoflagopus.backend.model.entity.User;
+import com.greenfox.tribesoflagopus.backend.service.DtoService;
 import com.greenfox.tribesoflagopus.backend.service.ErrorService;
-import com.greenfox.tribesoflagopus.backend.service.RegistrationService;
 import javax.validation.Valid;
 
 import com.greenfox.tribesoflagopus.backend.service.UserService;
@@ -21,15 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RegistrationController {
 
-  private final RegistrationService registrationService;
+  private final DtoService dtoService;
   private final ErrorService errorService;
   private final UserService userService;
 
   @Autowired
   public RegistrationController(
-          RegistrationService registrationService, ErrorService errorService,
-          UserService userService) {
-    this.registrationService = registrationService;
+      DtoService dtoService,
+      ErrorService errorService,
+      UserService userService) {
+
+    this.dtoService = dtoService;
     this.errorService = errorService;
     this.userService = userService;
   }
@@ -49,10 +51,7 @@ public class RegistrationController {
       return ResponseEntity.status(409).body(occupiedUserNameStatus);
     }
 
-    registrationService.register(registerInput, bindingResult);
-    UserDto userDto = registrationService.createUserDto(registerInput.getUsername());
-
-    return ResponseEntity.ok().body(userDto);
+    User createdUser = userService.register(registerInput);
+    return ResponseEntity.ok().body(dtoService.createUserDto(createdUser));
   }
-
 }
