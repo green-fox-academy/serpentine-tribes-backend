@@ -1,6 +1,7 @@
 package com.greenfox.tribesoflagopus.backend.controller;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -142,8 +143,8 @@ public class KingdomControllerTest {
   public void modifyKingdom_withValidRequestFields() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(TEST_USER_ID);
     Mockito.when(userService.existsUserById(TEST_USER_ID)).thenReturn(true);
-    Mockito.when(kingdomService.createModifiedKingdomDto(TEST_USER_ID,
-        TEST_INPUT_MODIFY_KINGDOM_DTO)).thenReturn(TEST_MODIFIED_KINGDOM_DTO);
+    Mockito.when(kingdomService.createModifiedKingdomDto(eq(TEST_USER_ID),
+        eq(TEST_INPUT_MODIFY_KINGDOM_DTO))).thenReturn(TEST_MODIFIED_KINGDOM_DTO);
 
     mockMvc.perform(put("/kingdom")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
@@ -171,8 +172,8 @@ public class KingdomControllerTest {
   public void modifyKingdom_withNonExistentUserId() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(666L);
     Mockito.when(userService.existsUserById(TEST_USER_ID)).thenReturn(true);
-    Mockito.when(kingdomService.createModifiedKingdomDto(TEST_USER_ID,
-        TEST_INPUT_MODIFY_KINGDOM_DTO))
+    Mockito
+        .when(kingdomService.createModifiedKingdomDto(TEST_USER_ID, TEST_INPUT_MODIFY_KINGDOM_DTO))
         .thenReturn(TEST_MODIFIED_KINGDOM_DTO);
 
     mockMvc.perform(put("/kingdom")
