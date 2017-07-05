@@ -66,4 +66,6 @@ public class ErrorService {
   public StatusResponse getTroopIdNotFoundStatus() {
     return StatusResponse.error("Troop ID not found");
   }
+
+  public StatusResponse getUserNotFoundStatus (){ return StatusResponse.error("user_id not found"); }
 }
