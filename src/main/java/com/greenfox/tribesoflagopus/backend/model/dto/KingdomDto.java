@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Singular;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
 @Setter
 @JsonPropertyOrder({"id", "name", "user_id", "buildings", "resources", "troops", "location"})
