@@ -9,6 +9,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
+import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
+import com.greenfox.tribesoflagopus.backend.service.KingdomService;
+import com.greenfox.tribesoflagopus.backend.service.UserService;
 import java.util.Arrays;
 
 import com.greenfox.tribesoflagopus.backend.service.TokenService;
@@ -35,9 +41,24 @@ public class KingdomControllerTest {
   public static final String TOKEN_INPUT_REQUEST_HEADER = "X-tribes-token";
   public static final String
       MOCK_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
+  public static final KingdomDto TEST_KINGDOM_DTO =
+      KingdomDto.builder()
+          .id(1L)
+      .name("London")
+      .userId(1L)
+      .building(BuildingDto.builder().id(1L).type("townhall").level(1).hp(1).build())
+      .building(BuildingDto.builder().id(2L).type("farm").level(2).hp(2).build())
+      .troop(TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).build())
+      .troop(TroopDto.builder().id(2L).level(2).hp(1).attack(1).defence(1).build())
+      .location(LocationDto.builder().x(1).y(1).build())
+      .build();
 
   @MockBean
-  TokenService mockTokenService;
+  private TokenService mockTokenService;
+  @MockBean
+  private KingdomService kingdomService;
+  @MockBean
+  private UserService userService;
 
   private MockMvc mockMvc;
   private HttpMessageConverter mappingJackson2HttpMessageConverter;
@@ -65,7 +86,10 @@ public class KingdomControllerTest {
 
   @Test
   public void showKingdom_getKnownExistingKingdom() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Long testUserId = 1L;
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(testUserId);
+    Mockito.when(userService.existsUserById(testUserId)).thenReturn(true);
+    Mockito.when(kingdomService.createKingdomDto(testUserId)).thenReturn(TEST_KINGDOM_DTO);
 
     mockMvc.perform(get("/kingdom")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
