@@ -4,24 +4,24 @@ import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MockBuildingDtoBuilder {
+public class MockUpdatedBuildingDtoBuilder {
 
-  private BuildingDto mockBuildingDto;
+  private BuildingDto mockUpdatedBuildingDto;
 
-  public MockBuildingDtoBuilder() {
-    this.mockBuildingDto = BuildingDto.builder()
+  public MockUpdatedBuildingDtoBuilder() {
+    this.mockUpdatedBuildingDto = BuildingDto.builder()
         .id(2L)
         .type("farm")
-        .level(1)
+        .level(2)
         .hp(0)
         .build();
   }
 
   public void setMockBuildingDto(BuildingDto mockBuildingDto) {
-    this.mockBuildingDto = mockBuildingDto;
+    this.mockUpdatedBuildingDto = mockBuildingDto;
   }
 
   public BuildingDto build() {
-    return mockBuildingDto;
+    return mockUpdatedBuildingDto;
   }
 }

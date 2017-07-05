@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
 import com.greenfox.tribesoflagopus.backend.mockbuilder.MockBuildingDtoBuilder;
 import com.greenfox.tribesoflagopus.backend.mockbuilder.MockBuildingListDtoBuilder;
+import com.greenfox.tribesoflagopus.backend.mockbuilder.MockUpdatedBuildingDtoBuilder;
 import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import com.greenfox.tribesoflagopus.backend.service.BuildingService;
@@ -17,6 +18,7 @@ import com.greenfox.tribesoflagopus.backend.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,6 +57,9 @@ public class BuildingControllerTest {
 
   @Autowired
   MockBuildingDtoBuilder mockBuildingDtoBuilder;
+
+  @Autowired
+  MockUpdatedBuildingDtoBuilder mockUpdatedBuildingDtoBuilder;
 
   @Before
   public void setup() throws Exception {
@@ -155,6 +160,7 @@ public class BuildingControllerTest {
   public void addNewBuildingWithInvalidBuildingType() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserService.existsUserById(1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.validBuildingType("farm")).thenReturn(false);
     mockMvc.perform(post("/kingdom/buildings")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -162,6 +168,24 @@ public class BuildingControllerTest {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("Invalid building type!")))
+        .andDo(print());
+  }
+
+  @Test
+  public void updateBuildingWithValidInputs() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(mockBuildingService.existsByBuildingIdAndUserId(1L, 1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.updateBuilding(1L, 2))
+        .thenReturn(mockUpdatedBuildingDtoBuilder.build());
+    mockMvc.perform(put("/kingdom/buildings/1")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"level\" : " + 2 + "}"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(2)))
+        .andExpect(jsonPath("$.type", is("farm")))
+        .andExpect(jsonPath("$.level", is(2)))
+        .andExpect(jsonPath("$.hp", is(0)))
         .andDo(print());
   }
 
