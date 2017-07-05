@@ -5,11 +5,13 @@ import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.KingdomInputModifyDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
+import com.greenfox.tribesoflagopus.backend.model.entity.Building;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Location;
 import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
 import com.greenfox.tribesoflagopus.backend.repository.LocationRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -89,5 +91,13 @@ public class KingdomService {
     }
 
     return kingdomRepository.save(foundKingdom);
+  }
+
+  public Kingdom findKingdomByUserId(Long userId) {
+    return kingdomRepository.findOneByUserId(userId);
+  }
+
+  public List<Building> getBuildingsByUserId(Long userId) {
+    return findKingdomByUserId(userId).getBuildings();
   }
 }
