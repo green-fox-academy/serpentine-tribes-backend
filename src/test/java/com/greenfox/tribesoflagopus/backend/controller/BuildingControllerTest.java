@@ -12,6 +12,7 @@ import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import com.greenfox.tribesoflagopus.backend.service.BuildingService;
 import com.greenfox.tribesoflagopus.backend.service.TokenService;
+import com.greenfox.tribesoflagopus.backend.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,10 +44,7 @@ public class BuildingControllerTest {
   TokenService mockTokenService;
 
   @MockBean
-  UserRepository mockUserRepository;
-
-  @MockBean
-  BuildingRepository mockBuildingRepository;
+  UserService mockUserService;
 
   @MockBean
   BuildingService mockBuildingService;
@@ -62,7 +60,7 @@ public class BuildingControllerTest {
   @Test
   public void getBuildingListWithValidUserId() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
-    Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
+    Mockito.when(mockUserService.existsUserById(1L)).thenReturn(true);
     Mockito.when(mockBuildingService.getBuildingList(1L))
         .thenReturn(mockBuildingListDtoBuilder.build());
     mockMvc.perform(get("/kingdom/buildings")
@@ -82,7 +80,7 @@ public class BuildingControllerTest {
   @Test
   public void getBuildingListWithInValidUserId() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
-    Mockito.when(mockUserRepository.exists(1L)).thenReturn(false);
+    Mockito.when(mockUserService.existsUserById(1L)).thenReturn(false);
     mockMvc.perform(get("/kingdom/buildings")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isNotFound())
@@ -94,7 +92,7 @@ public class BuildingControllerTest {
   @Test
   public void addNewBuildingMissingBuildingType() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
-    Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
+    Mockito.when(mockUserService.existsUserById(1L)).thenReturn(true);
     mockMvc.perform(post("/kingdom/buildings")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -119,7 +117,7 @@ public class BuildingControllerTest {
   @Test
   public void addNewBuildingWithInValidUserId() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
-    Mockito.when(mockUserRepository.exists(1L)).thenReturn(false);
+    Mockito.when(mockUserService.existsUserById(1L)).thenReturn(false);
     mockMvc.perform(post("/kingdom/buildings")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -133,7 +131,7 @@ public class BuildingControllerTest {
   @Test
   public void addNewBuildingWithInValidBuildingType() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
-    Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
+    Mockito.when(mockUserService.existsUserById(1L)).thenReturn(true);
     mockMvc.perform(post("/kingdom/buildings")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -154,7 +152,6 @@ public class BuildingControllerTest {
         .andExpect(jsonPath("$.message", is("Missing input")))
         .andDo(print());
   }
-
 
   @Test
   public void updateBuildingWithInValidBuildingIdAndUserId() throws Exception {
