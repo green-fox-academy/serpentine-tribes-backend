@@ -20,17 +20,19 @@ import org.springframework.stereotype.Service;
 public class KingdomService {
 
   private final DtoService dtoService;
+  private final ErrorService errorService;
   private final KingdomRepository kingdomRepository;
   private final LocationRepository locationRepository;
   private final UserRepository userRepository;
 
   @Autowired
   public KingdomService(
-      DtoService dtoService,
+      DtoService dtoService, ErrorService errorService,
       KingdomRepository kingdomRepository,
       LocationRepository locationRepository,
       UserRepository userRepository) {
     this.dtoService = dtoService;
+    this.errorService = errorService;
     this.kingdomRepository = kingdomRepository;
     this.locationRepository = locationRepository;
     this.userRepository = userRepository;
@@ -39,11 +41,7 @@ public class KingdomService {
   public ResponseEntity<JsonDto> showKingdom(Long userId) {
 
     if (!userRepository.exists(userId)) {
-      StatusResponse userNotFoundStatus = StatusResponse.builder()
-          .status("error")
-          .message("user_id not found")
-          .build();
-      return ResponseEntity.status(404).body(userNotFoundStatus);
+      return ResponseEntity.status(404).body(errorService.getUserNotFoundStatus());
     }
 
     Kingdom foundKingdom = kingdomRepository.findOneByUserId(userId);
@@ -57,11 +55,7 @@ public class KingdomService {
       KingdomInputModifyDto kingdomInputModifyDto) {
 
     if (!userRepository.exists(userId)) {
-      StatusResponse userNotFoundStatus = StatusResponse.builder()
-          .status("error")
-          .message("user_id not found")
-          .build();
-      return ResponseEntity.status(404).body(userNotFoundStatus);
+      return ResponseEntity.status(404).body(errorService.getUserNotFoundStatus());
     }
 
     Kingdom modifiedKingdom = saveAndReturnModifiedKingdom(userId, kingdomInputModifyDto);
