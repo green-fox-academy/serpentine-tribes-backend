@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
+import com.greenfox.tribesoflagopus.backend.mockbuilder.MockBuildingListDtoBuilder;
 import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
 import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import com.greenfox.tribesoflagopus.backend.service.BuildingService;
@@ -50,9 +51,32 @@ public class BuildingControllerTest {
   @MockBean
   BuildingService mockBuildingService;
 
+  @Autowired
+  MockBuildingListDtoBuilder mockBuildingListDtoBuilder;
+
   @Before
   public void setup() throws Exception {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
+  }
+
+  @Test
+  public void getBuildingListWithValidUserId() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(mockUserRepository.exists(1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.getBuildingList(1L))
+        .thenReturn(mockBuildingListDtoBuilder.build());
+    mockMvc.perform(get("/kingdom/buildings")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.buildings[0].id", is(1)))
+        .andExpect(jsonPath("$.buildings[0].type", is("townhall")))
+        .andExpect(jsonPath("$.buildings[0].level", is(1)))
+        .andExpect(jsonPath("$.buildings[0].hp", is(0)))
+        .andExpect(jsonPath("$.buildings[1].id", is(2)))
+        .andExpect(jsonPath("$.buildings[1].type", is("farm")))
+        .andExpect(jsonPath("$.buildings[1].level", is(1)))
+        .andExpect(jsonPath("$.buildings[1].hp", is(0)))
+        .andDo(print());
   }
 
   @Test
