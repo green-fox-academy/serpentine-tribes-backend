@@ -28,6 +28,7 @@ public class DtoService {
         .buildings(buildingDtos)
         .build();
     return buildingListDto;
+  }
 
   public UserTokenDto createUserTokenDto(String token) {
     return UserTokenDto.builder()
