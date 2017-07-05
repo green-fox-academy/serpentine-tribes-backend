@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Entity
 @SequenceGenerator(name = "seq_store", sequenceName = "troop_sequence")
 @Getter
@@ -32,13 +34,15 @@ public class Troop {
   private int hp;
   private int attack;
   private int defence;
+  private Timestamp timestamp;
 
   @Builder
-  public Troop(int level, int hp, int attack, int defence) {
+  public Troop(int level, int hp, int attack, int defence, Timestamp timestamp) {
     this.level = level;
     this.hp = hp;
     this.attack = attack;
     this.defence = defence;
+    this.timestamp = timestamp;
   }
 
   public static class TroopBuilder {

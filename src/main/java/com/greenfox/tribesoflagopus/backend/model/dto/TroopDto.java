@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Builder
 @Getter
 @Setter
@@ -18,5 +20,6 @@ public class TroopDto implements JsonDto {
   private Integer hp;
   private Integer attack;
   private Integer defence;
+  private Timestamp timestamp;
 
 }
