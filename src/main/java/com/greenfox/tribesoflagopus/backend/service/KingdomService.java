@@ -38,31 +38,23 @@ public class KingdomService {
     this.userRepository = userRepository;
   }
 
-  public ResponseEntity<JsonDto> showKingdom(Long userId) {
-
-    if (!userRepository.exists(userId)) {
-      return ResponseEntity.status(404).body(errorService.getUserNotFoundStatus());
-    }
+  public KingdomDto createKingdomDto(Long userId) {
 
     Kingdom foundKingdom = kingdomRepository.findOneByUserId(userId);
     KingdomDto kingdomResponse = dtoService.convertFromKingdom(foundKingdom);
 
-    return ResponseEntity.ok().body(kingdomResponse);
+    return kingdomResponse;
   }
 
-  public ResponseEntity<JsonDto> modifyKingdom(
+  public KingdomDto createModifiedKingdomDto(
       Long userId,
       KingdomInputModifyDto kingdomInputModifyDto) {
-
-    if (!userRepository.exists(userId)) {
-      return ResponseEntity.status(404).body(errorService.getUserNotFoundStatus());
-    }
 
     Kingdom modifiedKingdom = saveAndReturnModifiedKingdom(userId, kingdomInputModifyDto);
 
     KingdomDto kingdomResponse = dtoService.convertFromKingdom(modifiedKingdom);
 
-    return ResponseEntity.ok().body(kingdomResponse);
+    return kingdomResponse;
   }
 
   private Kingdom saveAndReturnModifiedKingdom(Long userId, KingdomInputModifyDto kingdomInputModifyDto) {
