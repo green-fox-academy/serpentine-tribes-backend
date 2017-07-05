@@ -11,8 +11,8 @@ public class MockBuildingDtoBuilder {
 
   private BuildingDto mockBuildingDto;
 
-  public MockBuildingDtoBuilder(DtoService dtoService) {
-    BuildingDto mockBuilding = BuildingDto.builder()
+  public MockBuildingDtoBuilder() {
+    this.mockBuildingDto = BuildingDto.builder()
         .id(2L)
         .type("farm")
         .level(1)

@@ -82,7 +82,7 @@ public class BuildingControllerTest {
   }
 
   @Test
-  public void getBuildingListWithInValidUserId() throws Exception {
+  public void getBuildingListWithInvalidUserId() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserService.existsUserById(1L)).thenReturn(false);
     mockMvc.perform(get("/kingdom/buildings")
@@ -97,6 +97,7 @@ public class BuildingControllerTest {
   public void addNewBuildingWithValidInputs() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserService.existsUserById(1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.validBuildingType("farm")).thenReturn(true);
     Mockito.when(mockBuildingService.addNewBuilding("farm", 1L))
         .thenReturn(mockBuildingDtoBuilder.build());
     mockMvc.perform(post("/kingdom/buildings")
@@ -137,7 +138,7 @@ public class BuildingControllerTest {
   }
 
   @Test
-  public void addNewBuildingWithInValidUserId() throws Exception {
+  public void addNewBuildingWithInvalidUserId() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserService.existsUserById(1L)).thenReturn(false);
     mockMvc.perform(post("/kingdom/buildings")
@@ -151,7 +152,7 @@ public class BuildingControllerTest {
   }
 
   @Test
-  public void addNewBuildingWithInValidBuildingType() throws Exception {
+  public void addNewBuildingWithInvalidBuildingType() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserService.existsUserById(1L)).thenReturn(true);
     mockMvc.perform(post("/kingdom/buildings")
@@ -176,7 +177,7 @@ public class BuildingControllerTest {
   }
 
   @Test
-  public void updateBuildingWithInValidBuildingIdAndUserId() throws Exception {
+  public void updateBuildingWithInvalidBuildingIdAndUserId() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockBuildingService.existsByBuildingIdAndUserId(1L, 1L)).thenReturn(false);
     mockMvc.perform(put("/kingdom/buildings/1")

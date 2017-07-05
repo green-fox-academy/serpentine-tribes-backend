@@ -14,7 +14,7 @@ public class MockBuildingListDtoBuilder {
 
   private BuildingListDto mockBuildingListDto;
 
-  public MockBuildingListDtoBuilder(DtoService dtoService) {
+  public MockBuildingListDtoBuilder() {
     BuildingDto mockBuilding1 = BuildingDto.builder()
         .id(1L)
         .type("townhall")
