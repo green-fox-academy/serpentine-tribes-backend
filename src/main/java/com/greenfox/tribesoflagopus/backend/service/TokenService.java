@@ -15,10 +15,14 @@ import java.util.HashMap;
 @Service
 public class TokenService {
 
-  @Autowired
-  UserRepository userRepository;
+  private final UserRepository userRepository;
 
   private Key key;
+
+  @Autowired
+  public TokenService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   public String saveNewTokenToUser(String username){
     User existingUser = userRepository.findByUsername(username);
