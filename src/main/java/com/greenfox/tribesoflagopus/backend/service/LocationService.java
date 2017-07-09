@@ -30,8 +30,7 @@ public class LocationService {
   }
 
   private Integer generateRandomNumber(int min, int max) {
-    int random = min + (int) (Math.random() * (max + 1));
-    Integer randomNumber = Integer.valueOf(random);
+    Integer randomNumber = min + (int) (Math.random() * (max + 1));
     return randomNumber;
   }
 }

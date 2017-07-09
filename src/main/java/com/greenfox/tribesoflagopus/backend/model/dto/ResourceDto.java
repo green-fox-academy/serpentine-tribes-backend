@@ -14,7 +14,7 @@ public class ResourceDto {
 
   @NonNull
   private String type;
-  private int amount;
-  private int generation;
+  private Integer amount;
+  private Integer generation;
 
 }

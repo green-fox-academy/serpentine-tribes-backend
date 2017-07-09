@@ -22,7 +22,7 @@ public class KingdomDto implements JsonDto {
   @Singular
   private final List<ResourceDto> resources;
 
-  private long id;
+  private Long id;
 
   private String name;
 
