@@ -121,7 +121,7 @@ public class BuildingControllerTest {
     mockMvc.perform(post("/kingdom/buildings")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
-        .content("{" + "\"motvalidtype\" : \"notvalid\"" + "}"))
+        .content("{" + "\"notvalidtype\" : \"notvalid\"" + "}"))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("Missing parameter(s): type!")))
