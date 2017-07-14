@@ -6,6 +6,8 @@ import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
 import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
 import com.greenfox.tribesoflagopus.backend.repository.TroopRepository;
+
+import java.sql.Timestamp;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +63,7 @@ public class TroopService {
         .hp(1)
         .attack(1)
         .defence(1)
+        .timestamp(new Timestamp(System.currentTimeMillis()))
         .build();
     Troop savedTroop = addTroopToUsersKingdom(newTroop, userId);
     return dtoService.convertFromTroop(savedTroop);
