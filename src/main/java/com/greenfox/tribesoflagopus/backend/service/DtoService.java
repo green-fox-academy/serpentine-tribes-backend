@@ -15,6 +15,7 @@ import com.greenfox.tribesoflagopus.backend.model.entity.Location;
 import com.greenfox.tribesoflagopus.backend.model.entity.Resource;
 import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
 import com.greenfox.tribesoflagopus.backend.model.entity.User;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -92,6 +93,7 @@ public class DtoService {
         .attack(troop.getAttack())
         .defence(troop.getDefence())
         .startedAt(troop.getTimestamp())
+        .finishedAt(calculateFinishedAtTime(troop.getTimestamp()))
         .build();
   }
 
@@ -131,5 +133,12 @@ public class DtoService {
     return TroopListDto.builder()
         .troops(listOfTroopDtos)
         .build();
+  }
+
+  public Timestamp calculateFinishedAtTime (Timestamp startedAt){
+    long t = startedAt.getTime();
+    long m = 1*60*1000;
+    Timestamp finishedAt = new Timestamp(t+m);
+    return finishedAt;
   }
 }

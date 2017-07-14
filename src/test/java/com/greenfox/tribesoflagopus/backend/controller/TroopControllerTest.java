@@ -38,10 +38,10 @@ public class TroopControllerTest {
   public static final String
       MOCK_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
   public static final TroopDto TEST_TROOP_DTO_1 =
-      TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).startedAt(new Timestamp(0))
+      TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).startedAt(new Timestamp(1500036357654L))
           .finishedAt(new Timestamp(0)).build();
   public static final TroopDto TEST_TROOP_DTO_2 =
-      TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).startedAt(new Timestamp(0))
+      TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).startedAt(new Timestamp(1500036357654L))
           .finishedAt(new Timestamp(0)).build();
   public static final TroopListDto TEST_TROOP_DTO_LIST =
       TroopListDto.builder().troop(TEST_TROOP_DTO_1).troop(TEST_TROOP_DTO_2).build();
