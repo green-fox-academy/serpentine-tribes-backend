@@ -60,16 +60,17 @@ public class DtoService {
             .finishedAt(building.getStartedAt())
             .build();
         listOfBuildingDtos.add(buildingDto);
+      } else {
+        BuildingDto buildingDto = BuildingDto.builder()
+            .id(building.getId())
+            .type(building.getType())
+            .level(building.getLevel())
+            .hp(building.getHp())
+            .startedAt(building.getStartedAt())
+            .finishedAt(calculateFinishedAtTime(building.getStartedAt()))
+            .build();
+        listOfBuildingDtos.add(buildingDto);
       }
-      BuildingDto buildingDto = BuildingDto.builder()
-          .id(building.getId())
-          .type(building.getType())
-          .level(building.getLevel())
-          .hp(building.getHp())
-          .startedAt(building.getStartedAt())
-          .finishedAt(calculateFinishedAtTime(building.getStartedAt()))
-          .build();
-      listOfBuildingDtos.add(buildingDto);
     }
     return listOfBuildingDtos;
   }
