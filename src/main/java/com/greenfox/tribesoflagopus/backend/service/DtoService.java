@@ -50,6 +50,17 @@ public class DtoService {
   public List<BuildingDto> convertFromBuildings(List<Building> buildings) {
     List<BuildingDto> listOfBuildingDtos = new ArrayList<>();
     for (Building building : buildings) {
+      if (building.getType().equals("townhall")) {
+        BuildingDto buildingDto = BuildingDto.builder()
+            .id(building.getId())
+            .type(building.getType())
+            .level(building.getLevel())
+            .hp(building.getHp())
+            .startedAt(building.getStartedAt())
+            .finishedAt(building.getStartedAt())
+            .build();
+        listOfBuildingDtos.add(buildingDto);
+      }
       BuildingDto buildingDto = BuildingDto.builder()
           .id(building.getId())
           .type(building.getType())
@@ -122,14 +133,24 @@ public class DtoService {
   }
 
   public BuildingDto convertfromBuilding(Building building) {
+    if (building.getType().equals("townhall")) {
+      return BuildingDto.builder()
+          .id(building.getId())
+          .type(building.getType())
+          .level(building.getLevel())
+          .hp(building.getHp())
+          .startedAt(building.getStartedAt())
+          .finishedAt(building.getStartedAt())
+          .build();
+    }
     return BuildingDto.builder()
-        .id(building.getId())
-        .type(building.getType())
-        .level(building.getLevel())
-        .hp(building.getHp())
-        .startedAt(building.getStartedAt())
-        .finishedAt(calculateFinishedAtTime(building.getStartedAt()))
-        .build();
+          .id(building.getId())
+          .type(building.getType())
+          .level(building.getLevel())
+          .hp(building.getHp())
+          .startedAt(building.getStartedAt())
+          .finishedAt(calculateFinishedAtTime(building.getStartedAt()))
+          .build();
   }
 
   public TroopListDto createTroopListDto(List<Troop> troops) {
