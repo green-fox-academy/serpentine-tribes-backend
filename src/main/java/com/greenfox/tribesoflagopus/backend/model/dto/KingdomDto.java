@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Singular;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
 @Setter
 @JsonPropertyOrder({"id", "name", "user_id", "buildings", "resources", "troops", "location"})
@@ -22,7 +22,7 @@ public class KingdomDto implements JsonDto {
   @Singular
   private final List<ResourceDto> resources;
 
-  private long id;
+  private Long id;
 
   private String name;
 

@@ -45,7 +45,7 @@ public class TroopService {
 
   public TroopDto fetchTroop(Long userId, Long troopId) {
 
-    Troop foundTroop = troopRepository.findOneByIdAndKingdomUserId(userId, troopId);
+    Troop foundTroop = troopRepository.findOneByIdAndKingdomUserId(troopId, userId);
 
     return dtoService.convertFromTroop(foundTroop);
   }

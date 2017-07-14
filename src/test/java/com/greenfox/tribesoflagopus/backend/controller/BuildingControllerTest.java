@@ -10,15 +10,12 @@ import com.greenfox.tribesoflagopus.backend.BackendApplication;
 import com.greenfox.tribesoflagopus.backend.mockbuilder.MockBuildingDtoBuilder;
 import com.greenfox.tribesoflagopus.backend.mockbuilder.MockBuildingListDtoBuilder;
 import com.greenfox.tribesoflagopus.backend.mockbuilder.MockUpdatedBuildingDtoBuilder;
-import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
-import com.greenfox.tribesoflagopus.backend.repository.UserRepository;
 import com.greenfox.tribesoflagopus.backend.service.BuildingService;
 import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import com.greenfox.tribesoflagopus.backend.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -124,7 +121,7 @@ public class BuildingControllerTest {
     mockMvc.perform(post("/kingdom/buildings")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
-        .content("{" + "\"motvalidtype\" : \"notvalid\"" + "}"))
+        .content("{" + "\"notvalidtype\" : \"notvalid\"" + "}"))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("Missing parameter(s): type!")))

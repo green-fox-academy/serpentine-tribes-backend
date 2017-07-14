@@ -1,7 +1,5 @@
 package com.greenfox.tribesoflagopus.backend.controller;
 
-import static org.junit.Assert.*;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 import static org.hamcrest.Matchers.*;
@@ -9,12 +7,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
-import org.junit.After;
+import com.greenfox.tribesoflagopus.backend.service.TokenService;
+import com.greenfox.tribesoflagopus.backend.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +26,19 @@ import org.springframework.http.MediaType;
 @SpringBootTest(classes = BackendApplication.class)
 @WebAppConfiguration
 public class LoginControllerTest {
+
+  public static final String
+      MOCK_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
+
+  private static final String TEST_USERNAME_EXISTING = "Test_Username";
+  private static final String TEST_USERNAME_NOT_EXISTING = "Nonexistent_User";
+  private static final String TEST_PASSWORD_CORRECT = "Test_Password1";
+  private static final String TEST_PASSWORD_WRONG = "Wrong_Test_Password";
+
+  @MockBean
+  private TokenService tokenService;
+  @MockBean
+  private UserService userService;
 
   private MockMvc mockMvc;
 
@@ -38,12 +52,15 @@ public class LoginControllerTest {
 
   @Test
   public void loginWithAllCorrectParam() throws Exception {
+    Mockito.when(userService.existsUserByUsername(TEST_USERNAME_EXISTING)).thenReturn(true);
+    Mockito.when(userService.isPasswordCorrect(TEST_USERNAME_EXISTING, TEST_PASSWORD_CORRECT)).thenReturn(true);
+    Mockito.when(tokenService.saveNewTokenToUser(TEST_USERNAME_EXISTING)).thenReturn(MOCK_TOKEN);
 
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"Noemi\","
-                    + "\"password\" : \"passnoemi\""
+                    + "\"username\" : \"" + TEST_USERNAME_EXISTING + "\","
+                    + "\"password\" : \"" + TEST_PASSWORD_CORRECT + "\""
                     + "}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status", is("ok")))
@@ -57,7 +74,7 @@ public class LoginControllerTest {
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"password\" : \"TestPassword\""
+                    + "\"password\" : \"" + TEST_PASSWORD_CORRECT + "\""
                     + "}"))
             .andExpect(status().is(400))
             .andExpect(jsonPath("$.status", is("error")))
@@ -71,7 +88,7 @@ public class LoginControllerTest {
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"TestUser\""
+                    + "\"username\" : \"" + TEST_USERNAME_EXISTING + "\""
                     + "}"))
             .andExpect(status().is(400))
             .andExpect(jsonPath("$.status", is("error")))
@@ -91,13 +108,15 @@ public class LoginControllerTest {
   }
 
   @Test
-  public void loginWithInCorrectPassword() throws Exception {
+  public void loginWithWrongPassword() throws Exception {
+    Mockito.when(userService.existsUserByUsername(TEST_USERNAME_EXISTING)).thenReturn(true);
+    Mockito.when(userService.isPasswordCorrect(TEST_USERNAME_EXISTING, TEST_PASSWORD_WRONG)).thenReturn(false);
 
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"Noemi\","
-                    + "\"password\" : \"passno\""
+                    + "\"username\" : \"" + TEST_USERNAME_EXISTING + "\","
+                    + "\"password\" : \"" + TEST_PASSWORD_WRONG + "\""
                     + "}"))
             .andExpect(status().is(401))
             .andExpect(jsonPath("$.status", is("error")))
@@ -106,17 +125,17 @@ public class LoginControllerTest {
   }
 
   @Test
-  public void loginWithIncorrectUser() throws Exception {
+  public void loginWithNonExistentUser() throws Exception {
 
     mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content("{"
-                    + "\"username\" : \"No\","
-                    + "\"password\" : \"passnoemi\""
+                    + "\"username\" : \"" + TEST_USERNAME_NOT_EXISTING + "\","
+                    + "\"password\" : \"" + TEST_PASSWORD_CORRECT + "\""
                     + "}"))
             .andExpect(status().is(401))
             .andExpect(jsonPath("$.status", is("error")))
-            .andExpect(jsonPath("$.message", is("No such user: No")))
+            .andExpect(jsonPath("$.message", is("No such user: " + TEST_USERNAME_NOT_EXISTING)))
             .andDo(print());
   }
 }

@@ -8,7 +8,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
+import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.TroopListDto;
 import com.greenfox.tribesoflagopus.backend.service.TokenService;
+import com.greenfox.tribesoflagopus.backend.service.TroopService;
+import com.greenfox.tribesoflagopus.backend.service.UserService;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +27,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.http.MediaType;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BackendApplication.class)
@@ -33,13 +36,23 @@ public class TroopControllerTest {
   public static final String TOKEN_INPUT_REQUEST_HEADER = "X-tribes-token";
   public static final String
       MOCK_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
+  public static final TroopDto TEST_TROOP_DTO_1 =
+      TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).build();
+  public static final TroopDto TEST_TROOP_DTO_2 =
+      TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).build();
+  public static final TroopListDto TEST_TROOP_DTO_LIST =
+      TroopListDto.builder().troop(TEST_TROOP_DTO_1).troop(TEST_TROOP_DTO_2).build();
 
   @MockBean
-  TokenService mockTokenService;
+  private TokenService mockTokenService;
+  @MockBean
+  private TroopService troopService;
+  @MockBean
+  private UserService userService;
+
   private MockMvc mockMvc;
-
-
   private HttpMessageConverter mappingJackson2HttpMessageConverter;
+
   @Autowired
   private WebApplicationContext webApplicationContext;
 
@@ -62,7 +75,10 @@ public class TroopControllerTest {
 
   @Test
   public void listTroops_withExistingUserId() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Long testUserId = 1L;
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(testUserId);
+    Mockito.when(userService.existsUserById(testUserId)).thenReturn(true);
+    Mockito.when(troopService.listTroopsOfUser(testUserId)).thenReturn(TEST_TROOP_DTO_LIST);
 
     mockMvc.perform(get("/kingdom/troops")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
@@ -85,7 +101,11 @@ public class TroopControllerTest {
 
   @Test
   public void showOneTroop_withExistingIds() throws Exception {
+    Long testUserId = 1L;
+    Long testTroopId = 1L;
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(troopService.existsByIdAndUserId(testTroopId, testUserId)).thenReturn(true);
+    Mockito.when(troopService.fetchTroop(testUserId, testTroopId)).thenReturn(TEST_TROOP_DTO_1);
 
     mockMvc.perform(get("/kingdom/troops/1").header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
         .andExpect(status().isOk())
@@ -110,7 +130,10 @@ public class TroopControllerTest {
 
   @Test
   public void createNewTroop() throws Exception {
-    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Long testUserId = 1L;
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(testUserId);
+    Mockito.when(userService.existsUserById(testUserId)).thenReturn(true);
+    Mockito.when(troopService.addNewTroop(testUserId)).thenReturn(TEST_TROOP_DTO_1);
 
     mockMvc.perform(post("/kingdom/troops")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
