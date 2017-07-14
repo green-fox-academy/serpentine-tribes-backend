@@ -13,6 +13,7 @@ import com.greenfox.tribesoflagopus.backend.model.dto.TroopListDto;
 import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import com.greenfox.tribesoflagopus.backend.service.TroopService;
 import com.greenfox.tribesoflagopus.backend.service.UserService;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,9 +38,11 @@ public class TroopControllerTest {
   public static final String
       MOCK_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJOb2VtaSJ9.sSmeKXCzvwc7jDmd5rkbNJHQyn4HGaFG2accPpDkcpc";
   public static final TroopDto TEST_TROOP_DTO_1 =
-      TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).build();
+      TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).startedAt(new Timestamp(0))
+          .finishedAt(new Timestamp(0)).build();
   public static final TroopDto TEST_TROOP_DTO_2 =
-      TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).build();
+      TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).startedAt(new Timestamp(0))
+          .finishedAt(new Timestamp(0)).build();
   public static final TroopListDto TEST_TROOP_DTO_LIST =
       TroopListDto.builder().troop(TEST_TROOP_DTO_1).troop(TEST_TROOP_DTO_2).build();
 
@@ -114,6 +117,8 @@ public class TroopControllerTest {
         .andExpect(jsonPath("$.hp").exists())
         .andExpect(jsonPath("$.attack").exists())
         .andExpect(jsonPath("$.defence").exists())
+        .andExpect(jsonPath("$.started_at").exists())
+        .andExpect(jsonPath("$.finished_at").exists())
         .andDo(print());
   }
 
@@ -143,6 +148,8 @@ public class TroopControllerTest {
         .andExpect(jsonPath("$.hp").exists())
         .andExpect(jsonPath("$.attack").exists())
         .andExpect(jsonPath("$.defence").exists())
+        .andExpect(jsonPath("$.started_at").exists())
+        .andExpect(jsonPath("$.finished_at").exists())
         .andDo(print());
   }
 }
