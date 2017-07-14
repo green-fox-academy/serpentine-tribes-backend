@@ -18,6 +18,7 @@ public class TroopDto implements JsonDto {
   private Integer hp;
   private Integer attack;
   private Integer defence;
-  private Timestamp timestamp;
+  private Timestamp startedAt;
+  private Timestamp finishedAt;
 
 }

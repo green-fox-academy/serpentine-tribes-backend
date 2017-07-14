@@ -91,7 +91,7 @@ public class DtoService {
         .hp(troop.getHp())
         .attack(troop.getAttack())
         .defence(troop.getDefence())
-        .timestamp(troop.getTimestamp())
+        .startedAt(troop.getTimestamp())
         .build();
   }
 
