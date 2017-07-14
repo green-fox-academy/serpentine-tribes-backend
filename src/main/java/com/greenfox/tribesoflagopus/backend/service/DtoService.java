@@ -136,9 +136,16 @@ public class DtoService {
   }
 
   public Timestamp calculateFinishedAtTime (Timestamp startedAt){
+    Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+    Timestamp finishedAt;
     long t = startedAt.getTime();
-    long m = 1*60*1000;
-    Timestamp finishedAt = new Timestamp(t+m);
+    long minuteToDelayWith = 1;
+    long m = minuteToDelayWith*60*1000;
+    if (currentTime.getTime() - startedAt.getTime() < m){
+      finishedAt = new Timestamp(0);
+    } else {
+      finishedAt = new Timestamp(t+m);
+    }
     return finishedAt;
   }
 }
