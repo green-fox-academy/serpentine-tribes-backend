@@ -5,6 +5,7 @@ import com.greenfox.tribesoflagopus.backend.model.dto.BuildingListDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Building;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
+import java.sql.Timestamp;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,7 @@ public class BuildingService {
     Kingdom kingdom = kingdomService.findKingdomByUserId(userId);
     Building newBuilding = Building.builder()
         .type(type)
+        .startedAt(new Timestamp(System.currentTimeMillis()))
         .build();
     kingdom.addBuilding(newBuilding);
     return buildingRepository.save(newBuilding);

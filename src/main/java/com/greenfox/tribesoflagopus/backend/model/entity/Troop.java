@@ -34,15 +34,15 @@ public class Troop {
   private int hp;
   private int attack;
   private int defence;
-  private Timestamp timestamp;
+  private Timestamp startedAt;
 
   @Builder
-  public Troop(int level, int hp, int attack, int defence, Timestamp timestamp) {
+  public Troop(int level, int hp, int attack, int defence, Timestamp startedAt) {
     this.level = level;
     this.hp = hp;
     this.attack = attack;
     this.defence = defence;
-    this.timestamp = timestamp;
+    this.startedAt = startedAt;
   }
 
   public static class TroopBuilder {

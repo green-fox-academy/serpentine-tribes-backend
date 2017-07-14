@@ -1,6 +1,7 @@
 package com.greenfox.tribesoflagopus.backend.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.sql.Timestamp;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -19,5 +20,7 @@ public class BuildingDto implements JsonDto {
   @NonNull
   private Integer level;
   private Integer hp;
+  private Timestamp startedAt;
+  private Timestamp finishedAt;
 
 }

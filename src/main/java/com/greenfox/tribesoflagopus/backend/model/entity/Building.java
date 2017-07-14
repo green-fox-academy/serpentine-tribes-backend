@@ -1,5 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -27,16 +28,18 @@ public class Building {
   private String type;
   private int level;
   private int hp;
+  private Timestamp startedAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @NotNull
   private Kingdom kingdom;
 
   @Builder
-  public Building(String type) {
+  public Building(String type, Timestamp startedAt) {
     this.type = type;
     this.level = 1;
     this.hp = 0;
+    this.startedAt = startedAt;
   }
 
   public static class BuildingBuilder {

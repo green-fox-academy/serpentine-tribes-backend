@@ -63,7 +63,7 @@ public class TroopService {
         .hp(1)
         .attack(1)
         .defence(1)
-        .timestamp(new Timestamp(System.currentTimeMillis()))
+        .startedAt(new Timestamp(System.currentTimeMillis()))
         .build();
     Troop savedTroop = addTroopToUsersKingdom(newTroop, userId);
     return dtoService.convertFromTroop(savedTroop);

@@ -55,6 +55,8 @@ public class DtoService {
           .type(building.getType())
           .level(building.getLevel())
           .hp(building.getHp())
+          .startedAt(building.getStartedAt())
+          .finishedAt(calculateFinishedAtTime(building.getStartedAt()))
           .build();
       listOfBuildingDtos.add(buildingDto);
     }
@@ -92,8 +94,8 @@ public class DtoService {
         .hp(troop.getHp())
         .attack(troop.getAttack())
         .defence(troop.getDefence())
-        .startedAt(troop.getTimestamp())
-        .finishedAt(calculateFinishedAtTime(troop.getTimestamp()))
+        .startedAt(troop.getStartedAt())
+        .finishedAt(calculateFinishedAtTime(troop.getStartedAt()))
         .build();
   }
 
@@ -125,6 +127,8 @@ public class DtoService {
         .type(building.getType())
         .level(building.getLevel())
         .hp(building.getHp())
+        .startedAt(building.getStartedAt())
+        .finishedAt(calculateFinishedAtTime(building.getStartedAt()))
         .build();
   }
 
