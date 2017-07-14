@@ -1,6 +1,7 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.BuildingListDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.ResourceDto;
@@ -21,6 +22,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class DtoService {
 
+  public BuildingListDto convertToBuildingListDtoFromBuildings(List<Building> buildings) {
+    List<BuildingDto> buildingDtos = convertFromBuildings(buildings);
+    BuildingListDto buildingListDto = BuildingListDto.builder()
+        .buildings(buildingDtos)
+        .build();
+    return buildingListDto;
+  }
+
   public UserTokenDto createUserTokenDto(String token) {
     return UserTokenDto.builder()
         .status("ok")
@@ -39,7 +48,6 @@ public class DtoService {
 
   public List<BuildingDto> convertFromBuildings(List<Building> buildings) {
     List<BuildingDto> listOfBuildingDtos = new ArrayList<>();
-
     for (Building building : buildings) {
       BuildingDto buildingDto = BuildingDto.builder()
           .id(building.getId())

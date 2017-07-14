@@ -31,7 +31,7 @@ public class Location {
   private Kingdom kingdom;
 
   @Builder
-  public Location(Integer x, Integer y) {
+  public Location(int x, int y) {
     this.x = x;
     this.y = y;
   }
