@@ -93,8 +93,8 @@ public class TroopController {
     return ResponseEntity.ok().body(addedTroopDto);
   }
 
-  @PutMapping("/kingdom/buildings/{troopId}")
-  public ResponseEntity<JsonDto> updateBuildingLevel(
+  @PutMapping("/kingdom/troops/{troopId}")
+  public ResponseEntity<JsonDto> updateTroopLevel(
       @Valid @RequestBody TroopLevelInputDto troopLevelInputDto,
       BindingResult bindingResult,
       @RequestHeader(value = "X-tribes-token") String token,
