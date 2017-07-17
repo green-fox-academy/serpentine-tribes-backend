@@ -1,6 +1,8 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +26,8 @@ public class Resource {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
   private Long id;
 
-  private String type;
+  @Enumerated(EnumType.STRING)
+  private ResourceType type;
   private int amount;
   private int generation;
 
@@ -34,12 +37,12 @@ public class Resource {
 
   @Builder
   public Resource(String type, int amount, int generation) {
-    this.type = type;
+    this.type = ResourceType.valueOf(type);
     this.amount = amount;
     this.generation = generation;
   }
 
   public Resource(String type) {
-    this.type = type;
+    this.type = ResourceType.valueOf(type);
   }
 }

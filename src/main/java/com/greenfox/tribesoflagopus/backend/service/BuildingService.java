@@ -3,6 +3,7 @@ package com.greenfox.tribesoflagopus.backend.service;
 import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.BuildingListDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Building;
+import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
 import java.sql.Timestamp;
@@ -33,10 +34,10 @@ public class BuildingService {
   }
 
   public boolean validBuildingType(String inputBuildingType) {
-    if (inputBuildingType.equals("farm")
-        || inputBuildingType.equals("mine")
-        || inputBuildingType.equals("barrack")) {
-      return true;
+    for (BuildingType buildingType : BuildingType.values()) {
+      if (buildingType.toString().equals(inputBuildingType)) {
+        return true;
+      }
     }
     return false;
   }

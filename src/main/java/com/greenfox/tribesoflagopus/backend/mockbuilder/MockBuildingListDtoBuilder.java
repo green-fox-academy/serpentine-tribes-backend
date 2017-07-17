@@ -2,6 +2,7 @@ package com.greenfox.tribesoflagopus.backend.mockbuilder;
 
 import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.BuildingListDto;
+import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,13 +13,13 @@ public class MockBuildingListDtoBuilder {
   public MockBuildingListDtoBuilder() {
     BuildingDto mockBuilding1 = BuildingDto.builder()
         .id(1L)
-        .type("townhall")
+        .type(BuildingType.TOWNHALL)
         .level(1)
         .hp(0)
         .build();
     BuildingDto mockBuilding2 = BuildingDto.builder()
         .id(2L)
-        .type("farm")
+        .type(BuildingType.FARM)
         .level(1)
         .hp(0)
         .build();
