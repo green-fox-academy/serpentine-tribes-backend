@@ -11,6 +11,8 @@ public interface TroopRepository extends CrudRepository<Troop, Long> {
 
   Troop findOneByIdAndKingdomUserId(Long id, Long userId);
 
+  Troop findById(Long id);
+
   boolean existsByKingdomUserId(Long userId);
 
   boolean existsByKingdomUserUsername(String username);

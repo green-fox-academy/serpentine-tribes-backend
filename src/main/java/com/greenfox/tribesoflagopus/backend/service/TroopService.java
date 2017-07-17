@@ -1,7 +1,9 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
+import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopListDto;
+import com.greenfox.tribesoflagopus.backend.model.entity.Building;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
 import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
@@ -74,5 +76,16 @@ public class TroopService {
     Kingdom existingKingdom = kingdomRepository.findOneByUserId(userId);
     existingKingdom.addTroop(troop);
     return troopRepository.save(troop);
+  }
+
+  public TroopDto updateTroop(Long troopId, Integer level) {
+    Troop troop = troopRepository.findById(troopId);
+    troop.setLevel(level);
+    troopRepository.save(troop);
+    return dtoService.convertFromTroop(troop);
+  }
+
+  public boolean existsByTroopIdAndUserId(Long troopId, Long userId) {
+    return troopRepository.existsByIdAndKingdomUserId(troopId, userId);
   }
 }

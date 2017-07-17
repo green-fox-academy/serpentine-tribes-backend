@@ -68,4 +68,8 @@ public class ErrorService {
   }
 
   public StatusResponse getUserNotFoundStatus (){ return StatusResponse.error("user_id not found"); }
+
+  public StatusResponse getInvalidTroopLevelStatus() {
+    return StatusResponse.error("Invalid troop level!");
+  }
 }
