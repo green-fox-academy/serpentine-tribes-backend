@@ -17,4 +17,14 @@ public enum BuildingType {
   public String toString() {
     return this.getType();
   }
+
+  public static BuildingType getByName(String type) {
+    for (BuildingType buildingType : values()) {
+      if(buildingType.getType().equals(type)) {
+        return buildingType;
+      }
+    }
+    throw new IllegalArgumentException(type);
+  }
 }
+

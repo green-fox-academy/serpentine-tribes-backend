@@ -39,7 +39,7 @@ public class Building {
 
   @Builder
   public Building(String type, Timestamp startedAt) {
-    this.type = BuildingType.valueOf(type);
+    this.type = BuildingType.getByName(type);
     this.level = 1;
     this.hp = 0;
     this.startedAt = startedAt;

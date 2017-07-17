@@ -10,6 +10,7 @@ import com.greenfox.tribesoflagopus.backend.model.dto.TroopListDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserTokenDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Building;
+import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Location;
 import com.greenfox.tribesoflagopus.backend.model.entity.Resource;
@@ -50,7 +51,7 @@ public class DtoService {
   public List<BuildingDto> convertFromBuildings(List<Building> buildings) {
     List<BuildingDto> listOfBuildingDtos = new ArrayList<>();
     for (Building building : buildings) {
-      if (building.getType().equals("townhall")) {
+      if (building.getType().equals(BuildingType.TOWNHALL)) {
         BuildingDto buildingDto = BuildingDto.builder()
             .id(building.getId())
             .type(building.getType())
