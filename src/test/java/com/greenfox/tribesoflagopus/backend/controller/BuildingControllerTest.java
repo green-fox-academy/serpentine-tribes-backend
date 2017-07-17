@@ -238,4 +238,6 @@ public class BuildingControllerTest {
         .andExpect(jsonPath("$.message", is("Invalid building level!")))
         .andDo(print());
   }
+
+
 }
