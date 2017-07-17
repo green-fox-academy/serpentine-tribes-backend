@@ -76,10 +76,14 @@ public class BuildingControllerTest {
         .andExpect(jsonPath("$.buildings[0].type", is("townhall")))
         .andExpect(jsonPath("$.buildings[0].level", is(1)))
         .andExpect(jsonPath("$.buildings[0].hp", is(0)))
+        .andExpect(jsonPath("$.buildings[0].started_at").exists())
+        .andExpect(jsonPath("$.buildings[0].finished_at").exists())
         .andExpect(jsonPath("$.buildings[1].id", is(2)))
         .andExpect(jsonPath("$.buildings[1].type", is("farm")))
         .andExpect(jsonPath("$.buildings[1].level", is(1)))
         .andExpect(jsonPath("$.buildings[1].hp", is(0)))
+        .andExpect(jsonPath("$.buildings[0].started_at").exists())
+        .andExpect(jsonPath("$.buildings[0].finished_at").exists())
         .andDo(print());
   }
 
@@ -111,6 +115,8 @@ public class BuildingControllerTest {
         .andExpect(jsonPath("$.type", is("farm")))
         .andExpect(jsonPath("$.level", is(1)))
         .andExpect(jsonPath("$.hp", is(0)))
+        .andExpect(jsonPath("$.started_at").exists())
+        .andExpect(jsonPath("$.finished_at").exists())
         .andDo(print());
   }
 
@@ -183,6 +189,8 @@ public class BuildingControllerTest {
         .andExpect(jsonPath("$.type", is("farm")))
         .andExpect(jsonPath("$.level", is(2)))
         .andExpect(jsonPath("$.hp", is(0)))
+        .andExpect(jsonPath("$.started_at").exists())
+        .andExpect(jsonPath("$.finished_at").exists())
         .andDo(print());
   }
 
@@ -239,5 +247,33 @@ public class BuildingControllerTest {
         .andDo(print());
   }
 
+  @Test
+  public void getIndividualBuildingWithValidBuildingIdAndUserId() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(mockBuildingService.existsByBuildingIdAndUserId(2L, 1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.getBuildingData(2L))
+        .thenReturn(mockBuildingDtoBuilder.build());
+    mockMvc.perform(get("/kingdom/buildings/2")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(2)))
+        .andExpect(jsonPath("$.type", is("farm")))
+        .andExpect(jsonPath("$.level", is(1)))
+        .andExpect(jsonPath("$.hp", is(0)))
+        .andExpect(jsonPath("$.started_at").exists())
+        .andExpect(jsonPath("$.finished_at").exists())
+        .andDo(print());
+  }
 
+  @Test
+  public void getIndividualBuildingWithInvalidBuildingIdAndUserId() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(mockBuildingService.existsByBuildingIdAndUserId(1L, 1L)).thenReturn(false);
+    mockMvc.perform(get("/kingdom/buildings/1")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Id: 1 not found!")))
+        .andDo(print());
+  }
 }
