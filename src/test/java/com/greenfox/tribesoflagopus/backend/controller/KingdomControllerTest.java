@@ -14,8 +14,10 @@ import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.KingdomInputModifyDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.ResourceDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
+import com.greenfox.tribesoflagopus.backend.model.entity.ResourceType;
 import com.greenfox.tribesoflagopus.backend.service.KingdomService;
 import com.greenfox.tribesoflagopus.backend.service.UserService;
 import java.util.Arrays;
@@ -69,6 +71,8 @@ public class KingdomControllerTest {
           .building(BuildingDto.builder().id(2L).type(BuildingType.FARM).level(2).hp(2).build())
           .troop(TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).build())
           .troop(TroopDto.builder().id(2L).level(2).hp(1).attack(1).defence(1).build())
+          .resource(ResourceDto.builder().type(ResourceType.FOOD).amount(0).generation(10).build())
+          .resource(ResourceDto.builder().type(ResourceType.GOLD).amount(0).generation(10).build())
           .location(TEST_LOCATION_DTO)
           .build();
 
@@ -123,6 +127,7 @@ public class KingdomControllerTest {
         .andExpect(jsonPath("$.user_id").exists())
         .andExpect(jsonPath("$.buildings").exists())
         .andExpect(jsonPath("$.resources").exists())
+        .andExpect(jsonPath("$.resources.length()").value(2))
         .andExpect(jsonPath("$.troops").exists())
         .andExpect(jsonPath("$").value(hasKey("location")))
         .andDo(print());

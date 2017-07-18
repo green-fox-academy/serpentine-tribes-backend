@@ -55,6 +55,25 @@ public class BuildingController {
     return ResponseEntity.ok().body(buildings);
   }
 
+  @GetMapping("/kingdom/buildings/{buildingId}")
+  public ResponseEntity<JsonDto> getIndividualBuildingData(
+      @RequestHeader(value = "X-tribes-token") String token,
+      @Valid @PathVariable(value = "buildingId") Long buildingId) {
+
+    Long userId = tokenService.getIdFromToken(token);
+    if (userId == null) {
+      return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
+    }
+
+    if (!buildingService.existsByBuildingIdAndUserId(buildingId, userId)) {
+      StatusResponse invalidIdStatus = errorService.getInvalidIdStatus(buildingId);
+      return ResponseEntity.status(404).body(invalidIdStatus);
+    }
+
+    BuildingDto building = buildingService.getBuildingData(buildingId);
+    return ResponseEntity.ok().body(building);
+  }
+
   @PostMapping("/kingdom/buildings")
   public ResponseEntity<JsonDto> addNewBuildingToKingdom(
       @Valid @RequestBody BuildingTypeInputDto buildingTypeInputDto,

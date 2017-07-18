@@ -37,7 +37,7 @@ public class Resource {
 
   @Builder
   public Resource(String type, int amount, int generation) {
-    this.type = ResourceType.valueOf(type);
+    this.type = ResourceType.getByName(type);
     this.amount = amount;
     this.generation = generation;
   }

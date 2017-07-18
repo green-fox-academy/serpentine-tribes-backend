@@ -68,6 +68,11 @@ public class BuildingService {
   public boolean existsByBuildingIdAndUserId(Long buildingId, Long userId) {
     return buildingRepository.existsByIdAndKingdomUserId(buildingId, userId);
   }
+
+  public BuildingDto getBuildingData(Long buildingId) {
+    Building building = buildingRepository.findById(buildingId);
+    return dtoService.convertfromBuilding(building);
+  }
 }
 
 
