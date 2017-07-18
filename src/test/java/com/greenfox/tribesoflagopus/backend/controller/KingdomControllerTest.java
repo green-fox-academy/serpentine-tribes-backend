@@ -1,13 +1,17 @@
 package com.greenfox.tribesoflagopus.backend.controller;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-
+import static org.hamcrest.Matchers.either;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
 import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
@@ -19,10 +23,9 @@ import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
 import com.greenfox.tribesoflagopus.backend.model.entity.ResourceType;
 import com.greenfox.tribesoflagopus.backend.service.KingdomService;
+import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import com.greenfox.tribesoflagopus.backend.service.UserService;
 import java.util.Arrays;
-
-import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,13 +33,13 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.http.MediaType;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BackendApplication.class)
@@ -128,10 +131,10 @@ public class KingdomControllerTest {
         .andExpect(jsonPath("$.buildings").exists())
         .andExpect(jsonPath("$.resources").exists())
         .andExpect(jsonPath("$.resources.length()").value(2))
-        .andExpect(jsonPath("$.resources[0].type").exists())
+        .andExpect(jsonPath("$.resources[0].type", either(equalTo("food")).or(equalTo("gold"))))
         .andExpect(jsonPath("$.resources[0].amount").value(0))
         .andExpect(jsonPath("$.resources[0].generation").value(10))
-        .andExpect(jsonPath("$.resources[1].type").exists())
+        .andExpect(jsonPath("$.resources[0].type", either(equalTo("food")).or(equalTo("gold"))))
         .andExpect(jsonPath("$.resources[1].amount").value(0))
         .andExpect(jsonPath("$.resources[1].generation").value(10))
         .andExpect(jsonPath("$.troops").exists())
