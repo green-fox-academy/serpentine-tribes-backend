@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BackgroundTaskService {
@@ -18,6 +20,7 @@ public class BackgroundTaskService {
     this.kingdomRepository = kingdomRepository;
   }
 
+  @Transactional
   @Scheduled(fixedDelay = 60000)
   public void increaseResourcesAmountPerMinute() {
     List<Kingdom> allKingdoms = kingdomRepository.findAll();
@@ -25,8 +28,9 @@ public class BackgroundTaskService {
     for (Kingdom kingdom : allKingdoms) {
       List<Resource> resourcesPerKingdom = kingdom.getResources();
       for (Resource resource : resourcesPerKingdom) {
-        resource.setAmount(resource.getGeneration());
+        resource.setAmount(resource.getAmount() + resource.getGeneration());
       }
+      kingdomRepository.save(kingdom);
     }
   }
 }
