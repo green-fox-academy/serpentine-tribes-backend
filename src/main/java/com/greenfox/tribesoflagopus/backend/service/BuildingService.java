@@ -17,19 +17,22 @@ public class BuildingService {
   private final BuildingRepository buildingRepository;
   private final DtoService dtoService;
   private final KingdomService kingdomService;
+  private final TimeService timeService;
 
   @Autowired
   public BuildingService(
       BuildingRepository buildingRepository,
       DtoService dtoService,
-      KingdomService kingdomService) {
+      KingdomService kingdomService, TimeService timeService) {
     this.buildingRepository = buildingRepository;
     this.dtoService = dtoService;
     this.kingdomService = kingdomService;
+    this.timeService = timeService;
   }
 
   public BuildingListDto getBuildingList(long userId) {
     List<Building> buildings = kingdomService.getBuildingsByUserId(userId);
+    buildings = setFinishedAtTime(buildings);
     return dtoService.convertToBuildingListDtoFromBuildings(buildings);
   }
 
@@ -72,6 +75,15 @@ public class BuildingService {
   public BuildingDto getBuildingData(Long buildingId) {
     Building building = buildingRepository.findById(buildingId);
     return dtoService.convertfromBuilding(building);
+  }
+
+  public List<Building> setFinishedAtTime(List<Building> buildings) {
+    for (Building building : buildings) {
+      Timestamp finishedAt =
+          timeService.calculateBuildingTime(building.getStartedAt(), building.getType(), building.getLevel());
+      building.setFinishedAt(finishedAt);
+    }
+    return buildings;
   }
 }
 

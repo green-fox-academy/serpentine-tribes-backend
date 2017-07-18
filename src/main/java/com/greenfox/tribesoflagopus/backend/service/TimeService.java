@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TimeService {
 
-  public Timestamp calculateBuildingTime(Timestamp startedAt, BuildingType buildingType) {
+  public Timestamp calculateBuildingTime(Timestamp startedAt,
+      BuildingType buildingType,
+      int level) {
     Timestamp finishedAt;
-    if (buildingType.equals(BuildingType.TOWNHALL)) {
+    if (buildingType.equals(BuildingType.TOWNHALL) && level == 1) {
       finishedAt = startedAt;
       return finishedAt;
     }

@@ -63,7 +63,8 @@ public class DtoService {
           .level(building.getLevel())
           .hp(building.getHp())
           .startedAt(building.getStartedAt())
-          .finishedAt(timeService.calculateBuildingTime(building.getStartedAt(), building.getType()))
+          .finishedAt(timeService
+              .calculateBuildingTime(building.getStartedAt(), building.getType(), building.getLevel()))
           .build();
       listOfBuildingDtos.add(buildingDto);
     }
@@ -135,7 +136,8 @@ public class DtoService {
         .level(building.getLevel())
         .hp(building.getHp())
         .startedAt(building.getStartedAt())
-        .finishedAt(timeService.calculateBuildingTime(building.getStartedAt(), building.getType()))
+        .finishedAt(timeService
+            .calculateBuildingTime(building.getStartedAt(), building.getType(), building.getLevel()))
         .build();
   }
 
