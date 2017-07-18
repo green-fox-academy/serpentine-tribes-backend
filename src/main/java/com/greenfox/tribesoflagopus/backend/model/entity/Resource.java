@@ -33,7 +33,7 @@ public class Resource {
   private int amount;
   private int generation;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @NotNull
   private Kingdom kingdom;
 
