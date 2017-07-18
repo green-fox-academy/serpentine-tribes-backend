@@ -62,9 +62,16 @@ public class ResourceService {
     kingdomService.saveKingdom(kingdom);
   }
 
-  //Todo: finish this method
   public boolean hasEnoughResource(Long userId, ResourceType resourceType,
       int neededResourceAmount) {
-    return true;
+    Kingdom kingdom = kingdomService.getKingdomOfUser(userId);
+    List<Resource> resources = kingdom.getResources();
+    for (Resource resource : resources) {
+      if (resource.getType().equals(resourceType)
+          && resource.getAmount() >= neededResourceAmount) {
+        return true;
+      }
+    }
+    return false;
   }
 }

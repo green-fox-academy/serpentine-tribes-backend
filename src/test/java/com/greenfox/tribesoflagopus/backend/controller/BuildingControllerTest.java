@@ -104,6 +104,7 @@ public class BuildingControllerTest {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserService.existsUserById(1L)).thenReturn(true);
     Mockito.when(mockBuildingService.validBuildingType("farm")).thenReturn(true);
+    Mockito.when(mockBuildingService.userHasEnoughGold(1L)).thenReturn(true);
     Mockito.when(mockBuildingService.addNewBuilding("farm", 1L))
         .thenReturn(mockBuildingDtoBuilder.build());
     mockMvc.perform(post("/kingdom/buildings")
@@ -171,6 +172,22 @@ public class BuildingControllerTest {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("Invalid building type!")))
+        .andDo(print());
+  }
+
+  @Test
+  public void addNewBuildingWithNotEnoughGold() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(mockUserService.existsUserById(1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.validBuildingType("farm")).thenReturn(true);
+    Mockito.when(mockBuildingService.userHasEnoughGold(1L)).thenReturn(false);
+    mockMvc.perform(post("/kingdom/buildings")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"type\" : \"farm\"" + "}"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Not enough gold!")))
         .andDo(print());
   }
 
