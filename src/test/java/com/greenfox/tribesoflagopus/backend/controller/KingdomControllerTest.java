@@ -128,6 +128,12 @@ public class KingdomControllerTest {
         .andExpect(jsonPath("$.buildings").exists())
         .andExpect(jsonPath("$.resources").exists())
         .andExpect(jsonPath("$.resources.length()").value(2))
+        .andExpect(jsonPath("$.resources[0].type").exists())
+        .andExpect(jsonPath("$.resources[0].amount").value(0))
+        .andExpect(jsonPath("$.resources[0].generation").value(10))
+        .andExpect(jsonPath("$.resources[1].type").exists())
+        .andExpect(jsonPath("$.resources[1].amount").value(0))
+        .andExpect(jsonPath("$.resources[1].generation").value(10))
         .andExpect(jsonPath("$.troops").exists())
         .andExpect(jsonPath("$").value(hasKey("location")))
         .andDo(print());
