@@ -6,6 +6,7 @@ import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Resource;
 import com.greenfox.tribesoflagopus.backend.model.entity.ResourceType;
 import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
+import com.greenfox.tribesoflagopus.backend.repository.ResourceRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,13 @@ import org.springframework.stereotype.Service;
 public class ResourceService {
 
   private final KingdomRepository kingdomRepository;
+  private final ResourceRepository resourceRepository;
 
   @Autowired
-  public ResourceService (KingdomRepository kingdomRepository) {
+  public ResourceService (KingdomRepository kingdomRepository,
+      ResourceRepository resourceRepository) {
     this.kingdomRepository = kingdomRepository;
+    this.resourceRepository = resourceRepository;
   }
 
   public void increaseResourceByGenerationForKingdom(Kingdom kingdom){
@@ -30,45 +34,29 @@ public class ResourceService {
 
   public void calculateGenerationAmountForKingdom(Kingdom kingdom) {
     List<Building> buildingsOfKingdom = kingdom.getBuildings();
-
+    int setGoldGenerationTo = 0;
+    int setFoodGenerationTo = 0;
     for (Building building : buildingsOfKingdom) {
       if (building.getType().equals(BuildingType.MINE)){
-        increaseGoldGeneration(kingdom, building);
-      } else if (building.getType().equals(BuildingType.FARM)){
-        increaseFoodGeneration(kingdom, building);
+        setGoldGenerationTo += building.getLevel()*10;
+      } else if (building.getType().equals(BuildingType.FARM)) {
+        setFoodGenerationTo += building.getLevel()*10;
+      } else if (building.getType().equals(BuildingType.TOWNHALL)){
+        setGoldGenerationTo += building.getLevel()*10;
+        setFoodGenerationTo += building.getLevel()*10;
       } else {
-        increaseAllResourcesGeneration(kingdom, building);
+        setFoodGenerationTo += 0;
+        setGoldGenerationTo += 0;
       }
     }
+    setResourceGeneration(kingdom, setGoldGenerationTo, setFoodGenerationTo);
+  }
+
+  public void setResourceGeneration(Kingdom kingdom, int goldGeneration, int foodGeneration){
+    Resource foodToChange = resourceRepository.findByTypeAndKingdomId(ResourceType.FOOD, kingdom.getId());
+    Resource goldToChange = resourceRepository.findByTypeAndKingdomId(ResourceType.GOLD, kingdom.getId());
+    goldToChange.setGeneration(goldGeneration);
+    foodToChange.setGeneration(foodGeneration);
     kingdomRepository.save(kingdom);
   }
-
-  public void increaseGoldGeneration(Kingdom kingdom, Building mine){
-    List<Resource> resourcesPerKingdom = kingdom.getResources();
-    int increasedGoldGeneration;
-    for (Resource resource : resourcesPerKingdom) {
-      if (resource.getType().equals(ResourceType.GOLD)) {
-        increasedGoldGeneration = resource.getGeneration() + mine.getLevel()*10;
-        resource.setGeneration(increasedGoldGeneration);
-      }
-    }
-  }
-
-  public void increaseFoodGeneration(Kingdom kingdom, Building farm){
-    List<Resource> resourcesPerKingdom = kingdom.getResources();
-    for (Resource resource : resourcesPerKingdom) {
-      if (resource.getType().equals(ResourceType.FOOD)) {
-        int increasedFoodGeneration = resource.getGeneration() + farm.getLevel()*10;
-        resource.setGeneration(increasedFoodGeneration);
-      }
-    }
-  }
-
-  public void increaseAllResourcesGeneration(Kingdom kingdom, Building townhall){
-    List<Resource> resourcesPerKingdom = kingdom.getResources();
-    for (Resource resource : resourcesPerKingdom) {
-        int increasedResourceGeneration = resource.getGeneration() + townhall.getLevel()*10;
-        resource.setGeneration(increasedResourceGeneration);
-      }
-    }
 }
