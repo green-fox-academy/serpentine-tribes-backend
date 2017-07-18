@@ -14,23 +14,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class BackgroundTaskService {
 
   private final KingdomRepository kingdomRepository;
+  private final ResourceService resourceService;
 
   @Autowired
-  BackgroundTaskService(KingdomRepository kingdomRepository){
+  BackgroundTaskService(KingdomRepository kingdomRepository, ResourceService resourceService){
     this.kingdomRepository = kingdomRepository;
+    this.resourceService = resourceService;
   }
 
   @Transactional
   @Scheduled(fixedDelay = 60000)
-  public void increaseResourcesAmountPerMinute() {
+  public void increaseResourcesAmountPerMinuteInAllKingdoms() {
     List<Kingdom> allKingdoms = kingdomRepository.findAll();
 
     for (Kingdom kingdom : allKingdoms) {
-      List<Resource> resourcesPerKingdom = kingdom.getResources();
-      for (Resource resource : resourcesPerKingdom) {
-        resource.setAmount(resource.getAmount() + resource.getGeneration());
-      }
-      kingdomRepository.save(kingdom);
+      resourceService.calculateGenerationAmountForKingdom(kingdom);
+      resourceService.increaseResourceByGenerationForKingdom(kingdom);
     }
   }
 }
