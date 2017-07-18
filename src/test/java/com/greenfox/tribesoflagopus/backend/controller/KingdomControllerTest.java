@@ -1,26 +1,31 @@
 package com.greenfox.tribesoflagopus.backend.controller;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-
+import static org.hamcrest.Matchers.either;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
 import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.KingdomInputModifyDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.ResourceDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
+import com.greenfox.tribesoflagopus.backend.model.entity.ResourceType;
 import com.greenfox.tribesoflagopus.backend.service.KingdomService;
+import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import com.greenfox.tribesoflagopus.backend.service.UserService;
 import java.util.Arrays;
-
-import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,13 +33,13 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.http.MediaType;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BackendApplication.class)
@@ -69,6 +74,8 @@ public class KingdomControllerTest {
           .building(BuildingDto.builder().id(2L).type(BuildingType.FARM).level(2).hp(2).build())
           .troop(TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).build())
           .troop(TroopDto.builder().id(2L).level(2).hp(1).attack(1).defence(1).build())
+          .resource(ResourceDto.builder().type(ResourceType.FOOD).amount(0).generation(10).build())
+          .resource(ResourceDto.builder().type(ResourceType.GOLD).amount(0).generation(10).build())
           .location(TEST_LOCATION_DTO)
           .build();
 
@@ -123,6 +130,13 @@ public class KingdomControllerTest {
         .andExpect(jsonPath("$.user_id").exists())
         .andExpect(jsonPath("$.buildings").exists())
         .andExpect(jsonPath("$.resources").exists())
+        .andExpect(jsonPath("$.resources.length()").value(2))
+        .andExpect(jsonPath("$.resources[0].type", either(equalTo("food")).or(equalTo("gold"))))
+        .andExpect(jsonPath("$.resources[0].amount").value(0))
+        .andExpect(jsonPath("$.resources[0].generation").value(10))
+        .andExpect(jsonPath("$.resources[0].type", either(equalTo("food")).or(equalTo("gold"))))
+        .andExpect(jsonPath("$.resources[1].amount").value(0))
+        .andExpect(jsonPath("$.resources[1].generation").value(10))
         .andExpect(jsonPath("$.troops").exists())
         .andExpect(jsonPath("$").value(hasKey("location")))
         .andDo(print());
@@ -164,6 +178,13 @@ public class KingdomControllerTest {
         .andExpect(jsonPath("$.user_id").exists())
         .andExpect(jsonPath("$.buildings").exists())
         .andExpect(jsonPath("$.resources").exists())
+        .andExpect(jsonPath("$.resources.length()").value(2))
+        .andExpect(jsonPath("$.resources[0].type", either(equalTo("food")).or(equalTo("gold"))))
+        .andExpect(jsonPath("$.resources[0].amount").value(0))
+        .andExpect(jsonPath("$.resources[0].generation").value(10))
+        .andExpect(jsonPath("$.resources[0].type", either(equalTo("food")).or(equalTo("gold"))))
+        .andExpect(jsonPath("$.resources[1].amount").value(0))
+        .andExpect(jsonPath("$.resources[1].generation").value(10))
         .andExpect(jsonPath("$.troops").exists())
         .andExpect(jsonPath("$").value(hasKey("location")))
         .andDo(print());
