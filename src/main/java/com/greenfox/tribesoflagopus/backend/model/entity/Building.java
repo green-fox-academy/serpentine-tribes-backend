@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,6 +33,9 @@ public class Building {
   private int level;
   private int hp;
   private Timestamp startedAt;
+
+  @Transient
+  private Timestamp finishedAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @NotNull
