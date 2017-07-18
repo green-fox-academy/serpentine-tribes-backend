@@ -1,5 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -66,6 +67,7 @@ public class Kingdom {
   private void createTownHall() {
     Building townhall = Building.builder()
         .type("townhall")
+        .startedAt(new Timestamp(System.currentTimeMillis()))
         .build();
     buildings.add(townhall);
     townhall.setKingdom(this);

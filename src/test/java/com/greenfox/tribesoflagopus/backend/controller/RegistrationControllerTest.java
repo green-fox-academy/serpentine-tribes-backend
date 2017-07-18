@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.greenfox.tribesoflagopus.backend.BackendApplication;
+import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
 import com.greenfox.tribesoflagopus.backend.model.entity.User;
 import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
 import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
@@ -69,7 +70,7 @@ public class RegistrationControllerTest {
     long kingdomId = testUserRepository.findByUsername("TestUser").getKingdom().getId();
     assertTrue(testUserRepository.existsByUsername("TestUser"));
     assertTrue(testKingdomRepository.existsById(kingdomId));
-    assertTrue(testBuildingRepository.existsByTypeAndKingdomId("townhall", kingdomId));
+    assertTrue(testBuildingRepository.existsByTypeAndKingdomId(BuildingType.TOWNHALL, kingdomId));
     assertTrue(testLocationRepository.existsByKingdomId(kingdomId));
 
     testUserRepository.deleteByUsername("TestUser");
@@ -92,7 +93,7 @@ public class RegistrationControllerTest {
     long kingdomId = testUserRepository.findByUsername("TestUserWithoutKingdom").getKingdom().getId();
     assertTrue(testUserRepository.existsByUsername("TestUserWithoutKingdom"));
     assertTrue(testKingdomRepository.existsById(kingdomId));
-    assertTrue(testBuildingRepository.existsByTypeAndKingdomId("townhall", kingdomId));
+    assertTrue(testBuildingRepository.existsByTypeAndKingdomId(BuildingType.TOWNHALL, kingdomId));
     assertTrue(testLocationRepository.existsByKingdomId(kingdomId));
 
     testUserRepository.deleteByUsername("TestUserWithoutKingdom");

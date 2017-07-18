@@ -1,18 +1,24 @@
 package com.greenfox.tribesoflagopus.backend.controller;
 
+import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
+import com.greenfox.tribesoflagopus.backend.model.dto.TroopLevelInputDto;
 import com.greenfox.tribesoflagopus.backend.service.ErrorService;
 import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import com.greenfox.tribesoflagopus.backend.service.TroopService;
 import com.greenfox.tribesoflagopus.backend.service.UserService;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -85,5 +91,32 @@ public class TroopController {
 
     TroopDto addedTroopDto = troopService.addNewTroop(userId);
     return ResponseEntity.ok().body(addedTroopDto);
+  }
+
+  @PutMapping("/kingdom/troops/{troopId}")
+  public ResponseEntity<JsonDto> updateTroopLevel(
+      @Valid @RequestBody TroopLevelInputDto troopLevelInputDto,
+      BindingResult bindingResult,
+      @RequestHeader(value = "X-tribes-token") String token,
+      @Valid @PathVariable(value = "troopId") Long troopId) {
+
+    Long userId = tokenService.getIdFromToken(token);
+    if (userId == null) {
+      return ResponseEntity.badRequest().body(errorService.getUserIdWasNotRecoverableFromToken());
+    }
+
+    if (bindingResult.hasErrors()) {
+      StatusResponse missingParameterStatus = errorService.getMissingParameterStatus(bindingResult);
+      return ResponseEntity.badRequest().body(missingParameterStatus);
+    } else if (!troopService.existsByTroopIdAndUserId(troopId, userId)) {
+      StatusResponse invalidIdStatus = errorService.getInvalidIdStatus(troopId);
+      return ResponseEntity.status(404).body(invalidIdStatus);
+    } else if (troopLevelInputDto.getLevel() < 1) {
+      StatusResponse invalidTroopLevel = errorService.getInvalidTroopLevelStatus();
+      return ResponseEntity.badRequest().body(invalidTroopLevel);
+    }
+
+    TroopDto updatedTroopDto = troopService.updateTroop(troopId, troopLevelInputDto.getLevel());
+    return ResponseEntity.ok().body(updatedTroopDto);
   }
 }

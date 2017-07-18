@@ -15,6 +15,7 @@ import com.greenfox.tribesoflagopus.backend.model.dto.KingdomDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.KingdomInputModifyDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.LocationDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
+import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
 import com.greenfox.tribesoflagopus.backend.service.KingdomService;
 import com.greenfox.tribesoflagopus.backend.service.UserService;
 import java.util.Arrays;
@@ -64,8 +65,8 @@ public class KingdomControllerTest {
           .id(1L)
           .name(TEST_KINGDOM_NAME)
           .userId(TEST_USER_ID)
-          .building(BuildingDto.builder().id(1L).type("townhall").level(1).hp(1).build())
-          .building(BuildingDto.builder().id(2L).type("farm").level(2).hp(2).build())
+          .building(BuildingDto.builder().id(1L).type(BuildingType.TOWNHALL).level(1).hp(1).build())
+          .building(BuildingDto.builder().id(2L).type(BuildingType.FARM).level(2).hp(2).build())
           .troop(TroopDto.builder().id(1L).level(1).hp(1).attack(1).defence(1).build())
           .troop(TroopDto.builder().id(2L).level(2).hp(1).attack(1).defence(1).build())
           .location(TEST_LOCATION_DTO)

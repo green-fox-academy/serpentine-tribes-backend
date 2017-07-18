@@ -1,6 +1,9 @@
 package com.greenfox.tribesoflagopus.backend.model.entity;
 
+import java.sql.Timestamp;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,19 +27,22 @@ public class Building {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
   private Long id;
 
-  private String type;
+  @Enumerated(EnumType.STRING)
+  private BuildingType type;
   private int level;
   private int hp;
+  private Timestamp startedAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @NotNull
   private Kingdom kingdom;
 
   @Builder
-  public Building(String type) {
-    this.type = type;
+  public Building(String type, Timestamp startedAt) {
+    this.type = BuildingType.getByName(type);
     this.level = 1;
     this.hp = 0;
+    this.startedAt = startedAt;
   }
 
   public static class BuildingBuilder {
