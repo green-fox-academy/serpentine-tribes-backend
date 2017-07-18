@@ -34,7 +34,8 @@ public class TroopService {
 
   public TroopListDto listTroopsOfUser(Long userId) {
     List<Troop> troopsToConvertToDto = troopRepository.findAllByKingdomUserId(userId);
-    List<Troop> troopsWithFinishedAtTime = setFinishedAtTimesOfList(troopsToConvertToDto);
+    List<Troop> troopsWithFinishedAtTime = timeService
+        .setTroopListFinishedTimes(troopsToConvertToDto);
     TroopListDto troopsToReturn = dtoService.createTroopListDto(troopsWithFinishedAtTime);
     return troopsToReturn;
 }
@@ -46,7 +47,7 @@ public class TroopService {
   public TroopDto fetchTroop(Long userId, Long troopId) {
 
     Troop foundTroop = troopRepository.findOneByIdAndKingdomUserId(troopId, userId);
-    Troop foundTroopWithFinishedAtTime = setFinishedAtTime(foundTroop);
+    Troop foundTroopWithFinishedAtTime = timeService.setTroopFinishedTime(foundTroop);
 
     return dtoService.convertFromTroop(foundTroopWithFinishedAtTime);
   }
@@ -89,21 +90,8 @@ public class TroopService {
     return troopRepository.existsByIdAndKingdomUserId(troopId, userId);
   }
 
-  public List<Troop> setFinishedAtTimesOfList(List<Troop> troops) {
-    for (Troop troop : troops) {
-      troop = setFinishedAtTime(troop);
-    }
-    return troops;
-  }
-
-  public Troop setFinishedAtTime(Troop troop) {
-    Timestamp finishedAt = timeService.calculateFinishedAtTime(troop.getStartedAt());
-    troop.setFinishedAt(finishedAt);
-    return troop;
-  }
-
   public Troop saveTroop(Troop troop) {
     Troop savedTroop = troopRepository.save(troop);
-    return setFinishedAtTime(savedTroop);
+    return timeService.setTroopFinishedTime(savedTroop);
   }
 }

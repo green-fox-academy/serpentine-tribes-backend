@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class ResourceService {
 
-  private final KingdomRepository kingdomRepository;
+  private final KingdomService kingdomService;
   private final ResourceRepository resourceRepository;
 
   @Autowired
-  public ResourceService (KingdomRepository kingdomRepository,
+  public ResourceService (KingdomService kingdomService,
       ResourceRepository resourceRepository) {
-    this.kingdomRepository = kingdomRepository;
+    this.kingdomService = kingdomService;
     this.resourceRepository = resourceRepository;
   }
 
@@ -29,7 +29,7 @@ public class ResourceService {
       for (Resource resource : resourcesPerKingdom) {
         resource.setAmount(resource.getAmount() + resource.getGeneration());
       }
-      kingdomRepository.save(kingdom);
+      kingdomService.saveKingdom(kingdom);
     }
 
   public void calculateGenerationAmountForKingdom(Kingdom kingdom) {
@@ -37,9 +37,9 @@ public class ResourceService {
     int setGoldGenerationTo = 0;
     int setFoodGenerationTo = 0;
     for (Building building : buildingsOfKingdom) {
-      if (building.getType().equals(BuildingType.MINE)){
+      if (building.isFinished() && building.getType().equals(BuildingType.MINE)){
         setGoldGenerationTo += building.getLevel()*10;
-      } else if (building.getType().equals(BuildingType.FARM)) {
+      } else if (building.isFinished() && building.getType().equals(BuildingType.FARM)) {
         setFoodGenerationTo += building.getLevel()*10;
       } else if (building.getType().equals(BuildingType.TOWNHALL)){
         setGoldGenerationTo += building.getLevel()*10;
@@ -57,6 +57,6 @@ public class ResourceService {
     Resource goldToChange = resourceRepository.findByTypeAndKingdomId(ResourceType.GOLD, kingdom.getId());
     goldToChange.setGeneration(goldGeneration);
     foodToChange.setGeneration(foodGeneration);
-    kingdomRepository.save(kingdom);
+    kingdomService.saveKingdom(kingdom);
   }
 }
