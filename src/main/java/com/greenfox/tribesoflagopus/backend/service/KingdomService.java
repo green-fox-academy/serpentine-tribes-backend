@@ -7,6 +7,8 @@ import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Location;
 import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
 import com.greenfox.tribesoflagopus.backend.repository.LocationRepository;
+import java.sql.Timestamp;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,16 +18,19 @@ public class KingdomService {
   private final DtoService dtoService;
   private final KingdomRepository kingdomRepository;
   private final LocationRepository locationRepository;
+  private final TimeService timeService;
 
   @Autowired
   public KingdomService(
       DtoService dtoService,
       KingdomRepository kingdomRepository,
-      LocationRepository locationRepository) {
+      LocationRepository locationRepository,
+      TimeService timeService) {
 
     this.dtoService = dtoService;
     this.kingdomRepository = kingdomRepository;
     this.locationRepository = locationRepository;
+    this.timeService = timeService;
   }
 
   public KingdomDto createKingdomDto(Long userId) {
@@ -71,6 +76,15 @@ public class KingdomService {
 
   public Kingdom getKingdomOfUser(Long userId) {
     return kingdomRepository.findOneByUserId(userId);
+  }
+
+  public Kingdom saveKingdom (Kingdom kingdom) {
+    return kingdomRepository.save(kingdom);
+  }
+
+  public List<Kingdom> findAllKingdoms(){
+    List<Kingdom> allKingdoms = kingdomRepository.findAll();
+    return timeService.setKingdomFinishedTimes(allKingdoms);
   }
 
 }

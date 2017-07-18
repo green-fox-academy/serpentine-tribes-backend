@@ -32,7 +32,8 @@ public class BuildingService {
 
   public BuildingListDto getBuildingList(long userId) {
     List<Building> buildings = buildingRepository.findAllByKingdomUserId(userId);
-    List<Building> buildingsWithFinishedAtTime = setFinishedAtTimesOfList(buildings);
+    List<Building> buildingsWithFinishedAtTime = timeService
+        .setBuildingListFinishedTimes(buildings);
     return dtoService.convertToBuildingListDtoFromBuildings(buildingsWithFinishedAtTime);
 }
 
@@ -79,28 +80,12 @@ public class BuildingService {
 
   public BuildingDto getBuildingData(Long buildingId) {
     Building building = buildingRepository.findOne(buildingId);
-    Building buildingWithFinishedAtTime = setFinishedAtTime(building);
+    Building buildingWithFinishedAtTime = timeService.setBuildingFinishedTime(building);
     return dtoService.convertfromBuilding(buildingWithFinishedAtTime);
   }
 
   public Building saveBuilding(Building building) {
     Building savedBuilding = buildingRepository.save(building);
-    return setFinishedAtTime(savedBuilding);
-  }
-
-  public List<Building> setFinishedAtTimesOfList(List<Building> buildings) {
-    for (Building building : buildings) {
-      building = setFinishedAtTime(building);
-    }
-    return buildings;
-  }
-
-  public Building setFinishedAtTime(Building building) {
-    Timestamp finishedAt = timeService
-        .calculateBuildingTime(building.getStartedAt(), building.getType(),building.getLevel());
-    building.setFinishedAt(finishedAt);
-    return building;
+    return timeService.setBuildingFinishedTime(savedBuilding);
   }
 }
-
-
