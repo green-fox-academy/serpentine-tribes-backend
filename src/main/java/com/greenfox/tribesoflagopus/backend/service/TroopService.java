@@ -21,22 +21,25 @@ public class TroopService {
   private final DtoService dtoService;
   private final KingdomRepository kingdomRepository;
   private final TroopRepository troopRepository;
+  private final TimeService timeService;
 
   @Autowired
   public TroopService(DtoService dtoService,
       KingdomRepository kingdomRepository,
-      TroopRepository troopRepository) {
+      TroopRepository troopRepository, TimeService timeService) {
 
     this.dtoService = dtoService;
     this.kingdomRepository = kingdomRepository;
     this.troopRepository = troopRepository;
+    this.timeService = timeService;
   }
 
   public TroopListDto listTroopsOfUser(Long userId) {
 
     Kingdom foundKingdom = kingdomRepository.findOneByUserId(userId);
     List<Troop> troopsToConvertToDto = foundKingdom.getTroops();
-    TroopListDto troopsToReturn = dtoService.createTroopListDto(troopsToConvertToDto);
+    List<Troop> troopsWithFinishedAtTime = setFinishedAtTimesOfList(troopsToConvertToDto);
+    TroopListDto troopsToReturn = dtoService.createTroopListDto(troopsWithFinishedAtTime);
 
     return troopsToReturn;
   }
@@ -48,8 +51,9 @@ public class TroopService {
   public TroopDto fetchTroop(Long userId, Long troopId) {
 
     Troop foundTroop = troopRepository.findOneByIdAndKingdomUserId(troopId, userId);
+    Troop foundTroopWithFinishedAtTime = setFinishedAtTime(foundTroop);
 
-    return dtoService.convertFromTroop(foundTroop);
+    return dtoService.convertFromTroop(foundTroopWithFinishedAtTime);
   }
 
   public boolean existsByUserId(Long userId) {
@@ -67,25 +71,46 @@ public class TroopService {
         .defence(1)
         .startedAt(new Timestamp(System.currentTimeMillis()))
         .build();
-    Troop savedTroop = addTroopToUsersKingdom(newTroop, userId);
-    return dtoService.convertFromTroop(savedTroop);
+    Troop savedTroopWithFinishedAtTime = addTroopToUsersKingdom(newTroop, userId);
+    return dtoService.convertFromTroop(savedTroopWithFinishedAtTime);
   }
 
   @Transactional
   public Troop addTroopToUsersKingdom(Troop troop, Long userId) {
     Kingdom existingKingdom = kingdomRepository.findOneByUserId(userId);
     existingKingdom.addTroop(troop);
-    return troopRepository.save(troop);
+    Troop savedTroop = saveTroop(troop);
+    return savedTroop;
   }
 
   public TroopDto updateTroop(Long troopId, Integer level) {
     Troop troop = troopRepository.findById(troopId);
     troop.setLevel(level);
-    troopRepository.save(troop);
-    return dtoService.convertFromTroop(troop);
+    Troop savedTroop = saveTroop(troop);
+    return dtoService.convertFromTroop(savedTroop);
   }
 
   public boolean existsByTroopIdAndUserId(Long troopId, Long userId) {
     return troopRepository.existsByIdAndKingdomUserId(troopId, userId);
   }
+
+  public List<Troop> setFinishedAtTimesOfList(List<Troop> troops) {
+    for (Troop troop : troops) {
+      troop = setFinishedAtTime(troop);
+    }
+    return troops;
+  }
+
+  public Troop setFinishedAtTime(Troop troop) {
+    Timestamp finishedAt = timeService.calculateFinishedAtTime(troop.getStartedAt());
+    troop.setFinishedAt(finishedAt);
+    return troop;
+  }
+
+  public Troop saveTroop(Troop troop) {
+    Troop savedTroop = troopRepository.save(troop);
+    return setFinishedAtTime(savedTroop);
+  }
+
+
 }

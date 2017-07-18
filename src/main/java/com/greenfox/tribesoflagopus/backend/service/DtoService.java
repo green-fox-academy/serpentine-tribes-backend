@@ -23,13 +23,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class DtoService {
 
-  private TimeService timeService;
-
-  @Autowired
-  public DtoService(TimeService timeService) {
-    this.timeService = timeService;
-  }
-
   public BuildingListDto convertToBuildingListDtoFromBuildings(List<Building> buildings) {
     List<BuildingDto> buildingDtos = convertFromBuildings(buildings);
     BuildingListDto buildingListDto = BuildingListDto.builder()
@@ -102,7 +95,7 @@ public class DtoService {
         .attack(troop.getAttack())
         .defence(troop.getDefence())
         .startedAt(troop.getStartedAt())
-        .finishedAt(timeService.calculateFinishedAtTime(troop.getStartedAt()))
+        .finishedAt(troop.getFinishedAt())
         .build();
   }
 
