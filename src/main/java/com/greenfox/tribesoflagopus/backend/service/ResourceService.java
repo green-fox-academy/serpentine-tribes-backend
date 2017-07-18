@@ -35,9 +35,9 @@ public class ResourceService {
       if (building.getType().equals(BuildingType.MINE)){
         increaseGoldGeneration(kingdom, building);
       } else if (building.getType().equals(BuildingType.FARM)){
-        increaseFoodGeneration(kingdom, building)
+        increaseFoodGeneration(kingdom, building);
       } else {
-        increaseAllResourcesGeneration(kingdom, building)
+        increaseAllResourcesGeneration(kingdom, building);
       }
     }
     kingdomRepository.save(kingdom);
@@ -45,10 +45,11 @@ public class ResourceService {
 
   public void increaseGoldGeneration(Kingdom kingdom, Building mine){
     List<Resource> resourcesPerKingdom = kingdom.getResources();
+    int increasedGoldGeneration;
     for (Resource resource : resourcesPerKingdom) {
       if (resource.getType().equals(ResourceType.GOLD)) {
-        int increasedMineGeneration = resource.getGeneration() + mine.getLevel()*10;
-        resource.setGeneration(increasedMineGeneration);
+        increasedGoldGeneration = resource.getGeneration() + mine.getLevel()*10;
+        resource.setGeneration(increasedGoldGeneration);
       }
     }
   }
@@ -57,19 +58,17 @@ public class ResourceService {
     List<Resource> resourcesPerKingdom = kingdom.getResources();
     for (Resource resource : resourcesPerKingdom) {
       if (resource.getType().equals(ResourceType.FOOD)) {
-        int increasedMineGeneration = resource.getGeneration() + farm.getLevel()*10;
-        resource.setGeneration(increasedMineGeneration);
+        int increasedFoodGeneration = resource.getGeneration() + farm.getLevel()*10;
+        resource.setGeneration(increasedFoodGeneration);
       }
     }
   }
 
-  public void increaseAllResourcesGeneration(Kingdom kingdom, Building farm){
+  public void increaseAllResourcesGeneration(Kingdom kingdom, Building townhall){
     List<Resource> resourcesPerKingdom = kingdom.getResources();
     for (Resource resource : resourcesPerKingdom) {
-      if (resource.getType().equals(ResourceType.FOOD)) {
-        int increasedMineGeneration = resource.getGeneration() + farm.getLevel()*10;
-        resource.setGeneration(increasedMineGeneration);
+        int increasedResourceGeneration = resource.getGeneration() + townhall.getLevel()*10;
+        resource.setGeneration(increasedResourceGeneration);
       }
     }
-  }
 }
