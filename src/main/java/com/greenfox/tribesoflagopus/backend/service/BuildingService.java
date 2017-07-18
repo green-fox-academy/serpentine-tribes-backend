@@ -5,6 +5,7 @@ import com.greenfox.tribesoflagopus.backend.model.dto.BuildingListDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Building;
 import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
+import com.greenfox.tribesoflagopus.backend.model.entity.ResourceType;
 import com.greenfox.tribesoflagopus.backend.repository.BuildingRepository;
 import java.sql.Timestamp;
 import java.util.List;
@@ -18,16 +19,20 @@ public class BuildingService {
   private final DtoService dtoService;
   private final KingdomService kingdomService;
   private final TimeService timeService;
+  private final ResourceService resourceService;
 
   @Autowired
   public BuildingService(
       BuildingRepository buildingRepository,
       DtoService dtoService,
-      KingdomService kingdomService, TimeService timeService) {
+      KingdomService kingdomService,
+      TimeService timeService,
+      ResourceService resourceService) {
     this.buildingRepository = buildingRepository;
     this.dtoService = dtoService;
     this.kingdomService = kingdomService;
     this.timeService = timeService;
+    this.resourceService = resourceService;
   }
 
   public BuildingListDto getBuildingList(long userId) {
@@ -100,6 +105,11 @@ public class BuildingService {
         .calculateBuildingTime(building.getStartedAt(), building.getType(),building.getLevel());
     building.setFinishedAt(finishedAt);
     return building;
+  }
+
+  public boolean userHasEnoughGold(Long userId) {
+    int neededResourceAmount = 250;
+    return resourceService.hasEnoughResource(userId, ResourceType.GOLD, neededResourceAmount);
   }
 }
 

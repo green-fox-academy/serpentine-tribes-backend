@@ -72,4 +72,10 @@ public class ErrorService {
   public StatusResponse getInvalidTroopLevelStatus() {
     return StatusResponse.error("Invalid troop level!");
   }
+
+  public StatusResponse getNotEnoughGoldStatus() {
+    return StatusResponse.error("Not enough gold!");
+  }
+
+
 }

@@ -94,6 +94,9 @@ public class BuildingController {
     } else if (!buildingService.validBuildingType(buildingTypeInputDto.getType())) {
       StatusResponse invalidBuildingTypeStatus = errorService.getInvalidBuildingTypeStatus();
       return ResponseEntity.badRequest().body(invalidBuildingTypeStatus);
+    } else if (!buildingService.userHasEnoughGold(userId)) {
+      StatusResponse notEnoughGoldStatus = errorService.getNotEnoughGoldStatus();
+      return ResponseEntity.badRequest().body(notEnoughGoldStatus);
     }
 
     BuildingDto newBuildingDto = buildingService
