@@ -19,26 +19,22 @@ import org.springframework.stereotype.Service;
 public class TroopService {
 
   private final DtoService dtoService;
-  private final KingdomRepository kingdomRepository;
+  private final KingdomService kingdomService;
   private final TroopRepository troopRepository;
 
   @Autowired
   public TroopService(DtoService dtoService,
-      KingdomRepository kingdomRepository,
+      KingdomService kingdomService,
       TroopRepository troopRepository) {
 
     this.dtoService = dtoService;
-    this.kingdomRepository = kingdomRepository;
+    this.kingdomService = kingdomService;
     this.troopRepository = troopRepository;
   }
 
   public TroopListDto listTroopsOfUser(Long userId) {
-
-    Kingdom foundKingdom = kingdomRepository.findOneByUserId(userId);
-    List<Troop> troopsToConvertToDto = foundKingdom.getTroops();
-    TroopListDto troopsToReturn = dtoService.createTroopListDto(troopsToConvertToDto);
-
-    return troopsToReturn;
+    List<Troop> troopsToConvertToDto = troopRepository.findAllByKingdomUserId(userId);
+    return dtoService.createTroopListDto(troopsToConvertToDto);
   }
 
   public boolean existsByIdAndUserId(Long troopId, Long userId) {
@@ -73,16 +69,16 @@ public class TroopService {
 
   @Transactional
   public Troop addTroopToUsersKingdom(Troop troop, Long userId) {
-    Kingdom existingKingdom = kingdomRepository.findOneByUserId(userId);
+    Kingdom existingKingdom = kingdomService.getKingdomOfUser(userId);
     existingKingdom.addTroop(troop);
     return troopRepository.save(troop);
   }
 
   public TroopDto updateTroop(Long troopId, Integer level) {
-    Troop troop = troopRepository.findById(troopId);
+    Troop troop = troopRepository.findOne(troopId);
     troop.setLevel(level);
-    troopRepository.save(troop);
-    return dtoService.convertFromTroop(troop);
+    Troop updatedTroop = troopRepository.save(troop);
+    return dtoService.convertFromTroop(updatedTroop);
   }
 
   public boolean existsByTroopIdAndUserId(Long troopId, Long userId) {

@@ -29,7 +29,7 @@ public class BuildingService {
   }
 
   public BuildingListDto getBuildingList(long userId) {
-    List<Building> buildings = kingdomService.getBuildingsByUserId(userId);
+    List<Building> buildings = buildingRepository.findAllByKingdomUserId(userId);
     return dtoService.convertToBuildingListDtoFromBuildings(buildings);
   }
 
@@ -49,7 +49,7 @@ public class BuildingService {
   }
 
   public Building createAndSaveNewBuilding(String type, Long userId) {
-    Kingdom kingdom = kingdomService.findKingdomByUserId(userId);
+    Kingdom kingdom = kingdomService.getKingdomOfUser(userId);
     Building newBuilding = Building.builder()
         .type(type)
         .startedAt(new Timestamp(System.currentTimeMillis()))
@@ -59,10 +59,10 @@ public class BuildingService {
   }
 
   public BuildingDto updateBuilding(Long buildingId, Integer level) {
-    Building building = buildingRepository.findById(buildingId);
+    Building building = buildingRepository.findOne(buildingId);
     building.setLevel(level);
-    buildingRepository.save(building);
-    return dtoService.convertfromBuilding(building);
+    Building updatedBuilding = buildingRepository.save(building);
+    return dtoService.convertfromBuilding(updatedBuilding);
   }
 
   public boolean existsByBuildingIdAndUserId(Long buildingId, Long userId) {
@@ -70,7 +70,7 @@ public class BuildingService {
   }
 
   public BuildingDto getBuildingData(Long buildingId) {
-    Building building = buildingRepository.findById(buildingId);
+    Building building = buildingRepository.findOne(buildingId);
     return dtoService.convertfromBuilding(building);
   }
 }
