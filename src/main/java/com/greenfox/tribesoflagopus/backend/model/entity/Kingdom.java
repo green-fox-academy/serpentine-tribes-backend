@@ -50,8 +50,8 @@ public class Kingdom {
   private Location location;
 
   /**
-   * {@code setLocation} is a <em>bidirectional</em> setter.
-   * @param location The {@code Location} object to be set as the this {@code Kingdom}'s child entity
+   * The {@code setLocation} method is a <em>bidirectional</em> setter.
+   * @param location The {@code Location} object to be set as this {@code Kingdom}'s child entity
    */
   public void setLocation(Location location) {
     this.location = location;
@@ -61,16 +61,23 @@ public class Kingdom {
   @Builder
   public Kingdom(String name) {
     this.name = name;
-    createTownHall();
+    this.addBuilding(createBuilding("townhall"));
+    this.addResource(createResource("food"));
+    this.addResource(createResource("gold"));
   }
 
-  private void createTownHall() {
-    Building townhall = Building.builder()
-        .type("townhall")
+  private Building createBuilding(String buildingType) {
+    return Building.builder()
+        .type(buildingType)
         .startedAt(new Timestamp(System.currentTimeMillis()))
         .build();
-    buildings.add(townhall);
-    townhall.setKingdom(this);
+  }
+
+  private Resource createResource(String resourceType) {
+    return Resource.builder()
+        .type(resourceType)
+        .generation(10)
+        .build();
   }
 
   public void addTroop(Troop troop) {
@@ -93,12 +100,26 @@ public class Kingdom {
     this.buildings.remove(building);
   }
 
-  public void addResource(Resource resource) {
+  /**
+   * The {@code addResource} method adds a {@code Resource} type object to the {@code Kingdom}.
+   * The method's access level is private because {@code Resource} objects should only be created
+   * when creating a brand new {@code Kingdom} through the static {@code builder()} method.
+   *
+   * @param resource The {@code Resource} object to be set as this {@code Kingdom}'s child entity
+   */
+  private void addResource(Resource resource) {
     resources.add(resource);
     resource.setKingdom(this);
   }
 
-  public void removeResource(Resource resource) {
+  /**
+   * The {@code removeResource} method removes a {@code Resource} type object from the {@code Kingdom}.
+   * The method's access level is private because at this time, {@code Resource} objects should
+   * be permanently attached to their {@code Kingdom} <em>parent</em> entity.
+   *
+   * @param resource The {@code Resource} object to be removed from this {@code Kingdom}
+   */
+  private void removeResource(Resource resource) {
     resource.setKingdom(null);
     this.resources.remove(resource);
   }
