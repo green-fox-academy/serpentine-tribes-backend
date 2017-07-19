@@ -128,6 +128,9 @@ public class TroopController {
     } else if (troopLevelInputDto.getLevel() < 1) {
       StatusResponse invalidTroopLevel = errorService.getInvalidTroopLevelStatus();
       return ResponseEntity.badRequest().body(invalidTroopLevel);
+    } else if(!troopService.hasEnoughGoldForTroopUpgrade(userId)) {
+      StatusResponse notEnoughGoldStatus = errorService.getNotEnoughGoldStatus();
+      return ResponseEntity.badRequest().body(notEnoughGoldStatus);
     }
 
     TroopDto updatedTroopDto = troopService.updateTroop(troopId, troopLevelInputDto.getLevel());

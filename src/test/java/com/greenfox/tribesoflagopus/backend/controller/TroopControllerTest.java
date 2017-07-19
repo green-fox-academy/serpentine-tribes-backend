@@ -200,6 +200,7 @@ public class TroopControllerTest {
   public void updateTroopWithValidInputs() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(troopService.existsByTroopIdAndUserId(1L, 1L)).thenReturn(true);
+    Mockito.when(troopService.hasEnoughGoldForTroopUpgrade(1L)).thenReturn(true);
     Mockito.when(troopService.updateTroop(1L, 2))
         .thenReturn(mockUpdatedTroopDtoBuilder.build());
     mockMvc.perform(put("/kingdom/troops/1")
@@ -266,4 +267,20 @@ public class TroopControllerTest {
         .andExpect(jsonPath("$.message", is("Invalid troop level!")))
         .andDo(print());
   }
+
+  @Test
+  public void updateTroopWithNotEnoughGold() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(troopService.existsByTroopIdAndUserId(1L, 1L)).thenReturn(true);
+    Mockito.when(troopService.hasEnoughGoldForTroopUpgrade(1L)).thenReturn(false);
+    mockMvc.perform(put("/kingdom/troops/1")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"level\" : " + 2 + "}"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Not enough gold!")))
+        .andDo(print());
+  }
+
 }
