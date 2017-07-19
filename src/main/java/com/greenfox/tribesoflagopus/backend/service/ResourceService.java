@@ -15,19 +15,27 @@ public class ResourceService {
 
   private final KingdomService kingdomService;
   private final ResourceRepository resourceRepository;
+  private final BuildingService buildingService;
 
   @Autowired
   public ResourceService (KingdomService kingdomService,
-      ResourceRepository resourceRepository) {
+      ResourceRepository resourceRepository, BuildingService buildingService) {
     this.kingdomService = kingdomService;
     this.resourceRepository = resourceRepository;
+    this.buildingService = buildingService;
   }
 
   public void increaseResourceByGenerationForKingdom(Kingdom kingdom){
-      List<Resource> resourcesPerKingdom = kingdom.getResources();
-      for (Resource resource : resourcesPerKingdom) {
-        resource.setAmount(resource.getAmount() + resource.getGeneration());
-      }
+    Resource foodToChange = resourceRepository.findByTypeAndKingdomId(ResourceType.FOOD, kingdom.getId());
+    Resource goldToChange = resourceRepository.findByTypeAndKingdomId(ResourceType.GOLD, kingdom.getId());
+
+    if (isEnoughSpaceInFoodStorage(kingdom)) {
+      foodToChange.setAmount(foodToChange.getAmount() + foodToChange.getGeneration());
+    }
+
+    if (isEnoughSpaceInGoldStorage(kingdom)) {
+      goldToChange.setAmount(goldToChange.getAmount() + goldToChange.getGeneration());
+    }
       kingdomService.saveKingdom(kingdom);
     }
 
@@ -56,17 +64,19 @@ public class ResourceService {
     kingdomService.saveKingdom(kingdom);
   }
 
-  public boolean isTownhallFullOfGold (Kingdom kingdom) {
+  public boolean isEnoughSpaceInGoldStorage (Kingdom kingdom) {
+    int townhallLevel = buildingService.findBuildingByTypeAndKingdomId(BuildingType.TOWNHALL, kingdom.getId()).getLevel();
     int goldInKingdom = resourceRepository.findByTypeAndKingdomId(ResourceType.GOLD, kingdom.getId()).getAmount();
-    if (goldInKingdom == 1000) {
+    if (goldInKingdom < townhallLevel*1000) {
       return true;
     }
     return false;
   }
 
-  public boolean isTownhallFullOfFood (Kingdom kingdom) {
+  public boolean isEnoughSpaceInFoodStorage (Kingdom kingdom) {
+    int townhallLevel = buildingService.findBuildingByTypeAndKingdomId(BuildingType.TOWNHALL, kingdom.getId()).getLevel();
     int foodInKingdom = resourceRepository.findByTypeAndKingdomId(ResourceType.FOOD, kingdom.getId()).getAmount();
-    if (foodInKingdom == 1000) {
+    if (foodInKingdom < townhallLevel*1000) {
       return true;
     }
     return false;

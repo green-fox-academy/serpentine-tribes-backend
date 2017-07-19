@@ -80,4 +80,8 @@ public class BuildingService {
   public Building saveBuilding(Building building) {
     return buildingRepository.save(building);
   }
+
+  public Building findBuildingByTypeAndKingdomId (BuildingType buildingType, long kingdomId) {
+    return buildingRepository.findByTypeAndKingdomId(buildingType, kingdomId);
+  }
 }
