@@ -62,16 +62,19 @@ public class ResourceService {
     kingdomService.saveKingdom(kingdom);
   }
 
-  public boolean hasEnoughResource(Long userId, ResourceType resourceType,
+  public boolean hasEnoughResource(Kingdom kingdom, ResourceType resourceType,
       int neededResourceAmount) {
-    Kingdom kingdom = kingdomService.getKingdomOfUser(userId);
-    List<Resource> resources = kingdom.getResources();
-    for (Resource resource : resources) {
-      if (resource.getType().equals(resourceType)
-          && resource.getAmount() >= neededResourceAmount) {
+    Resource resourceToCheck = resourceRepository.findByTypeAndKingdomId(resourceType, kingdom.getId());
+      if (resourceToCheck.getAmount() >= neededResourceAmount) {
         return true;
       }
-    }
     return false;
+  }
+
+  public void decreaseResource(Kingdom kingdom, ResourceType resourceType, int decreaseAmount) {
+    Resource resourceToDecrease = resourceRepository.findByTypeAndKingdomId(resourceType, kingdom.getId());
+    int newAmount = resourceToDecrease.getAmount() - decreaseAmount;
+    resourceToDecrease.setAmount(newAmount);
+    resourceRepository.save(resourceToDecrease);
   }
 }

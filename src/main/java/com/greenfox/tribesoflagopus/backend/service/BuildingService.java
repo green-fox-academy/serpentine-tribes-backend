@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BuildingService {
 
+  private final int buildingPrice = 250;
   private final BuildingRepository buildingRepository;
   private final DtoService dtoService;
   private final KingdomService kingdomService;
@@ -40,7 +41,7 @@ public class BuildingService {
     List<Building> buildingsWithFinishedAtTime = timeService
         .setBuildingListFinishedTimes(buildings);
     return dtoService.convertToBuildingListDtoFromBuildings(buildingsWithFinishedAtTime);
-}
+  }
 
   public boolean validBuildingType(String inputBuildingType) {
     for (BuildingType buildingType : BuildingType.values()) {
@@ -69,7 +70,8 @@ public class BuildingService {
     Kingdom kingdom = kingdomService.getKingdomOfUser(userId);
     kingdom.addBuilding(building);
     Building savedBuildingWithFinishedAtTime = saveBuilding(building);
-    return savedBuildingWithFinishedAtTime ;
+    resourceService.decreaseResource(kingdom, ResourceType.GOLD, buildingPrice);
+    return savedBuildingWithFinishedAtTime;
   }
 
   public BuildingDto updateBuilding(Long buildingId, Integer level) {
@@ -95,7 +97,7 @@ public class BuildingService {
   }
 
   public boolean userHasEnoughGold(Long userId) {
-    int neededResourceAmount = 250;
-    return resourceService.hasEnoughResource(userId, ResourceType.GOLD, neededResourceAmount);
+    Kingdom kingdom = kingdomService.getKingdomOfUser(userId);
+    return resourceService.hasEnoughResource(kingdom, ResourceType.GOLD, buildingPrice);
   }
 }
