@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class BuildingService {
 
-  private final int buildingPrice = 250;
+  private final int newBuildingPrice = 250;
+  private final int buildingLevelPrice = 100;
+  private final int buildingLevelMax = 20;
   private final BuildingRepository buildingRepository;
   private final DtoService dtoService;
   private final KingdomService kingdomService;
@@ -70,7 +72,7 @@ public class BuildingService {
     Kingdom kingdom = kingdomService.getKingdomOfUser(userId);
     kingdom.addBuilding(building);
     Building savedBuildingWithFinishedAtTime = saveBuilding(building);
-    resourceService.decreaseResource(kingdom, ResourceType.GOLD, buildingPrice);
+    resourceService.decreaseResource(kingdom, ResourceType.GOLD, newBuildingPrice);
     return savedBuildingWithFinishedAtTime;
   }
 
@@ -78,6 +80,7 @@ public class BuildingService {
     Building building = buildingRepository.findOne(buildingId);
     building.setLevel(level);
     Building savedBuildingWithFinishedAtTime = saveBuilding(building);
+    resourceService.decreaseResource(building.getKingdom(), ResourceType.GOLD, level * buildingLevelPrice);
     return dtoService.convertfromBuilding(savedBuildingWithFinishedAtTime);
   }
 
@@ -96,8 +99,33 @@ public class BuildingService {
     return timeService.setBuildingFinishedTime(savedBuilding);
   }
 
-  public boolean userHasEnoughGold(Long userId) {
+  public boolean hasEnoughGoldForNewBuilding(Long userId) {
+    return checkGoldAmount(userId, newBuildingPrice);
+  }
+
+  public boolean hasEnoughGoldForUpgrade(Long userId, int level) {
+    int price = level * buildingLevelPrice;
+    return checkGoldAmount(userId, price);
+  }
+
+  public boolean checkGoldAmount(Long userId, int price) {
     Kingdom kingdom = kingdomService.getKingdomOfUser(userId);
-    return resourceService.hasEnoughResource(kingdom, ResourceType.GOLD, buildingPrice);
+    return resourceService.hasEnoughResource(kingdom, ResourceType.GOLD, price);
+  }
+
+  public boolean isUpgradeLevelAllowed(Long buildingId, int levelToReach) {
+    Building buildingToUpgrade = buildingRepository.findOne(buildingId);
+    BuildingType buildingType = buildingToUpgrade.getType();
+
+    if (buildingType.equals(BuildingType.TOWNHALL) && levelToReach <= buildingLevelMax) {
+      return true;
+    }
+    int levelOfTownhall = buildingRepository
+        .findByTypeAndKingdomId(BuildingType.TOWNHALL, buildingToUpgrade.getKingdom().getId())
+        .getLevel();
+    if(levelToReach <= levelOfTownhall) {
+      return true;
+    }
+    return false;
   }
 }

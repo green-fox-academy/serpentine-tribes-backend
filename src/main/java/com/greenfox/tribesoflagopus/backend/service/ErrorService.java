@@ -77,5 +77,9 @@ public class ErrorService {
     return StatusResponse.error("Not enough gold!");
   }
 
+  public StatusResponse getBuildingLevelTooHighStatus() {
+    return StatusResponse.error("Building level is bigger than Townhall level!");
+  }
+
 
 }
