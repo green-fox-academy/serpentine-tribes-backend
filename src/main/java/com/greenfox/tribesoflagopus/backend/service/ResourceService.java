@@ -60,10 +60,17 @@ public class ResourceService {
     kingdomService.saveKingdom(kingdom);
   }
 
-  public boolean isTownhallFullOfResource (Kingdom kingdom) {
+  public boolean isTownhallFullOfGold (Kingdom kingdom) {
     int goldInKingdom = resourceRepository.findByTypeAndKingdomId(ResourceType.GOLD, kingdom.getId()).getAmount();
+    if (goldInKingdom == 1000) {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean isTownhallFullOfFood (Kingdom kingdom) {
     int foodInKingdom = resourceRepository.findByTypeAndKingdomId(ResourceType.FOOD, kingdom.getId()).getAmount();
-    if (goldInKingdom == 1000 && foodInKingdom == 1000) {
+    if (foodInKingdom == 1000) {
       return true;
     }
     return false;

@@ -26,7 +26,7 @@ public class BackgroundTaskService {
     List<Kingdom> allKingdoms = kingdomService.findAllKingdoms();
 
     for (Kingdom kingdom : allKingdoms) {
-      if (!resourceService.isTownhallFullOfResource(kingdom)) {
+      if (!resourceService.isTownhallFullOfGold(kingdom) && !resourceService.isTownhallFullOfFood(kingdom)) {
         resourceService.calculateGenerationAmountForKingdom(kingdom);
         resourceService.increaseResourceByGenerationForKingdom(kingdom);
       }
