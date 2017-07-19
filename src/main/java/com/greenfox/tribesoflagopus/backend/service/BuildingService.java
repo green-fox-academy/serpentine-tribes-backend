@@ -128,4 +128,8 @@ public class BuildingService {
     }
     return false;
   }
+
+  public boolean hasUserBuildingType(BuildingType buildingType, Long userId) {
+    return buildingRepository.existsByTypeAndKingdomUserId(buildingType, userId);
+  }
 }

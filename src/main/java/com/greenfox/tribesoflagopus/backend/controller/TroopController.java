@@ -5,6 +5,8 @@ import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopLevelInputDto;
+import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
+import com.greenfox.tribesoflagopus.backend.service.BuildingService;
 import com.greenfox.tribesoflagopus.backend.service.ErrorService;
 import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import com.greenfox.tribesoflagopus.backend.service.TroopService;
@@ -30,17 +32,20 @@ public class TroopController {
   private final TokenService tokenService;
   private final TroopService troopService;
   private final UserService userService;
+  private final BuildingService buildingService;
 
   @Autowired
   public TroopController(ErrorService errorService,
       TokenService tokenService,
       TroopService troopService,
-      UserService userService) {
+      UserService userService,
+      BuildingService buildingService) {
 
     this.errorService = errorService;
     this.tokenService = tokenService;
     this.troopService = troopService;
     this.userService = userService;
+    this.buildingService = buildingService;
   }
 
   @GetMapping(value = "/kingdom/troops")
@@ -87,6 +92,10 @@ public class TroopController {
 
     if (!userService.existsUserById(userId)) {
       return ResponseEntity.status(404).body(errorService.getUserIdNotFoundStatus());
+    }
+
+    if(!buildingService.hasUserBuildingType(BuildingType.BARRACK, userId)) {
+      return ResponseEntity.badRequest().body(errorService.getNoBarrackStatus());
     }
 
     if(!troopService.hasEnoughGoldForNewTroop(userId)) {

@@ -81,5 +81,9 @@ public class ErrorService {
     return StatusResponse.error("Building level is bigger than Townhall level!");
   }
 
+  public StatusResponse getNoBarrackStatus() {
+    return StatusResponse.error("Without a barrack you can't have a troop!");
+  }
+
 
 }
