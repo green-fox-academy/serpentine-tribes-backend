@@ -7,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -25,6 +24,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class Troop {
 
+  public static final Timestamp ZERO_TIMESTAMP = new Timestamp(0);
+
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
   private Long id;
@@ -39,9 +40,6 @@ public class Troop {
   private int defence;
   private Timestamp startedAt;
 
-  @Transient
-  private Timestamp finishedAt;
-
   @Builder
   public Troop(int level, int hp, int attack, int defence, Timestamp startedAt) {
     this.level = level;
@@ -49,6 +47,22 @@ public class Troop {
     this.attack = attack;
     this.defence = defence;
     this.startedAt = startedAt;
+  }
+
+  public Timestamp getFinishedAt() {
+    Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+    long startedTimeAsMillis = startedAt.getTime();
+    long minuteToDelayWith = 1;
+    long delayInMillis = minuteToDelayWith * 60 * 1000;
+    if (currentTime.getTime() - startedAt.getTime() < delayInMillis) {
+      return new Timestamp(0);
+    } else {
+      return new Timestamp(startedTimeAsMillis + delayInMillis);
+    }
+  }
+
+  public boolean isFinished () {
+    return ZERO_TIMESTAMP.equals(getFinishedAt());
   }
 
   public static class TroopBuilder {

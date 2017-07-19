@@ -18,25 +18,20 @@ public class TroopService {
   private final DtoService dtoService;
   private final KingdomService kingdomService;
   private final TroopRepository troopRepository;
-  private final TimeService timeService;
 
   @Autowired
   public TroopService(DtoService dtoService,
       KingdomService kingdomService,
-      TroopRepository troopRepository,
-      TimeService timeService) {
+      TroopRepository troopRepository) {
 
     this.dtoService = dtoService;
     this.kingdomService = kingdomService;
     this.troopRepository = troopRepository;
-    this.timeService = timeService;
   }
 
   public TroopListDto listTroopsOfUser(Long userId) {
     List<Troop> troopsToConvertToDto = troopRepository.findAllByKingdomUserId(userId);
-    List<Troop> troopsWithFinishedAtTime = timeService
-        .setTroopListFinishedTimes(troopsToConvertToDto);
-    TroopListDto troopsToReturn = dtoService.createTroopListDto(troopsWithFinishedAtTime);
+    TroopListDto troopsToReturn = dtoService.createTroopListDto(troopsToConvertToDto);
     return troopsToReturn;
 }
 
@@ -45,11 +40,8 @@ public class TroopService {
   }
 
   public TroopDto fetchTroop(Long userId, Long troopId) {
-
     Troop foundTroop = troopRepository.findOneByIdAndKingdomUserId(troopId, userId);
-    Troop foundTroopWithFinishedAtTime = timeService.setTroopFinishedTime(foundTroop);
-
-    return dtoService.convertFromTroop(foundTroopWithFinishedAtTime);
+    return dtoService.convertFromTroop(foundTroop);
   }
 
   public boolean existsByUserId(Long userId) {
@@ -91,7 +83,6 @@ public class TroopService {
   }
 
   public Troop saveTroop(Troop troop) {
-    Troop savedTroop = troopRepository.save(troop);
-    return timeService.setTroopFinishedTime(savedTroop);
+    return troopRepository.save(troop);
   }
 }
