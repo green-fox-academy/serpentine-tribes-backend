@@ -26,8 +26,10 @@ public class BackgroundTaskService {
     List<Kingdom> allKingdoms = kingdomService.findAllKingdoms();
 
     for (Kingdom kingdom : allKingdoms) {
-      resourceService.calculateGenerationAmountForKingdom(kingdom);
-      resourceService.increaseResourceByGenerationForKingdom(kingdom);
+      if (!resourceService.isTownhallFullOfResource(kingdom)) {
+        resourceService.calculateGenerationAmountForKingdom(kingdom);
+        resourceService.increaseResourceByGenerationForKingdom(kingdom);
+      }
     }
   }
 }

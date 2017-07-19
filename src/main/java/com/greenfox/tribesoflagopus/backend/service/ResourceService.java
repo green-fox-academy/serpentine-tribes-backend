@@ -59,4 +59,13 @@ public class ResourceService {
     foodToChange.setGeneration(foodGeneration);
     kingdomService.saveKingdom(kingdom);
   }
+
+  public boolean isTownhallFullOfResource (Kingdom kingdom) {
+    int goldInKingdom = resourceRepository.findByTypeAndKingdomId(ResourceType.GOLD, kingdom.getId()).getAmount();
+    int foodInKingdom = resourceRepository.findByTypeAndKingdomId(ResourceType.FOOD, kingdom.getId()).getAmount();
+    if (goldInKingdom == 1000 && foodInKingdom == 1000) {
+      return true;
+    }
+    return false;
+  }
 }
