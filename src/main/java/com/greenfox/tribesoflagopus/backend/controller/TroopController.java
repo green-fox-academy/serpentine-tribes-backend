@@ -89,6 +89,11 @@ public class TroopController {
       return ResponseEntity.status(404).body(errorService.getUserIdNotFoundStatus());
     }
 
+    if(!troopService.hasEnoughGoldForNewTroop(userId)) {
+      StatusResponse notEnoughGoldStatus = errorService.getNotEnoughGoldStatus();
+      return ResponseEntity.badRequest().body(notEnoughGoldStatus);
+    }
+
     TroopDto addedTroopDto = troopService.addNewTroop(userId);
     return ResponseEntity.ok().body(addedTroopDto);
   }

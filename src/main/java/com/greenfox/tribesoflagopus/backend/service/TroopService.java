@@ -3,6 +3,7 @@ package com.greenfox.tribesoflagopus.backend.service;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopListDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
+import com.greenfox.tribesoflagopus.backend.model.entity.ResourceType;
 import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
 import com.greenfox.tribesoflagopus.backend.repository.TroopRepository;
 
@@ -15,21 +16,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class TroopService {
 
+  private final int newTroopPrice = 10;
   private final DtoService dtoService;
   private final KingdomService kingdomService;
   private final TroopRepository troopRepository;
   private final TimeService timeService;
+  private final ResourceService resourceService;
 
   @Autowired
   public TroopService(DtoService dtoService,
       KingdomService kingdomService,
       TroopRepository troopRepository,
-      TimeService timeService) {
+      TimeService timeService,
+      ResourceService resourceService) {
 
     this.dtoService = dtoService;
     this.kingdomService = kingdomService;
     this.troopRepository = troopRepository;
     this.timeService = timeService;
+    this.resourceService = resourceService;
   }
 
   public TroopListDto listTroopsOfUser(Long userId) {
@@ -62,12 +67,13 @@ public class TroopService {
 
   public TroopDto addNewTroop(Long userId) {
     Troop newTroop = Troop.builder()
-        .hp(1)
+        .hp(10)
         .attack(1)
         .defence(1)
         .startedAt(new Timestamp(System.currentTimeMillis()))
         .build();
     Troop savedTroopWithFinishedAtTime = addTroopToUsersKingdom(newTroop, userId);
+    payForTroop(userId);
     return dtoService.convertFromTroop(savedTroopWithFinishedAtTime);
   }
 
@@ -93,5 +99,20 @@ public class TroopService {
   public Troop saveTroop(Troop troop) {
     Troop savedTroop = troopRepository.save(troop);
     return timeService.setTroopFinishedTime(savedTroop);
+  }
+
+  public boolean hasEnoughGoldForNewTroop(Long userId) {
+    return checkGoldAmount(userId, newTroopPrice);
+  }
+
+  public boolean checkGoldAmount(Long userId, int price) {
+    Kingdom kingdom = kingdomService.getKingdomOfUser(userId);
+    return resourceService.hasEnoughResource(kingdom, ResourceType.GOLD, price);
+  }
+
+  public void payForTroop(Long userId) {
+    Kingdom kingdom = kingdomService.getKingdomOfUser(userId);
+    resourceService.decreaseResource(kingdom, ResourceType.GOLD, newTroopPrice);
+
   }
 }
