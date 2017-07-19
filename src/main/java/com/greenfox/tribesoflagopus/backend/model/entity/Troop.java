@@ -24,8 +24,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class Troop {
 
-  public static final Timestamp ZERO_TIMESTAMP = new Timestamp(0);
-
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
   private Long id;
@@ -62,7 +60,7 @@ public class Troop {
   }
 
   public boolean isFinished () {
-    return ZERO_TIMESTAMP.equals(getFinishedAt());
+    return getFinishedAt().getTime() != 0;
   }
 
   public static class TroopBuilder {

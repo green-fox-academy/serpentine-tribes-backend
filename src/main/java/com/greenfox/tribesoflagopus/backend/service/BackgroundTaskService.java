@@ -21,7 +21,7 @@ public class BackgroundTaskService {
 
   @Transactional
   @Scheduled(fixedDelay = 60000)
-  public void increaseResourcesAmountPerMinuteInAllKingdoms() {
+  public void changeResourcesAmountPerMinuteInAllKingdoms() {
     List<Kingdom> allKingdoms = kingdomService.findAllKingdoms();
 
     for (Kingdom kingdom : allKingdoms) {
@@ -29,6 +29,7 @@ public class BackgroundTaskService {
         resourceService.calculateGenerationAmountForKingdom(kingdom);
         resourceService.increaseResourceByGenerationForKingdom(kingdom);
       }
+      
     }
   }
 }

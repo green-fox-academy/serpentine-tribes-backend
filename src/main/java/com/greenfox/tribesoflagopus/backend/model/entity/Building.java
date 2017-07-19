@@ -25,8 +25,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Building {
 
-  public static final Timestamp ZERO_TIMESTAMP = new Timestamp(0);
-
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
   private Long id;
@@ -66,10 +64,14 @@ public class Building {
   }
 
   public boolean isFinished () {
-    return ZERO_TIMESTAMP.equals(getFinishedAt());
+    return getFinishedAt().getTime() != 0;
   }
 
   public static class BuildingBuilder {
     private int level = 1;
+  }
+
+  public int getFinishedLevel() {
+    return isFinished() ? level : level-1;
   }
 }

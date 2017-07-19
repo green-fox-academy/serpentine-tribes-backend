@@ -36,16 +36,13 @@ public class ResourceService {
     int setGoldGenerationTo = 0;
     int setFoodGenerationTo = 0;
     for (Building building : buildingsOfKingdom) {
-      if (building.isFinished() && building.getType().equals(BuildingType.MINE)){
-        setGoldGenerationTo += building.getLevel()*10;
-      } else if (building.isFinished() && building.getType().equals(BuildingType.FARM)) {
-        setFoodGenerationTo += building.getLevel()*10;
+      if (building.getType().equals(BuildingType.MINE)){
+        setGoldGenerationTo += building.getFinishedLevel()*10;
+      } else if (building.getType().equals(BuildingType.FARM)) {
+        setFoodGenerationTo += building.getFinishedLevel()*10;
       } else if (building.getType().equals(BuildingType.TOWNHALL)){
-        setGoldGenerationTo += building.getLevel()*10;
-        setFoodGenerationTo += building.getLevel()*10;
-      } else {
-        setFoodGenerationTo += 0;
-        setGoldGenerationTo += 0;
+        setGoldGenerationTo += building.getFinishedLevel()*10;
+        setFoodGenerationTo += building.getFinishedLevel()*10;
       }
     }
     setResourceGeneration(kingdom, setGoldGenerationTo, setFoodGenerationTo);
