@@ -51,7 +51,7 @@ public class Building {
 
   public Timestamp getFinishedAt() {
     if (type.equals(BuildingType.TOWNHALL) && level == 1) {
-      return new Timestamp(0);
+      return startedAt;
     }
 
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
