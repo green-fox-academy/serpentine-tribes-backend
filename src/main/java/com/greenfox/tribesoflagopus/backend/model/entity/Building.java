@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -38,9 +37,6 @@ public class Building {
   private int hp;
   private Timestamp startedAt;
 
-  @Transient
-  private Timestamp finishedAt;
-
   @ManyToOne(fetch = FetchType.LAZY)
   @NotNull
   private Kingdom kingdom;
@@ -53,14 +49,27 @@ public class Building {
     this.startedAt = startedAt;
   }
 
-  public static class BuildingBuilder {
-    private int level = 1;
+  public Timestamp getFinishedAt() {
+    if (type.equals(BuildingType.TOWNHALL) && level == 1) {
+      return new Timestamp(0);
+    }
+
+    Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+    long startedTimeAsMillis = startedAt.getTime();
+    long minuteToDelayWith = 1;
+    long delayInMillis = minuteToDelayWith * 60 * 1000;
+    if (currentTime.getTime() - startedAt.getTime() < delayInMillis) {
+      return new Timestamp(0);
+    } else {
+      return new Timestamp(startedTimeAsMillis + delayInMillis);
+    }
   }
 
   public boolean isFinished () {
-    if (finishedAt == null || ZERO_TIMESTAMP.equals(finishedAt)) {
-      return false;
-    }
-    return true;
+    return ZERO_TIMESTAMP.equals(getFinishedAt());
+  }
+
+  public static class BuildingBuilder {
+    private int level = 1;
   }
 }

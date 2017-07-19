@@ -17,24 +17,20 @@ public class BuildingService {
   private final BuildingRepository buildingRepository;
   private final DtoService dtoService;
   private final KingdomService kingdomService;
-  private final TimeService timeService;
 
   @Autowired
   public BuildingService(
       BuildingRepository buildingRepository,
       DtoService dtoService,
-      KingdomService kingdomService, TimeService timeService) {
+      KingdomService kingdomService) {
     this.buildingRepository = buildingRepository;
     this.dtoService = dtoService;
     this.kingdomService = kingdomService;
-    this.timeService = timeService;
   }
 
   public BuildingListDto getBuildingList(long userId) {
     List<Building> buildings = buildingRepository.findAllByKingdomUserId(userId);
-    List<Building> buildingsWithFinishedAtTime = timeService
-        .setBuildingListFinishedTimes(buildings);
-    return dtoService.convertToBuildingListDtoFromBuildings(buildingsWithFinishedAtTime);
+    return dtoService.convertToBuildingListDtoFromBuildings(buildings);
 }
 
   public boolean validBuildingType(String inputBuildingType) {
@@ -48,9 +44,8 @@ public class BuildingService {
 
   public BuildingDto addNewBuilding(String type, long userId) {
     Building newBuilding = createNewBuilding(type);
-    Building savedBuildingWithFinishedAtTime = saveNewBuilding(userId, newBuilding);
-    BuildingDto buildingDto = dtoService.convertfromBuilding(savedBuildingWithFinishedAtTime);
-    return buildingDto;
+    Building savedBuilding = addNewBuilding(userId, newBuilding);
+    return dtoService.convertfromBuilding(savedBuilding);
   }
 
   public Building createNewBuilding(String type) {
@@ -60,18 +55,17 @@ public class BuildingService {
         .build();
   }
 
-  public Building saveNewBuilding(Long userId, Building building) {
+  public Building addNewBuilding(Long userId, Building building) {
     Kingdom kingdom = kingdomService.getKingdomOfUser(userId);
     kingdom.addBuilding(building);
-    Building savedBuildingWithFinishedAtTime = saveBuilding(building);
-    return savedBuildingWithFinishedAtTime ;
+    return saveBuilding(building);
   }
 
   public BuildingDto updateBuilding(Long buildingId, Integer level) {
     Building building = buildingRepository.findOne(buildingId);
     building.setLevel(level);
-    Building savedBuildingWithFinishedAtTime = saveBuilding(building);
-    return dtoService.convertfromBuilding(savedBuildingWithFinishedAtTime);
+    Building savedBuilding = saveBuilding(building);
+    return dtoService.convertfromBuilding(savedBuilding);
   }
 
   public boolean existsByBuildingIdAndUserId(Long buildingId, Long userId) {
@@ -80,12 +74,10 @@ public class BuildingService {
 
   public BuildingDto getBuildingData(Long buildingId) {
     Building building = buildingRepository.findOne(buildingId);
-    Building buildingWithFinishedAtTime = timeService.setBuildingFinishedTime(building);
-    return dtoService.convertfromBuilding(buildingWithFinishedAtTime);
+    return dtoService.convertfromBuilding(building);
   }
 
   public Building saveBuilding(Building building) {
-    Building savedBuilding = buildingRepository.save(building);
-    return timeService.setBuildingFinishedTime(savedBuilding);
+    return buildingRepository.save(building);
   }
 }

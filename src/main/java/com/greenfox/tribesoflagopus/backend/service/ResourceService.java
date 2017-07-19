@@ -5,7 +5,6 @@ import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Resource;
 import com.greenfox.tribesoflagopus.backend.model.entity.ResourceType;
-import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
 import com.greenfox.tribesoflagopus.backend.repository.ResourceRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

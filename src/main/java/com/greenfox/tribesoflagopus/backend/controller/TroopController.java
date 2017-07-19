@@ -1,6 +1,5 @@
 package com.greenfox.tribesoflagopus.backend.controller;
 
-import com.greenfox.tribesoflagopus.backend.model.dto.BuildingDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.JsonDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.StatusResponse;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;

@@ -1,7 +1,6 @@
 package com.greenfox.tribesoflagopus.backend.service;
 
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
-import com.greenfox.tribesoflagopus.backend.repository.KingdomRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
