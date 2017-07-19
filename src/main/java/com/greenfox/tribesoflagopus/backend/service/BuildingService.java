@@ -72,7 +72,7 @@ public class BuildingService {
     Kingdom kingdom = kingdomService.getKingdomOfUser(userId);
     kingdom.addBuilding(building);
     Building savedBuildingWithFinishedAtTime = saveBuilding(building);
-    resourceService.decreaseResource(kingdom, ResourceType.GOLD, newBuildingPrice);
+    pay(kingdom, newBuildingPrice);
     return savedBuildingWithFinishedAtTime;
   }
 
@@ -80,7 +80,7 @@ public class BuildingService {
     Building building = buildingRepository.findOne(buildingId);
     building.setLevel(level);
     Building savedBuildingWithFinishedAtTime = saveBuilding(building);
-    resourceService.decreaseResource(building.getKingdom(), ResourceType.GOLD, level * buildingLevelPrice);
+    pay(building.getKingdom(), level * buildingLevelPrice);
     return dtoService.convertfromBuilding(savedBuildingWithFinishedAtTime);
   }
 
@@ -123,7 +123,7 @@ public class BuildingService {
     int levelOfTownhall = buildingRepository
         .findByTypeAndKingdomId(BuildingType.TOWNHALL, buildingToUpgrade.getKingdom().getId())
         .getLevel();
-    if(levelToReach <= levelOfTownhall) {
+    if (levelToReach <= levelOfTownhall) {
       return true;
     }
     return false;
@@ -131,5 +131,9 @@ public class BuildingService {
 
   public boolean hasUserBuildingType(BuildingType buildingType, Long userId) {
     return buildingRepository.existsByTypeAndKingdomUserId(buildingType, userId);
+  }
+
+  public void pay(Kingdom kingdom, int price) {
+    resourceService.decreaseResource(kingdom, ResourceType.GOLD, price);
   }
 }
