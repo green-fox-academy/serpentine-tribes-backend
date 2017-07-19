@@ -10,13 +10,11 @@ import com.greenfox.tribesoflagopus.backend.model.dto.TroopListDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.UserTokenDto;
 import com.greenfox.tribesoflagopus.backend.model.entity.Building;
-import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
 import com.greenfox.tribesoflagopus.backend.model.entity.Kingdom;
 import com.greenfox.tribesoflagopus.backend.model.entity.Location;
 import com.greenfox.tribesoflagopus.backend.model.entity.Resource;
 import com.greenfox.tribesoflagopus.backend.model.entity.Troop;
 import com.greenfox.tribesoflagopus.backend.model.entity.User;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -51,27 +49,15 @@ public class DtoService {
   public List<BuildingDto> convertFromBuildings(List<Building> buildings) {
     List<BuildingDto> listOfBuildingDtos = new ArrayList<>();
     for (Building building : buildings) {
-      if (building.getType().equals(BuildingType.TOWNHALL)) {
-        BuildingDto buildingDto = BuildingDto.builder()
-            .id(building.getId())
-            .type(building.getType())
-            .level(building.getLevel())
-            .hp(building.getHp())
-            .startedAt(building.getStartedAt())
-            .finishedAt(building.getStartedAt())
-            .build();
-        listOfBuildingDtos.add(buildingDto);
-      } else {
-        BuildingDto buildingDto = BuildingDto.builder()
-            .id(building.getId())
-            .type(building.getType())
-            .level(building.getLevel())
-            .hp(building.getHp())
-            .startedAt(building.getStartedAt())
-            .finishedAt(calculateFinishedAtTime(building.getStartedAt()))
-            .build();
-        listOfBuildingDtos.add(buildingDto);
-      }
+      BuildingDto buildingDto = BuildingDto.builder()
+          .id(building.getId())
+          .type(building.getType())
+          .level(building.getLevel())
+          .hp(building.getHp())
+          .startedAt(building.getStartedAt())
+          .finishedAt(building.getFinishedAt())
+          .build();
+      listOfBuildingDtos.add(buildingDto);
     }
     return listOfBuildingDtos;
   }
@@ -108,7 +94,7 @@ public class DtoService {
         .attack(troop.getAttack())
         .defence(troop.getDefence())
         .startedAt(troop.getStartedAt())
-        .finishedAt(calculateFinishedAtTime(troop.getStartedAt()))
+        .finishedAt(troop.getFinishedAt())
         .build();
   }
 
@@ -135,24 +121,14 @@ public class DtoService {
   }
 
   public BuildingDto convertfromBuilding(Building building) {
-    if (building.getType().equals("townhall")) {
-      return BuildingDto.builder()
-          .id(building.getId())
-          .type(building.getType())
-          .level(building.getLevel())
-          .hp(building.getHp())
-          .startedAt(building.getStartedAt())
-          .finishedAt(building.getStartedAt())
-          .build();
-    }
     return BuildingDto.builder()
-          .id(building.getId())
-          .type(building.getType())
-          .level(building.getLevel())
-          .hp(building.getHp())
-          .startedAt(building.getStartedAt())
-          .finishedAt(calculateFinishedAtTime(building.getStartedAt()))
-          .build();
+        .id(building.getId())
+        .type(building.getType())
+        .level(building.getLevel())
+        .hp(building.getHp())
+        .startedAt(building.getStartedAt())
+        .finishedAt(building.getFinishedAt())
+        .build();
   }
 
   public TroopListDto createTroopListDto(List<Troop> troops) {
@@ -160,19 +136,5 @@ public class DtoService {
     return TroopListDto.builder()
         .troops(listOfTroopDtos)
         .build();
-  }
-
-  public Timestamp calculateFinishedAtTime (Timestamp startedAt){
-    Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-    Timestamp finishedAt;
-    long t = startedAt.getTime();
-    long minuteToDelayWith = 1;
-    long m = minuteToDelayWith*60*1000;
-    if (currentTime.getTime() - startedAt.getTime() < m){
-      finishedAt = new Timestamp(0);
-    } else {
-      finishedAt = new Timestamp(t+m);
-    }
-    return finishedAt;
   }
 }

@@ -10,18 +10,23 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @SequenceGenerator(name = "seq_store", sequenceName = "building_sequence")
+@EqualsAndHashCode
 @Getter
 @Setter
 @NoArgsConstructor
 public class Building {
+
+  public static final Timestamp ZERO_TIMESTAMP = new Timestamp(0);
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
@@ -32,6 +37,9 @@ public class Building {
   private int level;
   private int hp;
   private Timestamp startedAt;
+
+  @Transient
+  private Timestamp finishedAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @NotNull
@@ -47,5 +55,12 @@ public class Building {
 
   public static class BuildingBuilder {
     private int level = 1;
+  }
+
+  public boolean isFinished () {
+    if (finishedAt == null || ZERO_TIMESTAMP.equals(finishedAt)) {
+      return false;
+    }
+    return true;
   }
 }

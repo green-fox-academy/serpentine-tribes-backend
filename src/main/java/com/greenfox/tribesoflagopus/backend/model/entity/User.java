@@ -8,12 +8,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @SequenceGenerator(name = "seq_store", sequenceName = "user_sequence")
+@EqualsAndHashCode
 @Getter
 @Setter
 @NoArgsConstructor
