@@ -94,6 +94,9 @@ public class BuildingController {
     } else if (!buildingService.validBuildingType(buildingTypeInputDto.getType())) {
       StatusResponse invalidBuildingTypeStatus = errorService.getInvalidBuildingTypeStatus();
       return ResponseEntity.badRequest().body(invalidBuildingTypeStatus);
+    } else if (!buildingService.hasEnoughGoldForNewBuilding(userId)) {
+      StatusResponse notEnoughGoldStatus = errorService.getNotEnoughGoldStatus();
+      return ResponseEntity.badRequest().body(notEnoughGoldStatus);
     }
 
     BuildingDto newBuildingDto = buildingService
@@ -122,6 +125,12 @@ public class BuildingController {
     } else if (buildingLevelInputDto.getLevel() < 1) {
       StatusResponse invalidBuildingLevel = errorService.getInvalidBuildingLevelStatus();
       return ResponseEntity.badRequest().body(invalidBuildingLevel);
+    } else if (!buildingService.isUpgradeLevelAllowed(buildingId, buildingLevelInputDto.getLevel())) {
+      StatusResponse buildingLevelTooHigh = errorService.getBuildingLevelTooHighStatus();
+      return ResponseEntity.badRequest().body(buildingLevelTooHigh);
+    } else if (!buildingService.hasEnoughGoldForUpgrade(userId, buildingLevelInputDto.getLevel())) {
+      StatusResponse notEnoughGoldStatus = errorService.getNotEnoughGoldStatus();
+      return ResponseEntity.badRequest().body(notEnoughGoldStatus);
     }
 
     BuildingDto updatedBuildingDto = buildingService

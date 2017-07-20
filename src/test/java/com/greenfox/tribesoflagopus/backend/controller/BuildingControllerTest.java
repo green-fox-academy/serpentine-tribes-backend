@@ -104,6 +104,7 @@ public class BuildingControllerTest {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(mockUserService.existsUserById(1L)).thenReturn(true);
     Mockito.when(mockBuildingService.validBuildingType("farm")).thenReturn(true);
+    Mockito.when(mockBuildingService.hasEnoughGoldForNewBuilding(1L)).thenReturn(true);
     Mockito.when(mockBuildingService.addNewBuilding("farm", 1L))
         .thenReturn(mockBuildingDtoBuilder.build());
     mockMvc.perform(post("/kingdom/buildings")
@@ -175,12 +176,30 @@ public class BuildingControllerTest {
   }
 
   @Test
+  public void addNewBuildingWithNotEnoughGold() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(mockUserService.existsUserById(1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.validBuildingType("farm")).thenReturn(true);
+    Mockito.when(mockBuildingService.hasEnoughGoldForNewBuilding(1L)).thenReturn(false);
+    mockMvc.perform(post("/kingdom/buildings")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"type\" : \"farm\"" + "}"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Not enough gold!")))
+        .andDo(print());
+  }
+
+  @Test
   public void updateBuildingWithValidInputs() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
-    Mockito.when(mockBuildingService.existsByBuildingIdAndUserId(1L, 1L)).thenReturn(true);
-    Mockito.when(mockBuildingService.updateBuilding(1L, 2))
+    Mockito.when(mockBuildingService.existsByBuildingIdAndUserId(2L, 1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.isUpgradeLevelAllowed(2L, 2)).thenReturn(true);
+    Mockito.when(mockBuildingService.hasEnoughGoldForUpgrade(1L, 2)).thenReturn(true);
+    Mockito.when(mockBuildingService.updateBuilding(2L, 2))
         .thenReturn(mockUpdatedBuildingDtoBuilder.build());
-    mockMvc.perform(put("/kingdom/buildings/1")
+    mockMvc.perform(put("/kingdom/buildings/2")
         .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{" + "\"level\" : " + 2 + "}"))
@@ -244,6 +263,37 @@ public class BuildingControllerTest {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status", is("error")))
         .andExpect(jsonPath("$.message", is("Invalid building level!")))
+        .andDo(print());
+  }
+
+  @Test
+  public void updateBuildingWithNotAllowedLevel() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(mockBuildingService.existsByBuildingIdAndUserId(1L, 1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.isUpgradeLevelAllowed(1L, 2)).thenReturn(false);
+    mockMvc.perform(put("/kingdom/buildings/1")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"level\" : " + 2 + "}"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Building level is bigger than Townhall level!")))
+        .andDo(print());
+  }
+
+  @Test
+  public void updateBuildingWithNotEnoughGold() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(mockBuildingService.existsByBuildingIdAndUserId(1L, 1L)).thenReturn(true);
+    Mockito.when(mockBuildingService.isUpgradeLevelAllowed(1L, 2)).thenReturn(true);
+    Mockito.when(mockBuildingService.hasEnoughGoldForUpgrade(1L, 2)).thenReturn(false);
+    mockMvc.perform(put("/kingdom/buildings/1")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"level\" : " + 2 + "}"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Not enough gold!")))
         .andDo(print());
   }
 

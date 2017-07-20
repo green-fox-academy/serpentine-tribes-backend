@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -26,8 +25,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Building {
 
-  public static final Timestamp ZERO_TIMESTAMP = new Timestamp(0);
-
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_store")
   private Long id;
@@ -37,9 +34,6 @@ public class Building {
   private int level;
   private int hp;
   private Timestamp startedAt;
-
-  @Transient
-  private Timestamp finishedAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @NotNull
@@ -53,14 +47,31 @@ public class Building {
     this.startedAt = startedAt;
   }
 
+  public Timestamp getFinishedAt() {
+    if (type.equals(BuildingType.TOWNHALL) && level == 1) {
+      return startedAt;
+    }
+
+    Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+    long startedTimeAsMillis = startedAt.getTime();
+    long minuteToDelayWith = 1;
+    long delayInMillis = minuteToDelayWith * 60 * 1000;
+    if (currentTime.getTime() - startedAt.getTime() < delayInMillis) {
+      return new Timestamp(0);
+    } else {
+      return new Timestamp(startedTimeAsMillis + delayInMillis);
+    }
+  }
+
+  public boolean isFinished () {
+    return getFinishedAt().getTime() != 0;
+  }
+
   public static class BuildingBuilder {
     private int level = 1;
   }
 
-  public boolean isFinished () {
-    if (finishedAt == null || ZERO_TIMESTAMP.equals(finishedAt)) {
-      return false;
-    }
-    return true;
+  public int getFinishedLevel() {
+    return isFinished() ? level : level-1;
   }
 }
