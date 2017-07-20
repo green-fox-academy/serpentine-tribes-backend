@@ -11,6 +11,8 @@ import com.greenfox.tribesoflagopus.backend.BackendApplication;
 import com.greenfox.tribesoflagopus.backend.mockbuilder.MockUpdatedTroopDtoBuilder;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopDto;
 import com.greenfox.tribesoflagopus.backend.model.dto.TroopListDto;
+import com.greenfox.tribesoflagopus.backend.model.entity.BuildingType;
+import com.greenfox.tribesoflagopus.backend.service.BuildingService;
 import com.greenfox.tribesoflagopus.backend.service.TokenService;
 import com.greenfox.tribesoflagopus.backend.service.TroopService;
 import com.greenfox.tribesoflagopus.backend.service.UserService;
@@ -54,6 +56,8 @@ public class TroopControllerTest {
   private TroopService troopService;
   @MockBean
   private UserService userService;
+  @MockBean
+  private BuildingService mockBuildingService;
 
   private MockMvc mockMvc;
   private HttpMessageConverter mappingJackson2HttpMessageConverter;
@@ -143,6 +147,8 @@ public class TroopControllerTest {
     Long testUserId = 1L;
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(testUserId);
     Mockito.when(userService.existsUserById(testUserId)).thenReturn(true);
+    Mockito.when(mockBuildingService.hasUserBuildingType(BuildingType.BARRACK, testUserId)).thenReturn(true);
+    Mockito.when(troopService.hasEnoughGoldForNewTroop(testUserId)).thenReturn(true);
     Mockito.when(troopService.addNewTroop(testUserId)).thenReturn(TEST_TROOP_DTO_1);
 
     mockMvc.perform(post("/kingdom/troops")
@@ -159,9 +165,42 @@ public class TroopControllerTest {
   }
 
   @Test
+  public void createNewTroop_userHasNoBarrack() throws Exception {
+    Long testUserId = 1L;
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(testUserId);
+    Mockito.when(userService.existsUserById(testUserId)).thenReturn(true);
+    Mockito.when(mockBuildingService.hasUserBuildingType(BuildingType.BARRACK, testUserId)).thenReturn(false);
+    Mockito.when(troopService.hasEnoughGoldForNewTroop(testUserId)).thenReturn(true);
+
+    mockMvc.perform(post("/kingdom/troops")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Without a barrack you can't have a troop!")))
+        .andDo(print());
+  }
+
+  @Test
+  public void createNewTroop_notEnoughGold() throws Exception {
+    Long testUserId = 1L;
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(testUserId);
+    Mockito.when(userService.existsUserById(testUserId)).thenReturn(true);
+    Mockito.when(mockBuildingService.hasUserBuildingType(BuildingType.BARRACK, testUserId)).thenReturn(true);
+    Mockito.when(troopService.hasEnoughGoldForNewTroop(testUserId)).thenReturn(false);
+
+    mockMvc.perform(post("/kingdom/troops")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Not enough gold!")))
+        .andDo(print());
+  }
+
+  @Test
   public void updateTroopWithValidInputs() throws Exception {
     Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
     Mockito.when(troopService.existsByTroopIdAndUserId(1L, 1L)).thenReturn(true);
+    Mockito.when(troopService.hasEnoughGoldForTroopUpgrade(1L)).thenReturn(true);
     Mockito.when(troopService.updateTroop(1L, 2))
         .thenReturn(mockUpdatedTroopDtoBuilder.build());
     mockMvc.perform(put("/kingdom/troops/1")
@@ -228,4 +267,20 @@ public class TroopControllerTest {
         .andExpect(jsonPath("$.message", is("Invalid troop level!")))
         .andDo(print());
   }
+
+  @Test
+  public void updateTroopWithNotEnoughGold() throws Exception {
+    Mockito.when(mockTokenService.getIdFromToken(MOCK_TOKEN)).thenReturn(1L);
+    Mockito.when(troopService.existsByTroopIdAndUserId(1L, 1L)).thenReturn(true);
+    Mockito.when(troopService.hasEnoughGoldForTroopUpgrade(1L)).thenReturn(false);
+    mockMvc.perform(put("/kingdom/troops/1")
+        .header(TOKEN_INPUT_REQUEST_HEADER, MOCK_TOKEN)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content("{" + "\"level\" : " + 2 + "}"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status", is("error")))
+        .andExpect(jsonPath("$.message", is("Not enough gold!")))
+        .andDo(print());
+  }
+
 }

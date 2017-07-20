@@ -72,4 +72,18 @@ public class ErrorService {
   public StatusResponse getInvalidTroopLevelStatus() {
     return StatusResponse.error("Invalid troop level!");
   }
+
+  public StatusResponse getNotEnoughGoldStatus() {
+    return StatusResponse.error("Not enough gold!");
+  }
+
+  public StatusResponse getBuildingLevelTooHighStatus() {
+    return StatusResponse.error("Building level is bigger than Townhall level!");
+  }
+
+  public StatusResponse getNoBarrackStatus() {
+    return StatusResponse.error("Without a barrack you can't have a troop!");
+  }
+
+
 }

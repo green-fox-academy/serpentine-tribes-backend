@@ -14,4 +14,6 @@ public interface BuildingRepository extends CrudRepository<Building, Long> {
   List<Building> findAllByKingdomUserId(Long userId);
 
   Building findByTypeAndKingdomId(BuildingType buildingType, long kingdomId);
+
+  boolean existsByTypeAndKingdomUserId(BuildingType buildingType, Long userId);
 }
