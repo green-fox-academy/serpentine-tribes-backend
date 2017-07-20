@@ -30,11 +30,17 @@ public class ResourceService {
     Resource goldToChange = resourceRepository.findByTypeAndKingdomId(ResourceType.GOLD, kingdom.getId());
 
     if (isEnoughSpaceInFoodStorage(kingdom)) {
-      foodToChange.setAmount(foodToChange.getAmount() + foodToChange.getGeneration());
+      int townhallLevel = buildingService.findBuildingByTypeAndKingdomId(BuildingType.TOWNHALL, kingdom.getId()).getLevel();
+      int amountToSet = foodToChange.getAmount() + foodToChange.getGeneration();
+      int newAmount = (amountToSet > townhallLevel*1000) ? 1000 : amountToSet;
+      foodToChange.setAmount(newAmount);
     }
 
     if (isEnoughSpaceInGoldStorage(kingdom)) {
-      goldToChange.setAmount(goldToChange.getAmount() + goldToChange.getGeneration());
+      int townhallLevel = buildingService.findBuildingByTypeAndKingdomId(BuildingType.TOWNHALL, kingdom.getId()).getLevel();
+      int amountToSet = goldToChange.getAmount() + goldToChange.getGeneration();
+      int newAmount = (amountToSet > townhallLevel*1000) ? 1000 : amountToSet;
+      goldToChange.setAmount(newAmount);
     }
       kingdomService.saveKingdom(kingdom);
     }
@@ -43,6 +49,7 @@ public class ResourceService {
     List<Building> buildingsOfKingdom = kingdom.getBuildings();
     int setGoldGenerationTo = 0;
     int setFoodGenerationTo = 0;
+
     for (Building building : buildingsOfKingdom) {
       if (building.getType().equals(BuildingType.MINE)){
         setGoldGenerationTo += building.getFinishedLevel()*10;
