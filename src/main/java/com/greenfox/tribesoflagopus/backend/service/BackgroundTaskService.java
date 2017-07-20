@@ -27,6 +27,7 @@ public class BackgroundTaskService {
     for (Kingdom kingdom : allKingdoms) {
         resourceService.calculateGenerationAmountForKingdom(kingdom);
         resourceService.increaseResourceByGenerationForKingdom(kingdom);
+        resourceService.feedTroops(kingdom);
     }
   }
 }

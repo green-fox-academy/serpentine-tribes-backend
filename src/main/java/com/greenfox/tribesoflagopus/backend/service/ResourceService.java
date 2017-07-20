@@ -88,4 +88,17 @@ public class ResourceService {
     }
     return false;
   }
+
+  public void feedTroops(Kingdom kingdom) {
+    Resource foodInKingdom = resourceRepository.findByTypeAndKingdomId(ResourceType.FOOD, kingdom.getId());
+    int numberOfTroops = kingdom.getTroops().size();
+    int currentFoodAmountInKingdom = foodInKingdom.getAmount();
+    int foodAmountAfterFeeding = currentFoodAmountInKingdom - numberOfTroops;
+
+    if (foodAmountAfterFeeding >= 0) {
+      foodInKingdom.setAmount(foodAmountAfterFeeding);
+    } else if (foodAmountAfterFeeding < 0) {
+      foodInKingdom.setAmount(0);
+    }
+  }
 }
