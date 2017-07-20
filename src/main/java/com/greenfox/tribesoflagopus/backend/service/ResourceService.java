@@ -32,14 +32,14 @@ public class ResourceService {
     if (isEnoughSpaceInFoodStorage(kingdom)) {
       int townhallLevel = buildingService.findBuildingByTypeAndKingdomId(BuildingType.TOWNHALL, kingdom.getId()).getLevel();
       int amountToSet = foodToChange.getAmount() + foodToChange.getGeneration();
-      int newAmount = (amountToSet > townhallLevel*1000) ? 1000 : amountToSet;
+      int newAmount = (amountToSet > townhallLevel*1000) ? townhallLevel*1000 : amountToSet;
       foodToChange.setAmount(newAmount);
     }
 
     if (isEnoughSpaceInGoldStorage(kingdom)) {
       int townhallLevel = buildingService.findBuildingByTypeAndKingdomId(BuildingType.TOWNHALL, kingdom.getId()).getLevel();
       int amountToSet = goldToChange.getAmount() + goldToChange.getGeneration();
-      int newAmount = (amountToSet > townhallLevel*1000) ? 1000 : amountToSet;
+      int newAmount = (amountToSet > townhallLevel*1000) ? townhallLevel*1000 : amountToSet;
       goldToChange.setAmount(newAmount);
     }
       kingdomService.saveKingdom(kingdom);
