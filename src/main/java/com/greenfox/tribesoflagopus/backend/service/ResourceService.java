@@ -71,19 +71,19 @@ public class ResourceService {
     kingdomService.saveKingdom(kingdom);
   }
 
-  public boolean isEnoughSpaceInGoldStorage (Kingdom kingdom) {
+  public boolean isEnoughSpaceInGoldStorage(Kingdom kingdom) {
     int townhallLevel = buildingService.findBuildingByTypeAndKingdomId(BuildingType.TOWNHALL, kingdom.getId()).getLevel();
-    int goldInKingdom = resourceRepository.findByTypeAndKingdomId(ResourceType.GOLD, kingdom.getId()).getAmount();
-    if (goldInKingdom < townhallLevel*1000) {
+    int goldAmountInKingdom = resourceRepository.findByTypeAndKingdomId(ResourceType.GOLD, kingdom.getId()).getAmount();
+    if (goldAmountInKingdom < townhallLevel*1000) {
       return true;
     }
     return false;
   }
 
-  public boolean isEnoughSpaceInFoodStorage (Kingdom kingdom) {
+  public boolean isEnoughSpaceInFoodStorage(Kingdom kingdom) {
     int townhallLevel = buildingService.findBuildingByTypeAndKingdomId(BuildingType.TOWNHALL, kingdom.getId()).getLevel();
-    int foodInKingdom = resourceRepository.findByTypeAndKingdomId(ResourceType.FOOD, kingdom.getId()).getAmount();
-    if (foodInKingdom < townhallLevel*1000) {
+    int foodAmountInKingdom = resourceRepository.findByTypeAndKingdomId(ResourceType.FOOD, kingdom.getId()).getAmount();
+    if (foodAmountInKingdom < townhallLevel*1000) {
       return true;
     }
     return false;
