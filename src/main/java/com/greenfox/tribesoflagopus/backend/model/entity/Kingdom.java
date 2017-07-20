@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
@@ -32,6 +33,7 @@ public class Kingdom {
   @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private final List<Building> buildings = new ArrayList<>();
 
+  @OrderBy(value = "type DESC")
   @OneToMany(mappedBy = "kingdom", cascade = CascadeType.ALL, orphanRemoval = true)
   private final List<Resource> resources = new ArrayList<>();
 
