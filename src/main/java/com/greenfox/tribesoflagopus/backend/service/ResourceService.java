@@ -35,6 +35,7 @@ public class ResourceService {
       int amountToSet = foodToChange.getAmount() + foodToChange.getGeneration();
       int newAmount = (amountToSet > townhallLevel*1000) ? townhallLevel*1000 : amountToSet;
       foodToChange.setAmount(newAmount);
+      resourceRepository.save(foodToChange);
     }
 
     if (isEnoughSpaceInGoldStorage(kingdom)) {
@@ -42,8 +43,8 @@ public class ResourceService {
       int amountToSet = goldToChange.getAmount() + goldToChange.getGeneration();
       int newAmount = (amountToSet > townhallLevel*1000) ? townhallLevel*1000 : amountToSet;
       goldToChange.setAmount(newAmount);
+      resourceRepository.save(goldToChange);
     }
-    kingdomService.saveKingdom(kingdom);
   }
 
   public void calculateGenerationAmountForKingdom(Kingdom kingdom) {
